@@ -90,7 +90,7 @@ owner Xbox/Microsoft sign-in and testing.
 
 ## Validation and release
 
-109 deterministic tests pass. Native checks cover eight menu assertions,
+The v0.4 release passed 109 deterministic tests. Native checks cover eight menu assertions,
 22 stage/roster/cap assertions, all six weapons, six spawn-clearance assertions,
 three batched-level assertions, and a 10-second clock test. A complete process
 restart restored stage 2, 430 seconds, 81.25 XP, 7 points, Assault Rifle unlock
@@ -127,7 +127,14 @@ under the owned Steam Snap H3EK installation.
 Run `python -B -m unittest discover -s tests` locally. Native tag geometry tests
 require the external binding/assets described in [DEVELOPMENT.md](DEVELOPMENT.md).
 `prepare_progression.py`
-authors the tags/HSC, and `onyx_progression.py stage` / `compile` use Sapien.
+authors the tags/HSC after a prerequisite guard. First run
+`python -B prepare_progression.py --check` for a read-only input report.
+`python -B preflight.py --stage source` checks a checkout without game assets;
+local configuration and read-only remote checks are described in
+[DEVELOPMENT.md](DEVELOPMENT.md). The remaining fresh-kit rebuild gaps are
+tracked in [BOOTSTRAP.md](BOOTSTRAP.md).
+`onyx_progression.py stage` / `compile` use Sapien and still require manual
+path adaptation and the native operator slot.
 `promote_v03.py` retains its historical filename but now targets v0.4.0 and
 requires matching native evidence and a fresh successful cache receipt.
 `launch_v04.py` is installed as the Onyx workspace's `launch.py`.

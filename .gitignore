@@ -30,6 +30,7 @@
 /source-sync-v04.json
 
 # Local credentials, environments and editor/runtime state.
+/last-stand.local.json
 .env
 .env.*
 *.pem

@@ -17,7 +17,10 @@ AGENTS.md
 PLAN.md
 TASKS.md
 DEVELOPMENT.md
+BOOTSTRAP.md
 ROADMAP.md
+last-stand.example.json
+workspace_config.py
 author_effects.py
 author_hangar.py
 author_progression_ui.py
@@ -58,6 +61,9 @@ tests/test_launch_v04.py
 tests/test_spawn_geometry.py
 tests/test_spawn_runtime.py
 tests/test_survival.py
+tests/test_workspace_config.py
+tests/test_preflight.py
+tests/test_prepare_progression.py
 source/last_stand.hsc
 source/progression.hsc
 camera-grid.json

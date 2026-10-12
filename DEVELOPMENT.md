@@ -12,8 +12,48 @@ recorded media or player saves. Cloning it alone does not install the game.
 
 The current development copy is on Windows, with native compilation and play
 testing on Onyx-Linux using Steam Snap, Proton Experimental and the owned
-Halo 3 Editing Kit. Remote helpers currently contain that workspace's paths
-and the `onyx-linux` SSH alias. Read and adapt them before using another setup.
+Halo 3 Editing Kit. The preflight supports local configuration; legacy remote
+build, fetch, launch and QA helpers still contain that workspace's paths and
+the `onyx-linux` SSH alias. Read and adapt those helpers before another setup.
+
+## Configuration and prerequisite checks
+
+Copy `last-stand.example.json` to the ignored `last-stand.local.json` and edit
+the paths for your installation. The example's `../H3EK` is a placeholder.
+You can omit `editing_kit` for source-only work. The workspace is always the
+checkout; `preflight.py --root PATH` can inspect a different source workspace.
+
+Selection order is `--config FILE`, `LAST_STAND_CONFIG`, then the optional
+`last-stand.local.json` in the workspace. An explicitly selected missing or
+invalid file is an error. Local paths in a config resolve relative to its
+directory. Remote paths must be absolute normalized POSIX paths. Executable
+settings name one program, not a command with arguments. Defaults preserve
+the current Onyx alias and remote workspace; they do not configure a local kit.
+
+```sh
+python -B preflight.py --stage source
+python -B prepare_progression.py --check --json
+python -B preflight.py --config last-stand.local.json --stage native
+python -B preflight.py --tools /path/to/H3EK --json
+python -B preflight.py --remote --json
+```
+
+All five commands are read-only. The source check works without owned assets.
+The authoring check lists all missing direct inputs and checks output paths;
+it does not import the native binding or authors. Native checks inspect the
+configured local or remote SDK/staged files, without running SDK programs.
+Remote checks require an already trusted SSH host and noninteractive login.
+Exit 0 means the selected prerequisites passed; exit 2 means blocked/error.
+
+Configuration currently applies to preflight and preparation's prerequisite
+check. Preparation still writes beside its own source files; config cannot
+redirect its workspace. `tools.scp` is reserved for subsequent helper migration
+and is not invoked here. Existing staging, fetch, compile, launch and QA helpers
+do **not** consume this config yet. Do not infer that changing the JSON moves
+the installed game or makes the historical bootstrap portable.
+
+See [BOOTSTRAP.md](BOOTSTRAP.md) for the 18 direct authoring inputs, output
+inventory, inherited native dependencies and known fresh-installation gaps.
 
 ## Source tests
 
@@ -23,11 +63,13 @@ Tested with CPython 3.14.6. From the repository root:
 python -B -m unittest discover -s tests -v
 ```
 
-A source-only export passes 104 tests and reports one skipped module. That
+A source-only export passes 167 tests and reports one skipped module. That
 module contains five spawn-geometry tests requiring the external `blam_tags`
 binding; its owned-navigation test also needs the local scenario asset. The
-complete owner workspace passed all 109 tests for v0.4.0. No third-party Python
-package is required for the 104 source-only checks.
+complete owner workspace passes all 172 tests, including 63 configuration and
+preflight regressions added after v0.4.0. The historical native release passed
+109 tests. No third-party Python package is required for the 167 source-only
+checks. These added setup tests do not constitute a new native game build.
 
 The test VM exercises the emitted HaloScript subset. It is not a Halo compiler
 or a replacement for engine play testing. Native test evidence is recorded in
@@ -57,9 +99,13 @@ victory fix.
    local `private-inputs/` and `native-tags/` baseline, including the outdoor
    navigation scenario. Rebuilding that baseline from a fresh installation is
    not yet a one-command workflow.
-2. Review the helper paths and run `prepare_progression.py` in that prepared
-   workspace. It authors progression tags, HaloScript, damage effects and UI
-   titles. It does not compile a playable map.
+2. Run `python -B prepare_progression.py --check` in that prepared workspace.
+   Resolve every missing prerequisite before running
+   `python -B prepare_progression.py` to author progression tags, HaloScript,
+   damage effects and UI titles. Preparation repeats the guard and loads all
+   authoring modules before writing. Content errors later in authoring can
+   still leave partial outputs; this is not an atomic build. It does not
+   compile a playable map.
 3. Use the adapted `onyx_progression.py stage` and `compile` helpers to stage
    and compile in Sapien. Check compiler diagnostics and read back the compiled
    script counts/bindings before running the native QA tools.
