@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Contribution rules
+    url: https://github.com/lEWFkRAD/halo3-survivors/blob/main/CONTRIBUTING.md
+    about: Read submission, review, evidence and asset rules before contributing.
+  - name: Existing implementation tasks
+    url: https://github.com/lEWFkRAD/halo3-survivors/blob/main/TASKS.md
+    about: Find the existing task before opening a duplicate proposal.

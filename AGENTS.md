@@ -2,7 +2,8 @@
 
 ## Start here
 
-Read [README.md](README.md), [PLAN.md](PLAN.md), [TASKS.md](TASKS.md) and
+Read [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md),
+[PLAN.md](PLAN.md), [TASKS.md](TASKS.md) and
 [DEVELOPMENT.md](DEVELOPMENT.md). This repository is the shared source and plan
 for the native Halo 3 mod. The project is a v0.4 prototype, not a finished retail
 release. Preserve overhead play, auto attacks, outdoor stages and stage-carried
@@ -20,11 +21,13 @@ commit, files/area, intended acceptance criteria and whether native time is
 needed. Existing active claims take precedence; resolve overlap with the
 coordinating agent. Do not assign another person or send unsolicited messages.
 
-Keep the task ID in the branch and PR title, for example `ls-01-portable-paths`
+For work with a task ID, keep it in the branch and PR title, for example `ls-01-portable-paths`
 and `[LS-01] Configure authoring paths`. Do not mark work complete merely because
 code exists. Link the result and evidence, and identify anything still blocked.
 Leave a handoff and release the claim when stopping. Check stale claims with the
 coordinator before taking over, especially claims involving a running process.
+Small standalone fixes can go directly to a focused PR without a new task issue,
+as described in CONTRIBUTING.md; still check for overlapping work first.
 
 ## One native operator at a time
 
