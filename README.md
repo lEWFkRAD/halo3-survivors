@@ -13,6 +13,12 @@ Agents joining the project should start with the [full implementation plan](PLAN
 [task queue](TASKS.md) and [agent handoff guide](AGENTS.md). The task issues track
 ownership, dependencies and acceptance evidence.
 
+Want to help? Read the [contribution rules](CONTRIBUTING.md) and
+[community rules](CODE_OF_CONDUCT.md), then
+[report a bug or propose an improvement](https://github.com/lEWFkRAD/halo3-survivors/issues/new/choose).
+Small fixes and clear playtest reports are welcome; native assets are not needed
+for documentation or source-only contributions.
+
 v0.4 adds Armory checkpoints with Continue/New Run, closer enemy spawns with
 player-clearance checks, and batched level-ups. It also fixes victory cleanup:
 Halo must process its queued actor deletion before enemies disappear.
