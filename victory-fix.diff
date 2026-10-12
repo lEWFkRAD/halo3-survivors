@@ -1,0 +1,37 @@
+--- pre-victory-fix
+
++++ final-v03
+
+@@ -3987,8 +3987,10 @@
+
+     (begin (set sv_stage (+ sv_stage 1)) (set sv_tokens (min 50 (+ sv_tokens 2)))
+         (sv_enter_stage))
+     (begin (set sv_running false) (set sv_finished true)
++        (set sv_menu_open false) (ai_enable false)
++        (object_cannot_take_damage (players)) (player_disable_movement true)
+         (sv_clear_enemies) (cinematic_set_chud_objective sv_win)
+-        (log_print "LASTSTAND_RUN_COMPLETE") (game_won)))
++        (sv_notify_win) (log_print "LASTSTAND_RUN_COMPLETE")))
+ )
+ (script static void sv_level_up
+ (if (>= sv_xp sv_threshold)
+@@ -4132,6 +4134,7 @@
+
+ (if (= sv_notice_pending 64) (cinematic_set_title sv_stage_3))
+ (if (= sv_notice_pending 65) (cinematic_set_title sv_stage_4))
+ (if (= sv_notice_pending 66) (cinematic_set_title sv_stage_locked))
++(if (= sv_notice_pending 67) (cinematic_set_title sv_win))
+ )
+ (script static void sv_notice_display
+ (sv_notice_display_0)
+@@ -4348,6 +4351,9 @@
+
+ (script static void sv_notify_stage_locked
+ (set sv_notice_pending 66) (sv_notice_flush)
+ )
++(script static void sv_notify_win
++(set sv_notice_pending 67) (sv_notice_flush)
++)
+ (script static void sv_notice_tick
+ (if (> sv_notice_clock 0)
+     (set sv_notice_clock (max 0 (- sv_notice_clock 3))))

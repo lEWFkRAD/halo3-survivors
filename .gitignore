@@ -1,0 +1,43 @@
+# Owned game assets, native tools, build products and saves stay local.
+/private-inputs/
+/native-tags/
+/dist/
+/mods/
+/backups/
+/saves/
+/qa-saves/
+/tool-prefix/
+/qa-v04/
+*.tar
+*.zip
+*.pyd
+*.dll
+*.exe
+*.map
+*.bin
+*.core
+
+# Captured media and diagnostic output.
+*.png
+*.jpg
+*.mp4
+*.log
+/pre-victory-fix.hsc
+/source/progression-v04-before-ending.hsc
+/native-validation-before-ending-v04.json
+/native-validation-before-victory-fix.json
+/delivery-v04.json
+/source-sync-v04.json
+
+# Local credentials, environments and editor/runtime state.
+.env
+.env.*
+*.pem
+*.key
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.idea/
+.vscode/

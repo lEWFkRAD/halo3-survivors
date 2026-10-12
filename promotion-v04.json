@@ -1,0 +1,12 @@
+{
+  "status": "promoted",
+  "version": "0.4.0",
+  "sha256": "58b6455b3928874d714cae00e28bb40ffc177e8e4d759376ea44c7c954b21ec3",
+  "bytes": 704286720,
+  "backup": "/home/jeffrey-watts/Documents/Games/Halo3Survivors/backups/package-before-v04-20261012T183644Z-80cf4639",
+  "ids": {
+    "mod": "348836a8-ec18-41c8-86a2-40cc45f5f722",
+    "campaign": "aefad182-41d6-4212-aee7-60f8c39158db",
+    "map": "abd42596-b16c-42e8-b6f9-f8809809ffb5"
+  }
+}

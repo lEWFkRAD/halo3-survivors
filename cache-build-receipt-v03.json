@@ -1,0 +1,21 @@
+{
+  "cache_bytes": 704221184,
+  "cache_mtime_ns": 1791826030693345981,
+  "cache_sha256": "3b6ff9a73d39761814f177091be80df609098f0a1a3dea9624235d6ee40e3b49",
+  "candidate": {
+    "private_asset_files": 146,
+    "private_assets_sha256": "5aaea1a3345695f16c848defa61ea9b3abd60abd49adfa14f93f15ea6dbcdeba",
+    "scenario_sha256": "b500c05d8e7923898e42cceb763531f9f4cbdc4f7da103adb740104f5e6204ee",
+    "source_hsc_sha256": "9bebc4d7dd9fae0d6d44d9ac1c0a5ebbaed821d63c97bb93360f3740750bd731"
+  },
+  "candidate_version": "0.3.0",
+  "exit_code": 0,
+  "finished_at": "2026-10-12T17:27:12.280730+00:00",
+  "launcher_exit_code": 1,
+  "log": "release-records/20261012T172446Z-81de4b23.cache.log",
+  "log_sha256": "734f454796c988d29ddfad259d3a8f4618f927d6de87977abbe387015f52f34a",
+  "schema_version": 2,
+  "started_at": "2026-10-12T17:24:46.378684+00:00",
+  "tool_status": "release-records/20261012T172446Z-81de4b23.tool-exit",
+  "tool_status_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+}

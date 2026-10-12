@@ -1,0 +1,21 @@
+{
+  "cache_bytes": 704286720,
+  "cache_mtime_ns": 1791830138116863022,
+  "cache_sha256": "58b6455b3928874d714cae00e28bb40ffc177e8e4d759376ea44c7c954b21ec3",
+  "candidate": {
+    "private_asset_files": 146,
+    "private_assets_sha256": "c8372cfa9160ede7b115671db548df40dbb7a050132671cba27b14c111980574",
+    "scenario_sha256": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+    "source_hsc_sha256": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500"
+  },
+  "candidate_version": "0.4.0",
+  "exit_code": 0,
+  "finished_at": "2026-10-12T18:35:39.975140+00:00",
+  "launcher_exit_code": 1,
+  "log": "release-records/20261012T183317Z-1e3a1c32.cache.log",
+  "log_sha256": "6154313dd53785d719e9479bc3f9441fdd418524b0a0a7578e4bd276597db54f",
+  "schema_version": 2,
+  "started_at": "2026-10-12T18:33:17.103832+00:00",
+  "tool_status": "release-records/20261012T183317Z-1e3a1c32.tool-exit",
+  "tool_status_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+}

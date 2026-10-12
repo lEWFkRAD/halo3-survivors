@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "candidate_version": "0.4.0",
+  "validated_at": "2026-10-12T18:33:27.951510+00:00",
+  "candidate": {
+    "source_hsc_sha256": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500",
+    "scenario_sha256": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+    "private_assets_sha256": "c8372cfa9160ede7b115671db548df40dbb7a050132671cba27b14c111980574",
+    "private_asset_files": 146
+  },
+  "checks": {
+    "native_compile": {
+      "passed": true,
+      "evidence": "Final Sapien compile/readback: 400 scripts, 175 globals, 40242 syntax datums, 121 titles; no fresh HSC fatal errors."
+    },
+    "overhead_camera": {
+      "passed": true,
+      "evidence": "Observed overhead across four arenas and automatically after complete checkpoint process restart. Final restore view matched stage two."
+    },
+    "armory_input": {
+      "passed": true,
+      "evidence": "Eight real keyboard/mouse assertions passed: initial state, held navigation/purchase once, category, AR unlock, previous, resume and reopen; restored menu also resumed with the real 1 key."
+    },
+    "automatic_attacks": {
+      "passed": true,
+      "evidence": "All six native weapon damage assertions passed against a controlled live target. Ordinary stage checks increased shots and XP."
+    },
+    "stage_transitions": {
+      "passed": true,
+      "evidence": "All 22 native stage/roster/cap assertions passed over stages 1-4, including position and NL damage/AR unlock carry."
+    },
+    "enemy_stages": {
+      "passed": true,
+      "evidence": "Brutes, captains, infection forms and hunters observed at their stages; all stage spawn checks stayed at or below 36 actors."
+    },
+    "clock": {
+      "passed": true,
+      "evidence": "Native sv_seconds advanced 10 over 11.0593 wall seconds including console transitions. Armory checkpoint clock stayed at430 across restart."
+    },
+    "ending": {
+      "passed": true,
+      "evidence": "Final candidate seeded live stage-four enemies, completed at300s, cleared every hostile after a simulation update, then remained finished with frozen clock/shots six seconds later. Three final assertions passed."
+    },
+    "checkpoint_restart": {
+      "passed": true,
+      "evidence": "Launcher committed 9895936-byte QA core c36f651ad9f2442076acfc8d106eb53f1de1208449b09a865c59a57f707c1420, quit native process, then Continue restored stage2,430s,81.25XP,7points,AR1,NLdamage2,123shots,17hostiles. Six before/after/pause/resume assertions passed. Camera restored without console repair."
+    },
+    "spawn_clearance": {
+      "passed": true,
+      "evidence": "Six native assertions passed: near-player cohort blocked; retried after center teleport; closer 5-8 unit ring; tenth infection location also guarded; other groups still spawned; cap retained."
+    },
+    "batched_levels": {
+      "passed": true,
+      "evidence": "Three native assertions passed:1000.25XP fromlevel1 awarded5levels tolevel6,threshold350,tokens8,remainder.25; paused clock; one resume advanced without reopening."
+    }
+  },
+  "weapons_tested": [
+    "needler",
+    "assault_rifle",
+    "shotgun",
+    "plasma_rifle",
+    "rocket_launcher",
+    "energy_sword"
+  ],
+  "stages_tested": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "controls": {
+    "next": "Space",
+    "previous": "Q",
+    "buy": "Left mouse button",
+    "category": "Space + Q",
+    "resume": "1",
+    "reopen": "Space + Q"
+  },
+  "limitations": [
+    "Solo prototype; full-run balance is not exhaustively tested.",
+    "SDK Armory checkpoints require the exact build; permanent unlocks, vehicles and physical XP pickups are not implemented.",
+    "Retail MCC loading awaits owner sign-in and menu verification."
+  ],
+  "deterministic_tests": 109,
+  "qa_provenance": {
+    "initial_candidate": {
+      "source_hsc_sha256": "958b6d999ecca6d3804f8c2240af81cd3af1c12571110119ba41faf6b7405554",
+      "scenario_sha256": "660697f9af72f8ed4e68c4b0e0880f4ac5e064d5e38996a48cce702a17925ed0"
+    },
+    "final_change": "Only final victory ai_enable false changed to true, permitting deferred native actor erasure. Private assets unchanged. See victory-cleanup-v04.diff.",
+    "initial_scope": [
+      "armory_input",
+      "automatic_attacks",
+      "stage_transitions",
+      "enemy_stages",
+      "clock",
+      "spawn_clearance",
+      "batched_levels"
+    ],
+    "final_scope": [
+      "native_compile",
+      "overhead_camera",
+      "checkpoint_restart",
+      "ending"
+    ],
+    "ending_test_correction": "Native erasure runs on a simulation update; the QA console must close briefly before asserting zero actors. Earlier false ending assertions were diagnosed, not counted as passes.",
+    "final_diff_sha256": "998e78448035bafb170d2e3f8296edbe7eb6a58d6342292d7179090fce12b107",
+    "qa_profile": "/home/jeffrey-watts/Documents/Games/Halo3Survivors/qa-saves/native-v04",
+    "production_profile_used_for_qa": false
+  },
+  "launcher_ui": "Observed Cancel, Continue and New Run buttons on Onyx; Cancel leaves game closed and saved profile intact. Native Continue was verified via launcher --continue; prompt return mappings have focused tests."
+}

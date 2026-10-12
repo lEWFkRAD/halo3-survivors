@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "candidate_version": "0.3.0",
+  "validated_at": "2026-10-12T13:19:43.8695226-04:00",
+  "candidate": {
+    "source_hsc_sha256": "9bebc4d7dd9fae0d6d44d9ac1c0a5ebbaed821d63c97bb93360f3740750bd731",
+    "scenario_sha256": "b500c05d8e7923898e42cceb763531f9f4cbdc4f7da103adb740104f5e6204ee",
+    "private_assets_sha256": "5aaea1a3345695f16c848defa61ea9b3abd60abd49adfa14f93f15ea6dbcdeba",
+    "private_asset_files": 146
+  },
+  "checks": {
+    "native_compile": {
+      "passed": true,
+      "evidence": "Sapien compiled the final candidate without fresh HSC fatal errors; readback:344 scripts,167 globals,36680 syntax datums,121 titles."
+    },
+    "overhead_camera": {
+      "passed": true,
+      "evidence": "Native stage1-4 overhead screenshots inspected, all four center-position assertions passed; final candidate clean boot confirmed overhead Armory."
+    },
+    "armory_input": {
+      "passed": true,
+      "evidence": "8/8 native assertions: initial menu, held Space once, held LMB one purchase, category, AR unlock, previous, resume, reopen. Final controls text inspected after separator correction."
+    },
+    "automatic_attacks": {
+      "passed": true,
+      "evidence": "Native automatic shots and XP assertions passed; all6 direct weapon attacks increased shots and lowered generic Grunt health. qa-results-weapons.png contains six true results."
+    },
+    "stage_transitions": {
+      "passed": true,
+      "evidence": "All four stage indices and centers passed; Needler power1 and AR unlock1 retained in every stage. qa-results-stages.png:22/22 true assertions including enemies and automatic combat."
+    },
+    "enemy_stages": {
+      "passed": true,
+      "evidence": "Four native stage checks observed Brutes,Captains,infection forms,Hunters at appropriate stages; living counts positive and <=36; private infection swarm and carrier fixes verified."
+    },
+    "clock": {
+      "passed": true,
+      "evidence": "Final combat-source clock probe:10 script seconds over11.058391 wall seconds including console key transitions; sleep30 retained. qa-v3-clock.png."
+    },
+    "ending": {
+      "passed": true,
+      "evidence": "Final compiled candidate: stage4 at299 seconds reaches finished=true,running=false,menu=false,no enemies; visible victory screen retained after6seconds; stage_seconds=300 and shots=0 stayed frozen. qa-check-ending/ending_stays.png both true; qa-final-ending.png inspected."
+    }
+  },
+  "weapons_tested": [
+    "needler",
+    "assault_rifle",
+    "shotgun",
+    "plasma_rifle",
+    "rocket_launcher",
+    "energy_sword"
+  ],
+  "stages_tested": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "controls": {
+    "next": "Space",
+    "previous": "Q",
+    "buy": "Left mouse button",
+    "category": "Space + Q",
+    "resume": "1",
+    "reopen": "Space + Q"
+  },
+  "limitations": [
+    "Solo prototype; full-run balance is not exhaustively tested.",
+    "Cross-run saves, vehicles and physical XP pickups are not implemented.",
+    "Retail MCC loading awaits owner sign-in and menu verification."
+  ],
+  "qa_provenance": {
+    "previous_candidate": {
+      "source_hsc_sha256": "f182dea74378bf6ba4a9d77bfec839d28f96f6c3a28582c91dba60c8c5b94b3f",
+      "scenario_sha256": "70ce2551f04cf867b31146f9fe1720d669cf5aa353c1b2134848f5385db47754",
+      "private_assets_sha256": "40b7d557bfc1a33af0346eb56410e21fad41d1ffde81d27667c5debc955b86e2",
+      "private_asset_files": 146
+    },
+    "unchanged_gameplay_evidence": "Menu, combat, stage1-3 transitions, spawn and clock code were native-tested before terminal-victory fix. victory-fix.diff verifies only final victory branch and its notice dispatch changed; UI changes only win lifetime/text and controls separator. Final compile, boot/UI and terminal victory were retested.",
+    "automated_tests": 65
+  }
+}

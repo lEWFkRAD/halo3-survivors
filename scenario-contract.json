@@ -1,0 +1,122 @@
+{
+  "status": "native scenario; overhead and auto-fire revision in runtime validation",
+  "scenario": "levels\\survivors\\last_stand\\last_stand",
+  "squads": [
+    {
+      "name": "sv_grunts_a",
+      "max_members": 6,
+      "unlock_seconds": 0,
+      "xp_per_death": 10
+    },
+    {
+      "name": "sv_grunts_b",
+      "max_members": 6,
+      "unlock_seconds": 0,
+      "xp_per_death": 10
+    },
+    {
+      "name": "sv_grunts_c",
+      "max_members": 6,
+      "unlock_seconds": 60,
+      "xp_per_death": 10
+    },
+    {
+      "name": "sv_grunts_d",
+      "max_members": 6,
+      "unlock_seconds": 120,
+      "xp_per_death": 10
+    },
+    {
+      "name": "sv_jackals",
+      "max_members": 4,
+      "unlock_seconds": 180,
+      "xp_per_death": 20
+    },
+    {
+      "name": "sv_brutes",
+      "max_members": 4,
+      "unlock_seconds": 360,
+      "xp_per_death": 30
+    },
+    {
+      "name": "sv_flood",
+      "max_members": 8,
+      "unlock_seconds": 600,
+      "xp_per_death": 15
+    },
+    {
+      "name": "sv_hunters",
+      "max_members": 2,
+      "unlock_seconds": 900,
+      "xp_per_death": 100
+    }
+  ],
+  "objective": "sv_hunt",
+  "controls": "bird-eye camera; movement with automatic nearest-enemy attacks",
+  "auto_fire": {
+    "range_world_units": 12,
+    "interval_ticks": 12,
+    "base_damage": 12,
+    "damage_per_needler_rank": 8
+  },
+  "trigger_volumes": [
+    "sv_pad_needler",
+    "sv_pad_aegis",
+    "sv_pad_vitality",
+    "sv_extraction"
+  ],
+  "starting_profiles": [
+    "sv_start",
+    "sv_needler_1",
+    "sv_needler_2",
+    "sv_needler_3"
+  ],
+  "cutscene_titles": {
+    "sv_intro": "LAST STAND | WASD to move. Automatic fire. Survive 20 minutes.",
+    "sv_upgrade_ready": "UPGRADE READY | Choose a beacon: BLUE Needler / RED Aegis / YELLOW Vitality.",
+    "sv_needler": "NEEDLER UPGRADED | Leave the pads before choosing again.",
+    "sv_aegis": "AEGIS UPGRADED | Periodic shield recovery enabled.",
+    "sv_vitality": "VITALITY UPGRADED | Maximum health and shields increased.",
+    "sv_phase2": "COVENANT REINFORCEMENTS INBOUND",
+    "sv_phase3": "FLOOD OUTBREAK",
+    "sv_phase4": "HUNTERS INBOUND | Five minutes remain.",
+    "sv_extract": "EXTRACTION OPEN | Reach the beacon within 60 seconds.",
+    "sv_win": "EXTRACTED",
+    "sv_loss": "LAST STAND ENDED",
+    "sv_solo": "This source prototype supports one player only."
+  },
+  "player_base_vitality": {
+    "body": 45,
+    "shield": 70
+  },
+  "max_alive": 36,
+  "run_seconds": 1200,
+  "extraction_grace_seconds": 60,
+  "needler_tiers": [
+    {
+      "profile": "sv_needler_1",
+      "projectiles_per_shot": 1,
+      "reserve_rounds": 180
+    },
+    {
+      "profile": "sv_needler_2",
+      "projectiles_per_shot": 2,
+      "reserve_rounds": 240
+    },
+    {
+      "profile": "sv_needler_3",
+      "projectiles_per_shot": 3,
+      "reserve_rounds": 360
+    }
+  ],
+  "authoring_required": [
+    "campaign scenario and navigable arena BSP",
+    "AI squads, firing positions and objective task covering arena",
+    "nonoverlapping, visually marked upgrade pads and extraction beacon",
+    "starting profiles and private copies of Needler weapon tags",
+    "cutscene title strings",
+    "script compilation in Sapien",
+    "cache compilation and MCC mod metadata",
+    "actual playtest"
+  ]
+}

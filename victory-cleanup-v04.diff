@@ -1,0 +1,11 @@
+--- v04-before-ending.hsc
++++ v04-final.hsc
+@@ -4437,7 +4437,7 @@
+     (begin (set sv_stage (+ sv_stage 1)) (set sv_tokens (min 50 (+ sv_tokens 2)))
+         (sv_enter_stage))
+     (begin (set sv_running false) (set sv_finished true)
+-        (set sv_menu_open false) (ai_enable false)
++        (set sv_menu_open false) (ai_enable true)
+         (object_cannot_take_damage (players)) (player_disable_movement true)
+         (sv_clear_enemies) (cinematic_set_chud_objective sv_win)
+         (sv_notify_win) (log_print "LASTSTAND_RUN_COMPLETE")))

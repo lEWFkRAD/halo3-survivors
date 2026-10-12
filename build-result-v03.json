@@ -1,0 +1,24 @@
+{
+  "arena": "Four Ark outdoor stages",
+  "automatic_fire": true,
+  "built_at": "2026-10-12T17:27:12.280730+00:00",
+  "bytes": 704221184,
+  "camera": "Birds-eye; four outdoor arenas",
+  "candidate": {
+    "private_asset_files": 146,
+    "private_assets_sha256": "5aaea1a3345695f16c848defa61ea9b3abd60abd49adfa14f93f15ea6dbcdeba",
+    "scenario_sha256": "b500c05d8e7923898e42cceb763531f9f4cbdc4f7da103adb740104f5e6204ee",
+    "source_hsc_sha256": "9bebc4d7dd9fae0d6d44d9ac1c0a5ebbaed821d63c97bb93360f3740750bd731"
+  },
+  "ids": {
+    "campaign": "aefad182-41d6-4212-aee7-60f8c39158db",
+    "map": "abd42596-b16c-42e8-b6f9-f8809809ffb5",
+    "mod": "348836a8-ec18-41c8-86a2-40cc45f5f722"
+  },
+  "map": "/home/jeffrey-watts/Documents/Games/Halo3Survivors/mods/LastStand/maps/last_stand.map",
+  "metadata_validation": "Retail MCC menu/loading unverified; owner Xbox/Microsoft sign-in required",
+  "native_validation": "/home/jeffrey-watts/Documents/Games/Halo3Survivors/mods/LastStand/native-validation.json",
+  "promoted_at": "2026-10-12T17:27:42.346521+00:00",
+  "sha256": "3b6ff9a73d39761814f177091be80df609098f0a1a3dea9624235d6ee40e3b49",
+  "version": "0.3.0"
+}
