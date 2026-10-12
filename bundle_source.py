@@ -31,6 +31,7 @@ workspace_config.py
 author_effects.py
 author_hangar.py
 author_progression_ui.py
+armory_presentation.py
 birds_eye.py
 bundle_source.py
 fetch_progression_inputs.py
@@ -60,6 +61,8 @@ qa_v04.py
 qa_v04_gallery.py
 remote_build.py
 tests/hsc_vm.py
+tests/test_armory_presentation.py
+tests/test_armory_scheduler.py
 tests/test_autofire.py
 tests/test_camera.py
 tests/test_progression_camera.py
@@ -88,6 +91,7 @@ promotion-v04.json
 cache-build-receipt-v04.json
 native-validation-v04.json
 native-validation-ls04.json
+native-validation-ls05.json
 build-result-v04.json
 victory-fix.diff
 victory-cleanup-v04.diff

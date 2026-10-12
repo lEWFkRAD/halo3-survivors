@@ -6509,7 +6509,14 @@
     "sv_node_46": "Shield Cycle | -30pulse ticks/rank | Cost2/2 | Req Aegis2 | S2",
     "sv_node_47": "Reach | +1.5range/rank | Cost1/1/2 | S1",
     "sv_node_48": "Insight | +15%XP/rank | Cost1/1/2 | S1",
-    "sv_node_49": "Scholar | +20%XP/rank | Cost3 | Req Insight3 | S3"
+    "sv_node_49": "Scholar | +20%XP/rank | Cost3 | Req Insight3 | S3",
+    "sv_tree_0": "NEEDLER | TREE | S = stage\nNumbers = required ranks, not current ranks\nUnlock [S1]\nUnlock1 -> Power [S1] + Cadence [S1]\nPower1 + Cadence1 -> choose ONE:\n  +-> Seeker [S2]\n  |   Seeker2 + Power2 + Cadence2\n  |   -> Long Reach [S4]\n  +-> Crystal [S2]\n      Crystal2 + Power2 + Cadence2\n      -> Crystal Storm [S4]",
+    "sv_tree_1": "ASSAULT RIFLE | TREE | S = stage\nNumbers = required ranks, not current ranks\nUnlock [S1]\nUnlock1 -> Power [S1] + Cadence [S1]\nPower1 + Cadence1 -> choose ONE:\n  +-> Marksman [S2]\n  |   Marksman2 + Power2 + Cadence2\n  |   -> Precision Drill [S4]\n  +-> Suppressor [S2]\n      Suppressor2 + Power2 + Cadence2\n      -> Fire Team [S4]",
+    "sv_tree_2": "SHOTGUN | TREE | S = stage\nNumbers = required ranks, not current ranks\nUnlock [S2]\nUnlock1 -> Power [S1] + Cadence [S1]\nPower1 + Cadence1 -> choose ONE:\n  +-> Breacher [S2]\n  |   Breacher2 + Power2 + Cadence2\n  |   -> Breach Charge [S4]\n  +-> Sweeper [S2]\n      Sweeper2 + Power2 + Cadence2\n      -> Crowd Control [S4]",
+    "sv_tree_3": "PLASMA RIFLE | TREE | S = stage\nNumbers = required ranks, not current ranks\nUnlock [S2]\nUnlock1 -> Power [S1] + Cadence [S1]\nPower1 + Cadence1 -> choose ONE:\n  +-> Overcharge [S2]\n  |   Overcharge2 + Power2 + Cadence2\n  |   -> Plasma Furnace [S4]\n  +-> Arc [S2]\n      Arc2 + Power2 + Cadence2\n      -> Arc Network [S4]",
+    "sv_tree_4": "ROCKET LAUNCHER | TREE | S = stage\nNumbers = required ranks, not current ranks\nUnlock [S3]\nUnlock1 -> Power [S1] + Cadence [S1]\nPower1 + Cadence1 -> choose ONE:\n  +-> Demolition [S3]\n  |   Demolition2 + Power2 + Cadence2\n  |   -> Demolition Expert [S4]\n  +-> Barrage [S3]\n      Barrage2 + Power2 + Cadence2\n      -> Full Salvo [S4]",
+    "sv_tree_5": "ENERGY SWORD | TREE | S = stage\nNumbers = required ranks, not current ranks\nUnlock [S3]\nUnlock1 -> Power [S1] + Cadence [S1]\nPower1 + Cadence1 -> choose ONE:\n  +-> Duelist [S3]\n  |   Duelist2 + Power2 + Cadence2\n  |   -> Executioner [S4]\n  +-> Whirlwind [S3]\n      Whirlwind2 + Power2 + Cadence2\n      -> Blade Tempest [S4]",
+    "sv_tree_6": "SUPPORT | TREE | S = stage\nNumbers = required ranks, not current ranks\nVitality [S1]\nVitality1 -> Body Armor [S1] + Shield Capacity [S1]\nAegis [S1]\nAegis2 -> Shield Cycling [S2]\nTargeting Reach [S1]\nBattlefield Insight [S1]\nBattlefield Insight3 -> Combat Scholar [S3]"
   },
   "damage_values": {
     "needler": [

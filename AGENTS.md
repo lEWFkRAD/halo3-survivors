@@ -77,8 +77,10 @@ unrelated host, fleet, inference or service settings to work on this game.
   stack. Do not introduce giant expressions or unbounded recursive scans.
 - Current generation guards are fewer than 1,024 scripts, fewer than 512 globals
   and at most 128 titles. Historical v0.4 native readback contained 400 scripts,
-  175 globals and 121 titles. Native counts include engine-injected definitions;
-  do not compare them directly with source declaration counts.
+  175 globals and 121 titles. The LS-05 prototype has 402 scripts, 178 globals
+  and 128 titles, leaving no spare title rows. Native counts include
+  engine-injected definitions; do not compare them directly with source
+  declaration counts.
   These are current authoring guards, not universal engine-limit claims.
 - The enemy cap is 36, the actor scan covers 64 slots, and selected targets are
   bounded at 12. Audit related budgets before changing any one of these.
@@ -90,6 +92,10 @@ unrelated host, fleet, inference or service settings to work on this game.
   after a simulation update.
 - Input action priming and release latches are intentional. A held click buys
   one rank; navigation/category chords must not cause accidental purchases.
+- Armory branch pages are static catalog references; current selected-skill
+  details and purchase feedback remain separate. Keep the one-second page
+  refresh limit through rapid navigation and close/reopen. Process Resume
+  before a due refresh, and let expired pages disappear outside the Armory.
 - Current impacts are cosmetic and HSC applies direct damage. Projectile/melee
   work must prevent damage from being applied through both paths.
 - Native cores are opaque and exact-build-bound. Camera/controller state needs
@@ -103,18 +109,30 @@ unrelated host, fleet, inference or service settings to work on this game.
 ## Verification and handoff
 
 Run the appropriate source checks, normally
-`python -B -m unittest discover -s tests -v`. Current LS-04 candidate: 183
-passing source-only tests plus one skipped module containing five native
-geometry tests; all 188 passed in the owner workspace with the required
-binding/assets. The historical v0.4 native release baseline was 109 tests.
+`python -B -m unittest discover -s tests -v`. The current LS-05 prototype passes
+217 tests in the owner workspace with the required binding/assets. Its clean
+source export passes 212 tests, with one skipped module containing five
+asset-dependent geometry tests (213 reported test entries, one skip).
 
-This slice covers camera switching/repair and non-node cinematic title contrast.
-Bounded native checks and their limits are recorded in
-[native-validation-ls04.json](native-validation-ls04.json); candidate readback is
-400 scripts, 177 globals and 121 titles. The original production staged build
-and checkpoint were restored afterward. Do not treat this candidate as a
-promoted package or LS-04 as complete. CHUD skill descriptions retain their
-existing styling and need separate native work.
+The LS-05 prototype adds seven static branch-reference pages, covering all 50
+nodes alongside the existing selected-skill CHUD detail. All seven pages fit
+in the inspected native captures. Bounded native evidence and limits belong in
+[native-validation-ls05.json](native-validation-ls05.json); native readback is
+402 scripts, 178 globals, 43,180 syntax datums and 128 titles. Dynamic graphical
+states for every node and stronger contrast remain unfinished. This is an
+interim presentation, not completion of LS-05 or an installed-package promotion.
+Its additional scheduler global and changed script/scenario fingerprints make
+older-build cores incompatible. Use an isolated LS-05 QA profile and preserve
+the production build and checkpoint; never load a production core into this
+candidate or promote the QA profile.
+
+Historical LS-04 validation passed 188 owner tests and 183 source-export tests,
+with one skipped module containing five native geometry tests. That slice
+covered camera switching/repair and non-node cinematic title contrast; its
+400-script, 177-global, 121-title native readback and restoration evidence remain
+in [native-validation-ls04.json](native-validation-ls04.json). It was not a
+promoted package or completion of LS-04. CHUD skill descriptions retain their
+existing styling. The historical installed v0.4 release baseline was 109 tests.
 
 Source tests do not prove native compilation, UI, AI/navigation, retail behavior
 or balance. For relevant changes, queue a bounded native experiment through the

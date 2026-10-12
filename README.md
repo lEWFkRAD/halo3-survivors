@@ -23,7 +23,7 @@ v0.4 adds Armory checkpoints with Continue/New Run, closer enemy spawns with
 player-clearance checks, and batched level-ups. It also fixes victory cleanup:
 Halo must process its queued actor deletion before enemies disappear.
 
-The current LS-04 source candidate adds a small camera switching margin to
+The LS-04 source candidate adds a small camera switching margin to
 reduce repeated pans near anchor boundaries, including during Continue repair.
 It also gives cinematic status, help, points and rank notices dark text with a
 pale shadow. Selected skill descriptions use a separate CHUD renderer and keep
@@ -31,6 +31,16 @@ their existing style. Native compile, four-stage view/movement checks and a
 checkpoint process restart passed; see [the bounded test record](native-validation-ls04.json)
 for evidence and limits. This candidate has not been promoted as a release.
 The previous game and checkpoint are restored, and broader LS-04 work remains open.
+
+The current LS-05 candidate adds seven native Armory reference pages: one per
+weapon and one for support. They show all 50 nodes, branch choices, prerequisite
+ranks and stage gates. All seven pages fit in the native SDK test; contrast on
+bright terrain still needs polish. These are static maps; selected-skill details
+and rotating rank/points notices continue to provide current purchase information.
+Live graphical states across every node remain unfinished. See
+[the bounded LS-05 record](native-validation-ls05.json), including native purchase,
+category, Resume and checkpoint-restart checks. The installed release
+remains v0.4.0; this candidate has no new cache or package promotion.
 
 ## Play
 
@@ -55,6 +65,11 @@ Release buttons between actions. Enemies, automatic attacks and the survival
 clock pause in the Armory; movement remains available and the player is
 protected. Help, points and current rank rotate on screen. Each selected skill
 shows its effects, price, prerequisite and stage requirement.
+
+The LS-05 candidate uses these same controls. Its reference page follows the
+selected weapon/support category within one second. Numbers beside prerequisite
+names mean required ranks. Resuming stops page refresh immediately; the last
+page expires within one second.
 
 ## Save your run
 
@@ -99,7 +114,7 @@ stopped. Close and relaunch, then choose New Run to start again.
 
 Attacks currently apply immediate automatic damage with distinct effects,
 range, cadence and target counts. Travelling projectiles, physical XP pickups,
-vehicles, a graphical tree and exhaustive full-run balancing remain future work.
+vehicles, live graphical tree states and exhaustive full-run balancing remain future work.
 The prototype is solo. Retail MCC mod-menu loading remains unverified pending
 owner Xbox/Microsoft sign-in and testing.
 
@@ -141,9 +156,9 @@ under the owned Steam Snap H3EK installation.
 
 Run `python -B -m unittest discover -s tests` locally. Native tag geometry tests
 require the external binding/assets described in [DEVELOPMENT.md](DEVELOPMENT.md).
-The current suite passes 188 tests in the owner workspace, or 183 source-only
-tests plus one skipped module containing five native geometry tests. The v0.4
-release evidence above retains its historical test counts.
+The current suite passes 217 tests in the owner workspace. Source-only checkouts
+skip the module containing five native geometry tests when its external inputs
+are unavailable. The v0.4 release evidence above retains its historical test counts.
 `prepare_progression.py`
 authors the tags/HSC after a prerequisite guard. First run
 `python -B prepare_progression.py --check` for a read-only input report.

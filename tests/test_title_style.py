@@ -52,6 +52,19 @@ class TitleStyleTests(unittest.TestCase):
                         'fade in time [seconds]', 'up time [seconds]', 'fade out time [seconds]'))
                     self.assertLess(lifetime, 3.0)
 
+    def test_reference_pages_expire_at_refresh_interval_without_fades(self):
+        for index in range(7):
+            style = self.author.title_style(f'sv_tree_{index}')
+            self.assertEqual(style['text bounds (on screen)'], (125,32,590,1120))
+            self.assertEqual(style['font'], 'large body text font')
+            self.assertEqual(style['up time [seconds]'], 1.0)
+            self.assertEqual(style['fade in time [seconds]'], 0.0)
+            self.assertEqual(style['fade out time [seconds]'], 0.0)
+
+    def test_native_line_breaks_leave_other_text_unchanged(self):
+        self.assertEqual(self.author.native_title_text('A\nB\r\nC | S2'), 'A|nB|nC | S2')
+        self.assertEqual(self.author.native_title_text('Cost1/2/3 |nS4'), 'Cost1/2/3 |nS4')
+
 
 if __name__ == '__main__':
     unittest.main()

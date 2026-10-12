@@ -8,6 +8,15 @@ def title_style(name):
     # Binding constructor is (top, left, bottom, right), not XYWH:
     # blam-tags-py/src/generated.rs:1026. The status scheduler emits at
     # most once every 3 seconds; use one wide strip with a 2.3-second life.
+    if name.startswith('sv_tree_'):
+        # One short-lived reference page, refreshed at 30 logical ticks. It
+        # expires within a second after Resume without a clear-title API.
+        return {'text bounds (on screen)':b.Rectangle2d(125,32,590,1120),
+                'text color':b.RgbColor(0xFF111820),
+                'shadow color':b.RgbColor(0xFFF4F6F8),
+                'justification':'left','vertical justification':'top',
+                'font':'large body text font','fade in time [seconds]':0.0,
+                'up time [seconds]':1.0,'fade out time [seconds]':0.0}
     if name.startswith('sv_node_'):
         bounds=(208,32,370,1120)
         # Skill descriptions use the separate CHUD objective renderer. Keep
@@ -29,6 +38,11 @@ def title_style(name):
             'up time [seconds]':3600.0 if name=='sv_win' else 2.1,
             'fade out time [seconds]':0.15}
 
+
+def native_title_text(text):
+    """Halo's title renderer consumes |n; ordinary LF is silently ignored."""
+    return text.replace('\r\n', '\n').replace('\n', '|n')
+
 def main():
     contract=json.loads((ROOT/'progression-contract.json').read_text())
     titles=contract['titles'];assert len(titles)<=128
@@ -49,7 +63,7 @@ def main():
         j=refs.add();refs[j].field('string id').set(name)
         for field in refs[j].field_names():
             if field.endswith(' offset'):refs[j].field(field).set(len(data))
-        data.extend(text.encode('utf-8')+b'\0')
+        data.extend(native_title_text(text).encode('utf-8')+b'\0')
     sr.field('string data utf8').set(bytes(data))
     for obj,path in [(strings,ROOT/'native-tags/ui/survivors/progression.multilingual_unicode_string_list'),
                      (tag,ROOT/'native-tags/levels/survivors/last_stand/progression-ui.scenario')]:

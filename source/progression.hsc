@@ -169,6 +169,7 @@
 (global object_list sv_view_players (players))
 (global short sv_notice_clock 0)
 (global short sv_notice_pending -1)
+(global short sv_tree_clock 0)
 (script static unit sv_player
 (unit (list_get (players) 0))
 )
@@ -4846,6 +4847,7 @@
     (begin (sv_restore_controls) (sv_boundary_check) (sv_follow)
         (if sv_menu_open (begin (sv_checkpoint) (sv_menu_input))
             (begin (sv_reopen_test) (if (not sv_menu_open) (sv_autofire))))))
+(sv_tree_tick)
 )
 (script static void sv_notice_display_0
 (if (= sv_notice_pending 0) (cinematic_set_title sv_boundary))
@@ -5151,4 +5153,21 @@
 (if (> sv_notice_clock 0)
     (set sv_notice_clock (max 0 (- sv_notice_clock 3))))
 (sv_notice_flush)
+)
+(script static void sv_tree_display
+(cond
+((and (>= sv_selection 0) (< sv_selection 7)) (cinematic_set_title sv_tree_0))
+((and (>= sv_selection 7) (< sv_selection 14)) (cinematic_set_title sv_tree_1))
+((and (>= sv_selection 14) (< sv_selection 21)) (cinematic_set_title sv_tree_2))
+((and (>= sv_selection 21) (< sv_selection 28)) (cinematic_set_title sv_tree_3))
+((and (>= sv_selection 28) (< sv_selection 35)) (cinematic_set_title sv_tree_4))
+((and (>= sv_selection 35) (< sv_selection 42)) (cinematic_set_title sv_tree_5))
+((and (>= sv_selection 42) (< sv_selection 50)) (cinematic_set_title sv_tree_6)))
+)
+(script static void sv_tree_tick
+(if (and sv_running (not sv_finished))
+    (begin
+        (if (> sv_tree_clock 0) (set sv_tree_clock (max 0 (- sv_tree_clock 3))))
+        (if (and sv_menu_open (= sv_tree_clock 0))
+            (begin (set sv_tree_clock 30) (sv_tree_display)))))
 )

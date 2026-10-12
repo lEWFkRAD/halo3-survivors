@@ -63,21 +63,62 @@ Tested with CPython 3.14.6. From the repository root:
 python -B -m unittest discover -s tests -v
 ```
 
-A source-only export passes 183 tests and reports one skipped module. That
-module contains five spawn-geometry tests requiring the external `blam_tags`
-binding; its owned-navigation test also needs the local scenario asset. The
-complete owner workspace passes all 188 tests, including 63 configuration and
-preflight regressions and 16 camera/title checks added after v0.4.0. The
-historical native release passed 109 tests. No third-party Python package is
-required for the 183 source-only checks. Passing source tests does not establish
-native validation or a new release.
+The complete owner workspace passes all 217 tests, including 29 Armory model,
+scheduler and title-style checks added for LS-05. A clean source export passes
+212 tests (213 reported entries, one skipped module). Source-only checkouts skip
+one module containing five spawn-geometry tests when the external `blam_tags`
+binding is unavailable; its owned-navigation test also needs the local scenario
+asset. The remaining source checks require no third-party Python package.
+The historical v0.4 native release passed 109 tests. Passing source tests does
+not establish native validation or a new release.
 
 The test VM exercises the emitted HaloScript subset. It is not a Halo compiler
 or a replacement for engine play testing. Native test evidence is recorded in
 `native-validation-v04.json`, including which checks preceded the final narrow
 victory fix.
 
-## Current LS-04 candidate
+## Current LS-05 Armory candidate
+
+`armory_presentation.py` derives seven reference pages from stable catalog IDs
+and actual prerequisite edges: six weapon pages with seven nodes each, and an
+eight-node support page. They show stage gates, exclusive specializations and
+the matching capstone requirements. The native pages are static reference maps;
+they do not display current ranks or purchased/affordable/locked styling for
+every node. Selected CHUD details and rotating points/rank notices retain that
+existing purchase information. The read-only Python model also exposes live
+snapshot facts for future presentation work; it does not replace native guards.
+
+The controls are unchanged: Space/Q select skills, Space+Q changes category,
+left click buys one rank, and 1 resumes. `sv_tree_tick` draws the latest selected
+category at most once per 30 logical ticks, after input handling. Rapid changes
+coalesce; Resume stops refresh on that same frame. A page expires within one
+second, and a restored Armory clock redraws within one second without resetting
+progression. The existing status notice queue retains its separate 90-tick
+throttle. Source VM checks cover these scheduling rules and compare display
+availability with generated purchase guards; they do not prove native timing.
+
+Native compilation/readback produced 402 scripts, 178 globals, 43,180 syntax
+datums and 128 titles. All seven static pages fit using the large body text font
+and native `|n` line breaks. Text contrast against bright terrain still needs
+polish. This reaches the current 128-title authoring guard; further UI work must
+account for that budget. See [the LS-05 evidence](native-validation-ls05.json)
+for the bounded native observations and remaining checks. Fit alone does not
+complete LS-05, establish dynamic graphical states or validate retail MCC.
+
+The native checks also passed held navigation/purchase, prerequisite/stage/
+exclusive-path/points guards, category switching, Resume/page expiry, reopening,
+and a 25-second refresh soak. A full process restart retained the stage-two
+checkpoint, ranks, points, timer and 17 enemies, restored the page and overhead
+camera, and resumed auto-fire. The original staged build and checkpoint were
+restored afterward; all 14 original profile files are byte-identical. Initial
+QA-driver failures were excluded and rerun as documented in the evidence.
+
+The installed v0.4 package remains unchanged. This candidate has no fresh cache
+or promotion receipt. Changed scripts, titles and the added tree-clock global
+produce a new exact-build fingerprint; native testing must use its own QA core,
+and existing production checkpoints are not migrated to it.
+
+## LS-04 camera and status candidate
 
 The camera retains its current anchor until another is more than 0.35 map units
 nearer. Invalid anchors and stage changes still select a valid view immediately.
