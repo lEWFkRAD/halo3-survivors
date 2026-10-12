@@ -1,6 +1,9 @@
 """Native HSC emission helpers. Data is normalized by generate_progression.py."""
 from itertools import product
 
+# Native map units: a new anchor must be this much nearer before a pan changes.
+CAMERA_SWITCH_MARGIN = 0.35
+
 class HSC:
     def __init__(self): self.globals=[]; self.scripts=[]
     def global_(self, kind, name, value): self.globals.append(f'(global {kind} {name} {value})')
@@ -30,6 +33,8 @@ def dispatch(h, name, selector, cases):
 def cameras(h, stages):
     h.global_('short','sv_view_index',-1); h.global_('short','sv_view_current',-1)
     h.global_('real','sv_view_distance',0); h.global_('real','sv_view_nearest',100000)
+    h.global_('real','sv_view_current_distance',-1)
+    h.global_('boolean','sv_view_refresh','false')
     h.global_('object_list','sv_view_players','(players)')
     all_apply=[]
     for stage in stages:
@@ -39,6 +44,7 @@ def cameras(h, stages):
             for index,cam in chunk:
                 camname=cam['name']; key=num*1000+index
                 body.append(f'''(set sv_view_distance (objects_distance_to_flag sv_view_players {camname}))
+(if (= sv_view_current {key}) (set sv_view_current_distance sv_view_distance))
 (if (and (>= sv_view_distance 0) (< sv_view_distance sv_view_nearest))
     (begin (set sv_view_nearest sv_view_distance) (set sv_view_index {key})))''')
                 all_apply.append((key,f'(camera_set {camname} 6)'))
@@ -47,10 +53,17 @@ def cameras(h, stages):
     dispatch(h,'sv_view_apply','sv_view_index',all_apply)
     h.script('sv_follow','''(set sv_view_players (players))
 (set sv_view_nearest 100000)
+(set sv_view_current_distance -1)
 (set sv_view_index -1)
-'''+ '\n'.join(f"(if (= sv_stage {s['number']}) (sv_s{s['number']}_scan))" for s in stages)+'''
-(if (and (>= sv_view_index 0) (!= sv_view_index sv_view_current))
-    (begin (set sv_view_current sv_view_index) (sv_view_apply)))''')
+'''+ '\n'.join(f"(if (= sv_stage {s['number']}) (sv_s{s['number']}_scan))" for s in stages)+f'''
+(if (>= sv_view_index 0)
+    (begin
+        (if (or (< sv_view_current_distance 0)
+                (< (+ sv_view_nearest {CAMERA_SWITCH_MARGIN}) sv_view_current_distance))
+            (begin (set sv_view_current sv_view_index) (set sv_view_refresh true)))
+        (if sv_view_refresh
+            (begin (set sv_view_index sv_view_current) (sv_view_apply)))))
+(set sv_view_refresh false)''')
 
 def enemies(h, stages):
     squads=[sq for s in stages for sq in s['squads']]

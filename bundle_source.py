@@ -62,6 +62,8 @@ remote_build.py
 tests/hsc_vm.py
 tests/test_autofire.py
 tests/test_camera.py
+tests/test_progression_camera.py
+tests/test_title_style.py
 tests/test_progression_native.py
 tests/test_promote_v03.py
 tests/test_launch_v04.py

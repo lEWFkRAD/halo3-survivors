@@ -57,7 +57,8 @@ class ProgressionVM(VM):
             targets=self.eval(args[0])
             if 'player' in targets:self.player_protected=op=='object_cannot_take_damage'
             self.calls.append((op,[targets]));return None
-        if op=='objects_distance_to_flag':return self.camera_distances.get(args[1],10.)
+        if op=='objects_distance_to_flag':
+            return self.camera_distances.get(args[1],10.) if self.eval(args[0]) else -1
         if op=='object_teleport':self.teleports.append(str(args[1]));return None
         if op=='damage_object_effect':
             path,target=[self.eval(a) for a in args]

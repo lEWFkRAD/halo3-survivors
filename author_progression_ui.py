@@ -10,9 +10,20 @@ def title_style(name):
     # most once every 3 seconds; use one wide strip with a 2.3-second life.
     if name.startswith('sv_node_'):
         bounds=(208,32,370,1120)
+        # Skill descriptions use the separate CHUD objective renderer. Keep
+        # their inherited colors; cinematic title styling does not prove a
+        # change to CHUD appearance.
+        text_color=0xFFFFFFFF
+        shadow_color=0xFF000000
     else:
         bounds=(28,32,116,1120)
+        # Explicit contrast for cinematic notices over the bright outdoor
+        # terrain. A pale shadow also separates dark text from shaded rocks.
+        text_color=0xFF111820
+        shadow_color=0xFFF4F6F8
     return {'text bounds (on screen)':b.Rectangle2d(*bounds),
+            'text color':b.RgbColor(text_color),
+            'shadow color':b.RgbColor(shadow_color),
             'justification':'left','vertical justification':'top',
             'font':'large body text font','fade in time [seconds]':0.05,
             'up time [seconds]':3600.0 if name=='sv_win' else 2.1,
