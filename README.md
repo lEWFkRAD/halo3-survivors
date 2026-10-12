@@ -1,6 +1,6 @@
 # Last Stand: Halo 3 Survivors
 
-**v0.4.0 is built, native-tested and installed on Onyx-Linux** (2026-10-12).
+**Installed gameplay baseline: v0.4.0 on Onyx-Linux** (2026-10-12).
 This native Halo 3 mod combines a bird's-eye camera, automatic attacks, a
 50-node skill tree and four outdoor stages on the Ark.
 
@@ -22,6 +22,15 @@ for documentation or source-only contributions.
 v0.4 adds Armory checkpoints with Continue/New Run, closer enemy spawns with
 player-clearance checks, and batched level-ups. It also fixes victory cleanup:
 Halo must process its queued actor deletion before enemies disappear.
+
+The current LS-04 source candidate adds a small camera switching margin to
+reduce repeated pans near anchor boundaries, including during Continue repair.
+It also gives cinematic status, help, points and rank notices dark text with a
+pale shadow. Selected skill descriptions use a separate CHUD renderer and keep
+their existing style. Native compile, four-stage view/movement checks and a
+checkpoint process restart passed; see [the bounded test record](native-validation-ls04.json)
+for evidence and limits. This candidate has not been promoted as a release.
+The previous game and checkpoint are restored, and broader LS-04 work remains open.
 
 ## Play
 
@@ -132,6 +141,9 @@ under the owned Steam Snap H3EK installation.
 
 Run `python -B -m unittest discover -s tests` locally. Native tag geometry tests
 require the external binding/assets described in [DEVELOPMENT.md](DEVELOPMENT.md).
+The current suite passes 188 tests in the owner workspace, or 183 source-only
+tests plus one skipped module containing five native geometry tests. The v0.4
+release evidence above retains its historical test counts.
 `prepare_progression.py`
 authors the tags/HSC after a prerequisite guard. First run
 `python -B prepare_progression.py --check` for a read-only input report.

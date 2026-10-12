@@ -76,7 +76,9 @@ unrelated host, fleet, inference or service settings to work on this game.
 - Chunk native dispatch and scans; the interpreter has a shallow expression
   stack. Do not introduce giant expressions or unbounded recursive scans.
 - Current generation guards are fewer than 1,024 scripts, fewer than 512 globals
-  and at most 128 titles. v0.4 uses 400 scripts, 175 globals and 121 titles.
+  and at most 128 titles. Historical v0.4 native readback contained 400 scripts,
+  175 globals and 121 titles. Native counts include engine-injected definitions;
+  do not compare them directly with source declaration counts.
   These are current authoring guards, not universal engine-limit claims.
 - The enemy cap is 36, the actor scan covers 64 slots, and selected targets are
   bounded at 12. Audit related budgets before changing any one of these.
@@ -92,6 +94,8 @@ unrelated host, fleet, inference or service settings to work on this game.
   work must prevent damage from being applied through both paths.
 - Native cores are opaque and exact-build-bound. Camera/controller state needs
   repair after Continue, but repair must not reset ranks, actors or cooldowns.
+  The LS-04 candidate retains the camera anchor during periodic repair so it
+  does not bypass the movement switching margin.
 - Preserve immutable save generations, atomic CURRENT updates, old-save archives
   and launch ownership through the actual native child process. QA profiles must
   stay under the QA root and never become the player's profile.
@@ -99,10 +103,18 @@ unrelated host, fleet, inference or service settings to work on this game.
 ## Verification and handoff
 
 Run the appropriate source checks, normally
-`python -B -m unittest discover -s tests -v`. Current setup iteration: 167
+`python -B -m unittest discover -s tests -v`. Current LS-04 candidate: 183
 passing source-only tests plus one skipped module containing five native
-geometry tests; all 172 passed in the owner workspace with the required
+geometry tests; all 188 passed in the owner workspace with the required
 binding/assets. The historical v0.4 native release baseline was 109 tests.
+
+This slice covers camera switching/repair and non-node cinematic title contrast.
+Bounded native checks and their limits are recorded in
+[native-validation-ls04.json](native-validation-ls04.json); candidate readback is
+400 scripts, 177 globals and 121 titles. The original production staged build
+and checkpoint were restored afterward. Do not treat this candidate as a
+promoted package or LS-04 as complete. CHUD skill descriptions retain their
+existing styling and need separate native work.
 
 Source tests do not prove native compilation, UI, AI/navigation, retail behavior
 or balance. For relevant changes, queue a bounded native experiment through the

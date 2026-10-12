@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "record_type": "bounded_candidate_experiment",
+  "task": "LS-04",
+  "validated_at": "2026-10-12T20:33:19.553610+00:00",
+  "validated_source_commit": "af37c0228f2906afbd4870686c4a6fddc4e0d664",
+  "scope": "Camera anchor hysteresis and cinematic status-title palette only. This is not an integrated release receipt or completion of LS-04.",
+  "candidate": {
+    "source_hsc_sha256": "447dafc5356caf3bc189d2e4625a42d5a14849934c1e6dc2445df733454dc03c",
+    "scenario_sha256": "bc8b99bf60784b06f510ca9e249b8d67f730a65c95b6e9d6a2382a7665b3efe7",
+    "engine_sha256": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+    "private_assets_sha256": "2dd6294723a9e527753678545a780563319a523b49ac7a9865ad606ee61404f2",
+    "compiled_counts": {
+      "scripts": 400,
+      "globals": 177,
+      "hs syntax datums": 42994,
+      "cutscene titles": 121
+    }
+  },
+  "source_checks": {
+    "owner_workspace_passed": 188,
+    "clean_export_passed": 183,
+    "clean_export_skipped_modules": 1,
+    "tests_in_skipped_geometry_module": 5,
+    "new_camera_regressions": 13,
+    "new_title_regressions": 3,
+    "jitter_regression": "Alternating 4.99/5.00 anchor distances over 100 polls produces no anchor reversal. Periodic repair reapplies the retained anchor; simultaneous movement and repair emit one pan."
+  },
+  "native_sdk": {
+    "host": "Onyx-Linux",
+    "qa_profile": "qa-saves/ls04",
+    "production_profile_used_for_tests": false,
+    "window_launch_arguments": [
+      "-window",
+      "1600",
+      "900"
+    ],
+    "captured_window_pixels": [
+      1928,
+      1114
+    ],
+    "display_scope": "One observed window size, including window frame; launch arguments are not claimed to equal measured render resolution.",
+    "compile": {
+      "passed": true,
+      "evidence": "Sapien compiled and saved the candidate. Local compiled-tag readback matches the recorded hash and counts."
+    },
+    "runtime_log_review": {
+      "since": "2026-10-12T16:10:46.988132",
+      "fatals_or_expression_stack": [],
+      "hs_errors_or_warnings": []
+    },
+    "stage_views": {
+      "passed": true,
+      "stages": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "assertion": "Each stage entry reported its expected sv_stage, open Armory and sv_view_current in the stage-specific 1000-wide range. All four assertions were visually inspected as true in both candidate capture passes.",
+      "captures": "after-clean-stage{1..4}.png and corresponding -assert.png"
+    },
+    "real_movement": {
+      "passed": true,
+      "scope": "Short routes in protected Armory, not a complete perimeter/occlusion audit.",
+      "stages_2_to_4": "Held D for two seconds in each arena; native assertion confirmed player displacement >0.5, a changed camera anchor, correct stage anchor range and open Armory.",
+      "stage_1": "Initial two-second D route failed the combined movement/anchor-change assertion. A four-second W route passed; current anchor 1021 versus starting 1000, distance from center 8.955961. The initial failure is retained, not counted as a pass."
+    },
+    "checkpoint_restart": {
+      "passed": true,
+      "qa_checkpoint": {
+        "generation": "ace5ac38a96c4cecae44ba0a6e80de9e",
+        "bytes": 9895936,
+        "sha256": "403a1bba00b7ca06063daca28f98b9602076da0817dd141a70726f09513e3fb3"
+      },
+      "method": "Stopped the QA launcher, verified native child exit, and launched --continue in a new process. Verified console readiness before final assertions. No console camera repair was applied.",
+      "restored": {
+        "stage": 2,
+        "seconds": 430,
+        "xp": 81.25,
+        "points": 7,
+        "assault_rifle_unlock_rank": 1,
+        "needler_damage_rank": 2,
+        "shots": 123,
+        "hostiles": 17,
+        "armory_open": true
+      },
+      "checks": "Two before-save and five after-restart assertions visually read true: state, actors, stage-two camera with valid distance, paused clock/shots, then real key 1 resumed with increasing clock and shots."
+    },
+    "status_palette": {
+      "observed": true,
+      "description": "Cinematic help/points/rank notices use dark text with a pale shadow on bright terrain and shaded rocks. Four stage captures and a shaded stage-one movement view were inspected.",
+      "scope": "Palette adjustment only. CHUD skill descriptions retain their separate style; small text, terrain exposure and broader combat readability still need work.",
+      "before_capture": "baseline-desktop.png is a valid original production stage-one baseline; the attempted four-stage before batch is invalid."
+    }
+  },
+  "qa_corrections": [
+    "The first baseline stage batch did not reach the console; no stage assertions were observed. before-stage*.png is excluded from pass evidence.",
+    "The first Continue command batch and immediately following stage-one rerun also missed console readiness. Debug key bindings changed game_speed. Those artifacts were preserved as invalid-first-*.png. No passes were claimed. QA CURRENT remained the recorded generation; a fresh process restart from that unchanged checkpoint preceded the valid checks.",
+    "Successful input used a 35 ms key press and 30 ms per character. Opening the console after a process restart required checking the visible H3 prompt; a sent key alone was not proof of readiness."
+  ],
+  "production_restoration": {
+    "passed": true,
+    "at": "2026-10-12T20:32:30.054445+00:00",
+    "original_fingerprint_restored": true,
+    "checkpoint_files_unchanged": 9,
+    "generation": "c4b9f383fa004dceab77a9639fc74a03",
+    "core_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430",
+    "action": "Restored the backed-up scenario, HSC, UI strings and original launcher-restored init. Relaunched the existing production launcher with --continue. No candidate package or launcher promotion.",
+    "visual_check": "Observed the original stage-one overhead view with the paused Armory and saved Needler Rate rank 1 after production Continue; no input was sent to the restored production session."
+  },
+  "not_tested": [
+    "Retail MCC loading or saving",
+    "Full ordinary run and balance",
+    "Death recovery for this candidate",
+    "Complete arena boundary/occlusion audit",
+    "Other display sizes",
+    "Native measurement of anchor-boundary jitter frequency",
+    "Graphical Armory/CHUD redesign"
+  ],
+  "save_compatibility": "Two added globals and changed HSC/scenario alter the exact-build fingerprint. Existing production cores remain tied to the restored v0.4 baseline; no migration is claimed.",
+  "release_ready": false,
+  "ls04_complete": false,
+  "evidence_storage": "Private native workspace qa-ls04 on Onyx-Linux. Source repository contains this record and hashes; owned tags, saves and gameplay media are not included.",
+  "evidence_manifest": {
+    "baseline-desktop.png": {
+      "bytes": 5627973,
+      "sha256": "59519885162c8d4aac67add39c20ab95420171c122d8fd41b316716646bef3cc"
+    },
+    "compile-fatals.json": {
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "runtime-log-review.json": {
+      "bytes": 110,
+      "sha256": "078b64be4d302011252e7776f31cdbfae9e72a8d5d350ca44dd9744a4a689dd4"
+    },
+    "ls04_checks.py": {
+      "bytes": 3979,
+      "sha256": "8627a66275d79ebe907e7b7a3585ffff3978233a0bfa353f26aa4b55b0b04aec"
+    },
+    "ls04_capture_stages.py": {
+      "bytes": 1636,
+      "sha256": "792387fca3827f612daf47f24e8fe9278a2a2e4bdf705eb7dd4fdab7eeda9245"
+    },
+    "after-clean-stage1.png": {
+      "bytes": 3123441,
+      "sha256": "6451dfad822007e3f81aba3aa41600efd1465429681e5513f3cb6193d3589605"
+    },
+    "after-clean-stage1-assert.png": {
+      "bytes": 3122457,
+      "sha256": "68ece674f22f4dfc4d2084798ed88113cb4e652e1eb8aad51414b2dc19e7c5e1"
+    },
+    "after-clean-stage2.png": {
+      "bytes": 3010887,
+      "sha256": "e8edc9b8ceec105aed7424a9adea5fbb3f24dee5201370e3ef79a50299ec495e"
+    },
+    "after-clean-stage2-assert.png": {
+      "bytes": 3011204,
+      "sha256": "f4f2c3831338d605d2f5179fb5639cad1d03668f8cb33776df501b5307e5205f"
+    },
+    "after-clean-stage3.png": {
+      "bytes": 3278904,
+      "sha256": "b254ab6811c918b423e247651abe3c9fb680d26daa03623722c09261e09749fe"
+    },
+    "after-clean-stage3-assert.png": {
+      "bytes": 3277092,
+      "sha256": "7221ec2a44390d102a134d46bf252f575358c2f0c98e46db1804a5039ecd657a"
+    },
+    "after-clean-stage4.png": {
+      "bytes": 3101021,
+      "sha256": "c5545c90134a5c8f3d48d665ca04fa824188a9c12454daf3fe12c8c17790acac"
+    },
+    "after-clean-stage4-assert.png": {
+      "bytes": 3101943,
+      "sha256": "85e7ced7f35325d86b48e5bc14a472abb324d664940dd9205f8c5d43adc57188"
+    },
+    "movement-stage2-result.png": {
+      "bytes": 125313,
+      "sha256": "fee4165ec6e48c163add65a262168e097aa5d804b708cbc7c5fa33b27234e749"
+    },
+    "movement-stage3-result.png": {
+      "bytes": 151618,
+      "sha256": "ccc990f99a8e750c2642c38c3bc3f64a39610134f68985eddaf9c4cb5b8a6308"
+    },
+    "movement-stage4-result.png": {
+      "bytes": 122042,
+      "sha256": "46888b05e84e51cc12fd2c6680747690e015587f013ff9bd7a948ad1b399620b"
+    },
+    "movement-stage1-result.png": {
+      "bytes": 112222,
+      "sha256": "daafb828fb304502a8af4446f01ed681dac411b15d2c19d1364f9c059c091205"
+    },
+    "movement-stage1-rerun-result.png": {
+      "bytes": 119613,
+      "sha256": "d404573488e7a0989dc5499f03f0ac3c7c5452ad61cc87f68d82bb5935fee0b3"
+    },
+    "movement-stage1-values.png": {
+      "bytes": 3064208,
+      "sha256": "93eca45d1f8ea13060293a6a2d5a11c03724f2406a7b933dd61b46fff2275fe7"
+    },
+    "save-before-result.png": {
+      "bytes": 141830,
+      "sha256": "13d874615454a538c54e8c16001d1f0e76bedb0f7a7bbaaa6a0f9ca95cfc57db"
+    },
+    "save-actors-before-result.png": {
+      "bytes": 141984,
+      "sha256": "e610e93076c74e23f85881274fdbf7e4b4551f970116c3c5b6fe93538b2361ae"
+    },
+    "save-after-result.png": {
+      "bytes": 141675,
+      "sha256": "05f737df070097bbd42ffa452fdd037f9970dde460c85824051651206ec003cf"
+    },
+    "save-actors-after-result.png": {
+      "bytes": 141846,
+      "sha256": "69800beb8f87de11c1c2f746ef97fb9868e1b9463de4451d226c2b43be872645"
+    },
+    "save-camera-after-result.png": {
+      "bytes": 141998,
+      "sha256": "6c4c338dac6331c68fd37a23ac63e991957c9570834fd96bb65d5f6d086749ad"
+    },
+    "save-clock-paused-result.png": {
+      "bytes": 142120,
+      "sha256": "47c2d59ea274ed9f997c707bc3f805c04accc239e094b0ec51ece568b8133539"
+    },
+    "save-resume-works-result.png": {
+      "bytes": 141344,
+      "sha256": "fed8c1c45d4e185d34c82db3756ea26b337cc429bdabb09268367ea868b5ac49"
+    }
+  }
+}

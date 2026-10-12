@@ -63,18 +63,46 @@ Tested with CPython 3.14.6. From the repository root:
 python -B -m unittest discover -s tests -v
 ```
 
-A source-only export passes 167 tests and reports one skipped module. That
+A source-only export passes 183 tests and reports one skipped module. That
 module contains five spawn-geometry tests requiring the external `blam_tags`
 binding; its owned-navigation test also needs the local scenario asset. The
-complete owner workspace passes all 172 tests, including 63 configuration and
-preflight regressions added after v0.4.0. The historical native release passed
-109 tests. No third-party Python package is required for the 167 source-only
-checks. These added setup tests do not constitute a new native game build.
+complete owner workspace passes all 188 tests, including 63 configuration and
+preflight regressions and 16 camera/title checks added after v0.4.0. The
+historical native release passed 109 tests. No third-party Python package is
+required for the 183 source-only checks. Passing source tests does not establish
+native validation or a new release.
 
 The test VM exercises the emitted HaloScript subset. It is not a Halo compiler
 or a replacement for engine play testing. Native test evidence is recorded in
 `native-validation-v04.json`, including which checks preceded the final narrow
 victory fix.
+
+## Current LS-04 candidate
+
+The camera retains its current anchor until another is more than 0.35 map units
+nearer. Invalid anchors and stage changes still select a valid view immediately.
+The periodic camera/control repair requests a refresh of the retained anchor
+instead of clearing it, so the repair does not bypass the switching margin.
+Tests cover boundary jitter, stage changes, missing players, refresh behavior
+and preservation of run/input state; the VM does not simulate native camera
+interpolation or core restoration.
+
+Cinematic status/help/points/rank notices now explicitly use dark charcoal text
+and a pale shadow, preserving their font, bounds and lifetime. Node descriptions
+use `cinematic_set_chud_objective` and retain their previous style; this change
+does not establish improved CHUD rendering. [Native evidence](native-validation-ls04.json)
+records compilation/readback (400 scripts, 177 globals, 42,994 syntax datums,
+121 titles), four-stage views, short real movement routes, and a full process
+restart retaining stage-two progress, 17 actors, overhead view and the resume key.
+The initial console-input failures and unsuccessful short stage-one route are
+retained in the record; only visually confirmed assertions count as passes.
+
+These checks cover one observed window size. Full arena/occlusion inspection,
+death recovery, combat readability, other sizes, ordinary runs and retail remain
+open. The exact original staged build and checkpoint were restored after QA;
+the installed v0.4 package remains the release baseline. The changed scripts
+and two added globals change the save fingerprint. This candidate has no fresh
+cache or promotion receipt; previous production cores are not migrated to it.
 
 ## Optional authoring and capture dependencies
 
