@@ -111,8 +111,8 @@ unrelated host, fleet, inference or service settings to work on this game.
 Run the appropriate source checks, normally
 `python -B -m unittest discover -s tests -v`. The current LS-05 prototype passes
 217 tests in the owner workspace with the required binding/assets. Its clean
-source-export test has not yet been run; record that result separately rather
-than deriving it from the owner count.
+source export passes 212 tests, with one skipped module containing five
+asset-dependent geometry tests (213 reported test entries, one skip).
 
 The LS-05 prototype adds seven static branch-reference pages, covering all 50
 nodes alongside the existing selected-skill CHUD detail. All seven pages fit

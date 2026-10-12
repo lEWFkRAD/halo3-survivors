@@ -64,7 +64,8 @@ python -B -m unittest discover -s tests -v
 ```
 
 The complete owner workspace passes all 217 tests, including 29 Armory model,
-scheduler and title-style checks added for LS-05. Source-only checkouts skip
+scheduler and title-style checks added for LS-05. A clean source export passes
+212 tests (213 reported entries, one skipped module). Source-only checkouts skip
 one module containing five spawn-geometry tests when the external `blam_tags`
 binding is unavailable; its owned-navigation test also needs the local scenario
 asset. The remaining source checks require no third-party Python package.
@@ -103,6 +104,14 @@ polish. This reaches the current 128-title authoring guard; further UI work must
 account for that budget. See [the LS-05 evidence](native-validation-ls05.json)
 for the bounded native observations and remaining checks. Fit alone does not
 complete LS-05, establish dynamic graphical states or validate retail MCC.
+
+The native checks also passed held navigation/purchase, prerequisite/stage/
+exclusive-path/points guards, category switching, Resume/page expiry, reopening,
+and a 25-second refresh soak. A full process restart retained the stage-two
+checkpoint, ranks, points, timer and 17 enemies, restored the page and overhead
+camera, and resumed auto-fire. The original staged build and checkpoint were
+restored afterward; all 14 original profile files are byte-identical. Initial
+QA-driver failures were excluded and rerun as documented in the evidence.
 
 The installed v0.4 package remains unchanged. This candidate has no fresh cache
 or promotion receipt. Changed scripts, titles and the added tree-clock global

@@ -38,7 +38,8 @@ ranks and stage gates. All seven pages fit in the native SDK test; contrast on
 bright terrain still needs polish. These are static maps; selected-skill details
 and rotating rank/points notices continue to provide current purchase information.
 Live graphical states across every node remain unfinished. See
-[the bounded LS-05 record](native-validation-ls05.json). The installed release
+[the bounded LS-05 record](native-validation-ls05.json), including native purchase,
+category, Resume and checkpoint-restart checks. The installed release
 remains v0.4.0; this candidate has no new cache or package promotion.
 
 ## Play

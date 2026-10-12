@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "record_type": "bounded_candidate_experiment",
+  "task": "LS-05",
+  "validated_at": "2026-10-12T21:35:39.001340+00:00",
+  "validated_source_commit": "b3d446515a242ebe7e59082a10c345d5d24c6ca1",
+  "scope": "Seven static native branch-reference pages plus a catalog presentation model. This is not the complete graphical Armory or a release/promotion receipt.",
+  "candidate": {
+    "fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "887b1c3d0b4a52d0919f5e2554da5e29d87ef4e15b33c2767b4c3c12bf8c6a79",
+      "hsc": "2b936f94e63d5065cfef15bda63a70b86a9e2c5d3aa6c46ae98c2ca7817cbdb3",
+      "private_assets": "7bba6f2b54db0b56f8dd52af9bbe0606cccaa3fb35b2ec27afd33c94ba600a46"
+    },
+    "ui_sha256": "dfb71de96b36e98f6dcbaf2dedad79327410c7858c21bf0b06178ef6a456133b",
+    "compiled_counts": {
+      "scripts": 402,
+      "globals": 178,
+      "source files": 3,
+      "hs syntax datums": 43180,
+      "cutscene titles": 128
+    }
+  },
+  "source_checks": {
+    "owner_workspace_passed": 217,
+    "command": "python -B -m unittest discover -s tests -q",
+    "new_presentation_tests": 19,
+    "new_scheduler_tests": 8,
+    "new_title_style_tests": 2,
+    "purchase_model_agreement": "300 catalog-state scenarios checked against generated HSC purchase outcomes across all 50 nodes.",
+    "clean_export": {
+      "passed": 212,
+      "reported_test_entries": 213,
+      "skipped_modules": 1,
+      "tests_in_skipped_geometry_module": 5
+    }
+  },
+  "native_sdk": {
+    "host": "Onyx-Linux",
+    "qa_profile": "qa-saves/ls05",
+    "production_profile_used_for_tests": false,
+    "captured_window_pixels": [
+      1928,
+      1114
+    ],
+    "compile": {
+      "passed": true,
+      "evidence": "Sapien compile/save and local compiled-tag readback verify the recorded hash, new scripts, counts and all 128 titles."
+    },
+    "page_layout": {
+      "passed": true,
+      "pages": 7,
+      "evidence": "page-0.png through page-6.png inspected at full size. All weapon capstones and all eight support nodes fit, without clipping or overlap with selected CHUD detail.",
+      "line_breaks": "Ordinary LF was ignored; literal |n was proven in a separate native two-panel probe and is emitted by the authoring layer.",
+      "font": "large body text font",
+      "remaining": "Thin pale/gray text has insufficient contrast on bright textured terrain. No accessibility or other-resolution claim."
+    },
+    "assertions": [
+      {
+        "name": "held-next",
+        "passed": true,
+        "observation": "Holding Space for 1.2 seconds advances one node.",
+        "private_evidence": "held-next-result.png"
+      },
+      {
+        "name": "held-buy",
+        "passed": true,
+        "observation": "Holding the primary trigger for 1.2 seconds buys one Power rank and spends one point.",
+        "private_evidence": "held-buy-result.png"
+      },
+      {
+        "name": "stage-locked",
+        "passed": true,
+        "observation": "Stage-one Seeker attempt preserves rank zero and points.",
+        "private_evidence": "stage-locked-result.png"
+      },
+      {
+        "name": "prerequisite-locked",
+        "passed": true,
+        "observation": "Stage-two Seeker attempt without Cadence preserves rank zero and points.",
+        "private_evidence": "prerequisite-locked-result.png"
+      },
+      {
+        "name": "branch-purchased",
+        "passed": true,
+        "observation": "Buying Cadence then Seeker updates both ranks and spends exactly three points.",
+        "private_evidence": "branch-purchased-result.png"
+      },
+      {
+        "name": "exclusive-locked",
+        "passed": true,
+        "observation": "Crystal remains rank zero after selecting Seeker; points unchanged.",
+        "private_evidence": "exclusive-locked-result.png"
+      },
+      {
+        "name": "points-locked",
+        "passed": true,
+        "observation": "An unaffordable Power rank is rejected without mutation.",
+        "private_evidence": "points-locked-result.png"
+      },
+      {
+        "name": "category-chord",
+        "passed": true,
+        "observation": "Real Space+Q input selects the next weapon category.",
+        "private_evidence": "category-chord-result.png"
+      },
+      {
+        "name": "resumed",
+        "passed": true,
+        "observation": "Real 1 key closes Armory and advances gameplay time; reference page absent in the capture two seconds later.",
+        "private_evidence": "resumed-result.png"
+      },
+      {
+        "name": "reopened",
+        "passed": true,
+        "observation": "Real Space+Q reopens Armory at the retained category.",
+        "private_evidence": "reopened-result.png"
+      },
+      {
+        "name": "page-soak",
+        "passed": true,
+        "observation": "After 25 seconds of uninterrupted refresh the Armory remains active with a bounded page clock and a visible page.",
+        "private_evidence": "page-soak-result.png"
+      },
+      {
+        "name": "save-before",
+        "passed": true,
+        "observation": "Prepared stage-two checkpoint: 430 total seconds, 81.25 XP, seven points, AR unlocked, Needler Power rank two, 123 shots.",
+        "private_evidence": "save-before-result.png"
+      },
+      {
+        "name": "save-actors-before",
+        "passed": true,
+        "observation": "Seventeen native enemies present before checkpoint restart.",
+        "private_evidence": "save-actors-before-result.png"
+      },
+      {
+        "name": "save-after",
+        "passed": true,
+        "observation": "The saved stage, timer, XP, points, weapon unlock/rank and shot counter survive a full launcher/native process restart.",
+        "private_evidence": "save-after-result.png"
+      },
+      {
+        "name": "save-actors-after",
+        "passed": true,
+        "observation": "Seventeen native enemies remain after Continue.",
+        "private_evidence": "save-actors-after-result.png"
+      },
+      {
+        "name": "save-camera-after",
+        "passed": true,
+        "observation": "Continue restores the stage-two overhead camera range.",
+        "private_evidence": "save-camera-after-result.png"
+      },
+      {
+        "name": "save-clock-paused",
+        "passed": true,
+        "observation": "Armory keeps timer and shots paused after Continue.",
+        "private_evidence": "save-clock-paused-result.png"
+      },
+      {
+        "name": "save-resume-works",
+        "passed": true,
+        "observation": "Real 1 key resumes timer and automatic shots after Continue.",
+        "private_evidence": "save-resume-works-result.png"
+      }
+    ],
+    "checkpoint": {
+      "generation": "b6ec9acf62974b25bd0bb40576b78685",
+      "bytes": 9895936,
+      "sha256": "33ca42bddc0d9265c18cf19d5abc29106b4ba652f45ac8dbb31ab8cf5be6e1a9",
+      "page_redrawn": true
+    },
+    "runtime_log_review": {
+      "since": "2026-10-12 17:13:11.974989",
+      "fatal_expression_stack_title_slot_or_hs_diagnostics": [],
+      "scope": "Filtered debug_full log review; stock Jackal model warnings remain. This does not establish absence of all warnings or measure frame pacing."
+    },
+    "excluded_attempts": [
+      "The first plain-LF probe concatenated text; superseded by the verified |n probe.",
+      "Initial page setup let console number keys reach menu input. Rerun with gameplay input suspended during setup and native action tests reset.",
+      "The first held-click assertions failed because the temporary QA helper reused sv_arm_result, which sv_reset_actions overwrites, leaving sv_running false. Corrected helper and reran held input and all dependent purchase checks from explicit initial state. No game change was made to hide this failure."
+    ],
+    "qa_method": "Visually confirmed the H3 prompt before command batches and inspected each final assertion. Console setup/checks temporarily suspend sv_running; the corrected helper preserves it in sv_key_category, resets actions, and restores it. Real input tests run with sv_running true. Temporary setup is confined to the isolated QA profile."
+  },
+  "production_restore": {
+    "restored_at": "2026-10-12T21:36:21.677325+00:00",
+    "fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+      "hsc": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500",
+      "private_assets": "2dd6294723a9e527753678545a780563319a523b49ac7a9865ad606ee61404f2"
+    },
+    "generation": "c4b9f383fa004dceab77a9639fc74a03",
+    "core_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430",
+    "checkpoint_valid": true,
+    "profile_files_compared": 14,
+    "profile_byte_identical_before_restore": true,
+    "launcher_pid": 674326,
+    "visible_continue_verification": "Passed: original v0.4 Armory and overhead view visible after Continue.",
+    "original_files_byte_identical_after_continue": true,
+    "added_files": [
+      "launcher-sessions/510f29005f5c4d22802c32ef69ca698c/init-before.txt",
+      "launcher-sessions/510f29005f5c4d22802c32ef69ca698c/play.log"
+    ],
+    "native_pid": 674469
+  },
+  "save_compatibility": "One added page-clock global, changed HSC/scenario and new UI strings alter the exact-build fingerprint. This candidate uses its own QA core; existing production cores are not migrated.",
+  "not_run": [
+    "Retail MCC",
+    "Full ordinary four-stage run and balance",
+    "Fresh cache build/package promotion",
+    "Other display sizes",
+    "Quantitative refresh flicker/frame-time measurement",
+    "Permanent progression across new runs"
+  ],
+  "remaining": [
+    "Live purchased/available/locked styling across every node and direct graphical selection",
+    "Readable panel background/text contrast",
+    "Continuously visible selected next cost, rank and points",
+    "A separate dynamic native UI channel: the current 128-title authoring budget is full",
+    "Fresh integrated LS-10/LS-11 release checks after UI completion"
+  ],
+  "private_evidence": "Onyx Halo3Survivors/qa-ls05, including validated-compiled.scenario, screenshots, metadata, original build backups and production-profile-backup. Owned assets, saves and media are not in this source repository.",
+  "installed_release": "v0.4.0 unchanged; LS-05 remains open"
+}
