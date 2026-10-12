@@ -3,6 +3,10 @@
 Status: v0.4.0 playable prototype, 2026-10-12. These are remaining tasks,
 not features included in the current build.
 
+For detailed implementation steps, dependencies and acceptance criteria, see
+[PLAN.md](PLAN.md). Agents can claim bounded work through [TASKS.md](TASKS.md)
+and follow the coordination rules in [AGENTS.md](AGENTS.md).
+
 ## Release readiness
 
 - [ ] Verify the packaged mod through the retail MCC mod menu after the owner

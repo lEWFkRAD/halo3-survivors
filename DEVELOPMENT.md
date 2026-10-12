@@ -1,5 +1,8 @@
 # Developing Last Stand
 
+Read [AGENTS.md](AGENTS.md) for work ownership and native-session coordination,
+and [PLAN.md](PLAN.md) for the implementation sequence and acceptance criteria.
+
 ## Source checkout
 
 The repository contains authored Python/HaloScript, progression data, tests,

@@ -13,6 +13,9 @@ import zipfile
 SOURCE_FILES = tuple("""
 .gitignore
 .gitattributes
+AGENTS.md
+PLAN.md
+TASKS.md
 DEVELOPMENT.md
 ROADMAP.md
 author_effects.py

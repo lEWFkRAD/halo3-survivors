@@ -9,6 +9,10 @@ authored source, tests and release evidence; owned Halo assets, SDK binaries,
 compiled maps and player saves remain local. See [ROADMAP.md](ROADMAP.md) for
 unfinished work and [DEVELOPMENT.md](DEVELOPMENT.md) for checkout requirements.
 
+Agents joining the project should start with the [full implementation plan](PLAN.md),
+[task queue](TASKS.md) and [agent handoff guide](AGENTS.md). The task issues track
+ownership, dependencies and acceptance evidence.
+
 v0.4 adds Armory checkpoints with Continue/New Run, closer enemy spawns with
 player-clearance checks, and batched level-ups. It also fixes victory cleanup:
 Halo must process its queued actor deletion before enemies disappear.
