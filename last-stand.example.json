@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "editing_kit": "../H3EK",
+  "remote": {
+    "host": "onyx-linux",
+    "workspace": "/home/jeffrey-watts/Documents/Games/Halo3Survivors",
+    "editing_kit": "/home/jeffrey-watts/snap/steam/common/.local/share/Steam/steamapps/common/H3EK",
+    "python": "python3"
+  },
+  "tools": {
+    "ssh": "ssh",
+    "scp": "scp"
+  }
+}

@@ -96,9 +96,10 @@ unrelated host, fleet, inference or service settings to work on this game.
 ## Verification and handoff
 
 Run the appropriate source checks, normally
-`python -B -m unittest discover -s tests -v`. Baseline: 104 passing source-only
-tests plus one skipped module containing five native geometry tests; all 109
-passed in the owner workspace with the required binding/assets.
+`python -B -m unittest discover -s tests -v`. Current setup iteration: 167
+passing source-only tests plus one skipped module containing five native
+geometry tests; all 172 passed in the owner workspace with the required
+binding/assets. The historical v0.4 native release baseline was 109 tests.
 
 Source tests do not prove native compilation, UI, AI/navigation, retail behavior
 or balance. For relevant changes, queue a bounded native experiment through the
