@@ -196,12 +196,13 @@ def build(data,layout):
         (core_save_name "laststand_v04_pending")))''')
     # Core saves serialize script state but not every camera/debug controller.
     # Reassert the presentation within one second, including on a restored core.
+    # Retain the chosen anchor so repair does not bypass the movement deadband.
     # Do not reset health, enemies, cooldowns, progression, or input latches here.
     h.script('sv_restore_controls','''(set sv_restore_clock (+ sv_restore_clock 3))
 (if (>= sv_restore_clock 30)
     (begin (set sv_restore_clock 0)
         (camera_control true) (player_camera_control false)
-        (set sv_view_current -1)
+        (set sv_view_refresh true)
         (hud_enable_training false)
         (chud_show_weapon_stats false) (chud_show_grenades false)
         (chud_show_crosshair false) (player_disable_weapon_pickup true)
