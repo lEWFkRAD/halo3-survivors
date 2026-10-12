@@ -2,10 +2,11 @@
 from pathlib import Path
 import json
 import re
+from armory_presentation import native_page_titles
 from progression_hsc import HSC, expr, dispatch, cameras, enemies, combat
 ROOT=Path(__file__).resolve().parent
 
-# Native title budget: 50 nodes + 51 point values + 4 ranks + 20 shared messages.
+# Native title budget: 50 nodes + 51 points + 4 ranks + 16 notices + 7 tree pages.
 TITLES={
  'sv_controls':'ARMORY | Space: next / Q: back / Left click: buy / Space+Q: category / 1: resume / Autosaves here',
  'sv_purchased':'UPGRADE PURCHASED | Your ranks carry into the next stage.',
@@ -104,6 +105,7 @@ def build(data,layout):
     titles=dict(TITLES)
     for i,n in enumerate(nodes):
         titles[f'sv_node_{i}']=compact_node_title(n,byid)
+    titles.update(native_page_titles(data))
     assert len(titles)<=128,len(titles)
     h=HSC()
     initial={'sv_running':('boolean','false'),'sv_finished':('boolean','false'),'sv_menu_open':('boolean','false'),
@@ -341,8 +343,28 @@ def build(data,layout):
 (if (and sv_running (not sv_finished))
     (begin (sv_restore_controls) (sv_boundary_check) (sv_follow)
         (if sv_menu_open (begin (sv_checkpoint) (sv_menu_input))
-            (begin (sv_reopen_test) (if (not sv_menu_open) (sv_autofire))))))''',kind='continuous')
+            (begin (sv_reopen_test) (if (not sv_menu_open) (sv_autofire))))))
+(sv_tree_tick)''',kind='continuous')
     serialize_status_titles(h,titles)
+    # Append these direct title calls after status serialization. A tree page
+    # occupies its own screen region and one-second lifetime; status notices
+    # retain their independent 90-tick queue. Never enqueue a category snapshot:
+    # dispatch the latest selection only when the next refresh becomes due.
+    h.global_('short','sv_tree_clock',0)
+    treecases=[]
+    for ci,(_,start) in enumerate(categories):
+        end=categories[ci+1][1] if ci+1<len(categories) else len(nodes)
+        treecases.append(f'((and (>= sv_selection {start}) (< sv_selection {end})) (cinematic_set_title sv_tree_{ci}))')
+    h.script('sv_tree_display','(cond\n'+'\n'.join(treecases)+')')
+    # Keep the refresh limit through a rapid close/reopen. A saved clock is
+    # always 0..30, so Continue repairs the page within one second without
+    # touching ranks or run state. Input is handled before this scheduler, so a
+    # Resume action suppresses even a refresh due on that same frame.
+    h.script('sv_tree_tick','''(if (and sv_running (not sv_finished))
+    (begin
+        (if (> sv_tree_clock 0) (set sv_tree_clock (max 0 (- sv_tree_clock 3))))
+        (if (and sv_menu_open (= sv_tree_clock 0))
+            (begin (set sv_tree_clock 30) (sv_tree_display)))))''')
     assert len(h.globals)<512 and len(h.scripts)<1024
     source=h.render()
     for name,code in [('assault_rifle','ar'),('rocket_launcher','rl'),('energy_sword','es'),('plasma_rifle','pr'),('shotgun','sg'),('needler','nl')]:

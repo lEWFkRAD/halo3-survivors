@@ -15,7 +15,7 @@ class ProgressionVM(VM):
         self.contract['starting_profiles']=['sv_start']
         self.globals={};self.scripts={};self.input=set();self.held_input=set();self.ai_enabled=True;self.teleports=[]
         self.movement_disabled=False;self.player_protected=False
-        self.logical_ticks=0;self.notice_events=[]
+        self.logical_ticks=0;self.notice_events=[];self.page_events=[]
         self.queried_since_reset=set()
         self.living={s['name']:0 for st in self.layout['stages'] for s in st['squads']}
         for form in parse(source):
@@ -65,7 +65,8 @@ class ProgressionVM(VM):
             self.actor_health[target]-=int(path.rsplit('_d',1)[1]);self.calls.append((op,[path,target]));return None
         if op=='cinematic_set_title':
             values=[self.eval(a) for a in args]
-            self.notice_events.append((self.logical_ticks,str(values[0])))
+            events=self.page_events if str(values[0]).startswith('sv_tree_') else self.notice_events
+            events.append((self.logical_ticks,str(values[0])))
             self.calls.append((op,values));return None
         if op in ('log_print','player_disable_weapon_pickup','core_save_name'):
             self.calls.append((op,[self.eval(a) for a in args]));return None
@@ -253,7 +254,7 @@ class NativeProgressionTests(unittest.TestCase):
     def test_help_points_and_rank_repeat_without_input(self):
         v=self.v;v.calls.clear()
         for _ in range(180):v.menu_sample()
-        titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title']
+        titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title' and not str(args[0]).startswith('sv_tree_')]
         # The initial stage announcement occupies the first display slot; help,
         # points and rank then repeat without overlapping that announcement.
         self.assertEqual(titles,['sv_controls','sv_points_3','sv_rank_1']*2)
@@ -292,7 +293,7 @@ class NativeProgressionTests(unittest.TestCase):
         self.assertTrue(all(name.startswith('sv_rank_') for _,name in events[1:]))
     def test_node_hud_preserves_information_within_line_budget(self):
         v=self.v;titles=v.contract['cutscene_titles']
-        self.assertEqual(len(titles),121)
+        self.assertEqual(len(titles),128)
         for i,n in enumerate(v.data['nodes']):
             text=titles[f'sv_node_{i}']
             self.assertLessEqual(len(text),100,n['id'])
