@@ -95,6 +95,7 @@ cache-build-receipt-v04.json
 native-validation-v04.json
 native-validation-ls04.json
 native-validation-ls05.json
+native-validation-ls03.json
 build-result-v04.json
 victory-fix.diff
 victory-cleanup-v04.diff

@@ -1,0 +1,674 @@
+{
+  "schema_version": 1,
+  "record_type": "bounded_candidate_experiment",
+  "task": "LS-03",
+  "recorded_at": "2026-10-13T02:26:13.392110+00:00",
+  "qa_source_commit": "c9ad32e47ce2cf88efac32764c796ac8296fa8c1",
+  "scope": "Observed native assertion transport, prepared checkpoint restart, New Run, a short natural level-up and managed launcher shutdown ownership. Not full LS-03 completion or a release/promotion receipt.",
+  "source_checks": {
+    "owner_tests_passed": 250,
+    "new_assertion_tests": 28,
+    "new_launcher_tests": 5,
+    "clean_export": {
+      "passed": 245,
+      "reported_entries": 246,
+      "skipped_modules": 1,
+      "tests_in_skipped_geometry_module": 5
+    }
+  },
+  "assertion_experiment": {
+    "host": "Onyx-Linux",
+    "environment": "sdk",
+    "evidence_kind": "native",
+    "qa_profile": "qa-saves/ls03",
+    "game_source_commit": "367ce97f09f175a843024653b93c9ff83d318e74",
+    "candidate_fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "887b1c3d0b4a52d0919f5e2554da5e29d87ef4e15b33c2767b4c3c12bf8c6a79",
+      "hsc": "2b936f94e63d5065cfef15bda63a70b86a9e2c5d3aa6c46ae98c2ca7817cbdb3",
+      "private_assets": "7bba6f2b54db0b56f8dd52af9bbe0606cccaa3fb35b2ec27afd33c94ba600a46"
+    },
+    "candidate_unchanged_after_checks": true,
+    "compilation": "Reused exact LS-05 validated compiled scenario; no gameplay authoring changes or new native compile/cache claimed.",
+    "transport": "Exact lowercased WARNING hs log_print records; console-command echoes ignored. Every archived log hash/prefix/offset and observed marker were rechecked against the final reader.",
+    "assertions": [
+      {
+        "name": "checkpoint-after-actors",
+        "condition": "(= (ai_living_count sv_hostiles) 17)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "3caf0930caf24ca1bb4881b2560ef17d",
+        "private_log": "checkpoint-after-actors.log",
+        "log_sha256": "5d5a110a6019f1cd4e5ffd713edb640a10f415ded2cb86fc9ff24b0f21edafed",
+        "start_offset": 1605,
+        "end_offset": 1954,
+        "cursor_at": "2026-10-13T02:09:48.942362+00:00",
+        "observed_at": "2026-10-13T02:09:52.504312+00:00",
+        "observations": [
+          {
+            "line": 18,
+            "text": "10.12.26 22:09:51.400 0000676 g004803 f0004191  WARNING hs: lsqa:3caf0930caf24ca1bb4881b2560ef17d:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-after-cooldowns",
+        "condition": "(and (= sv_w_nl_clock 7) (= sv_w_ar_clock 9))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "739f2e9ed683458b894c4dae46c2f329",
+        "private_log": "checkpoint-after-cooldowns.log",
+        "log_sha256": "c9844b00f5643fffe8111f931c40f10768ad3d91b163928f7a0beda5c7872f42",
+        "start_offset": 1954,
+        "end_offset": 2312,
+        "cursor_at": "2026-10-13T02:09:52.504628+00:00",
+        "observed_at": "2026-10-13T02:09:56.206861+00:00",
+        "observations": [
+          {
+            "line": 20,
+            "text": "10.12.26 22:09:55.100 0000678 g004803 f0004413  WARNING hs: lsqa:739f2e9ed683458b894c4dae46c2f329:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-after-ranks",
+        "condition": "(and (= sv_ar_u 1) (= sv_nl_d 2) (= sv_shots 123) sv_menu_open)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "99716f83ec594728a7024d195f5ad630",
+        "private_log": "checkpoint-after-ranks.log",
+        "log_sha256": "199dba9781db81eaf42dd3d9b2fda1b4d721ce41910555be7cee54adbdcd7cff",
+        "start_offset": 1229,
+        "end_offset": 1605,
+        "cursor_at": "2026-10-13T02:09:44.950345+00:00",
+        "observed_at": "2026-10-13T02:09:48.941950+00:00",
+        "observations": [
+          {
+            "line": 16,
+            "text": "10.12.26 22:09:47.834 0000673 g004803 f0003977  WARNING hs: lsqa:99716f83ec594728a7024d195f5ad630:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-after-run",
+        "condition": "(and (= sv_stage 2) (= sv_seconds 430) (= sv_xp 81.25) (= sv_tokens 7))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "d788c47723f34bcd9f7d1cf2ae2eee0e",
+        "private_log": "checkpoint-after-run.log",
+        "log_sha256": "bfaf2bdd966cde28d80e5d2839b57f6150cff9876e9d672fdc71b2386890e552",
+        "start_offset": 845,
+        "end_offset": 1229,
+        "cursor_at": "2026-10-13T02:09:40.821060+00:00",
+        "observed_at": "2026-10-13T02:09:44.949726+00:00",
+        "observations": [
+          {
+            "line": 14,
+            "text": "10.12.26 22:09:43.850 0000671 g004803 f0003738  WARNING hs: lsqa:d788c47723f34bcd9f7d1cf2ae2eee0e:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-before-actors",
+        "condition": "(= (ai_living_count sv_hostiles) 17)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "e973d133329f447cb2f0d29fb1799ac4",
+        "private_log": "checkpoint-before-actors.log",
+        "log_sha256": "b40fbd61039151b8c6233cff7d7f429fa87c2a5fdcc37822e676e9e68236cbe1",
+        "start_offset": 6435,
+        "end_offset": 6784,
+        "cursor_at": "2026-10-13T02:07:09.661315+00:00",
+        "observed_at": "2026-10-13T02:07:13.227992+00:00",
+        "observations": [
+          {
+            "line": 55,
+            "text": "10.12.26 22:07:12.122 0000727 g001650 f0014027  WARNING hs: lsqa:e973d133329f447cb2f0d29fb1799ac4:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-before-cooldowns",
+        "condition": "(and (= sv_w_nl_clock 7) (= sv_w_ar_clock 9))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "937c095d6e8843969777cb6d62e57844",
+        "private_log": "checkpoint-before-cooldowns.log",
+        "log_sha256": "d60f0be8e179626d1281e6e8c2bd7b09c646f243a0cb895553ef4f1adda0ed57",
+        "start_offset": 6784,
+        "end_offset": 7142,
+        "cursor_at": "2026-10-13T02:07:13.228259+00:00",
+        "observed_at": "2026-10-13T02:07:16.915816+00:00",
+        "observations": [
+          {
+            "line": 57,
+            "text": "10.12.26 22:07:15.806 0000729 g001650 f0014248  WARNING hs: lsqa:937c095d6e8843969777cb6d62e57844:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-before-ranks",
+        "condition": "(and (= sv_ar_u 1) (= sv_nl_d 2) (= sv_shots 123) sv_menu_open)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "2e5cc9ec2aa6415992abe17b2f2ea21b",
+        "private_log": "checkpoint-before-ranks.log",
+        "log_sha256": "180c5ef0321d77dd06af2e853f6196d35d5fcd4a3ee8641ff7f7def2824eddec",
+        "start_offset": 6059,
+        "end_offset": 6435,
+        "cursor_at": "2026-10-13T02:07:05.673594+00:00",
+        "observed_at": "2026-10-13T02:07:09.661041+00:00",
+        "observations": [
+          {
+            "line": 53,
+            "text": "10.12.26 22:07:08.556 0000725 g001650 f0013813  WARNING hs: lsqa:2e5cc9ec2aa6415992abe17b2f2ea21b:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-before-run",
+        "condition": "(and (= sv_stage 2) (= sv_seconds 430) (= sv_xp 81.25) (= sv_tokens 7))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "6ac25bc826434b9abccc12af296c4a22",
+        "private_log": "checkpoint-before-run.log",
+        "log_sha256": "1d3bd3bd3586089fcb6ef05f7c1a32fd924618d41da8cc66995d3283ac9d52dd",
+        "start_offset": 5675,
+        "end_offset": 6059,
+        "cursor_at": "2026-10-13T02:07:01.559852+00:00",
+        "observed_at": "2026-10-13T02:07:05.673304+00:00",
+        "observations": [
+          {
+            "line": 51,
+            "text": "10.12.26 22:07:04.572 0000723 g001650 f0013574  WARNING hs: lsqa:6ac25bc826434b9abccc12af296c4a22:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-resume-autofire",
+        "condition": "(> sv_shots 123)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "0d575c26bb65446894a208e7f1b456fe",
+        "private_log": "checkpoint-resume-autofire.log",
+        "log_sha256": "1049f05cd639bb34a3aaa31f0d061d8dcf1bdd2dfc489de70174e4ea457ebfdc",
+        "start_offset": 2890,
+        "end_offset": 3219,
+        "cursor_at": "2026-10-13T02:11:09.917994+00:00",
+        "observed_at": "2026-10-13T02:11:13.164034+00:00",
+        "observations": [
+          {
+            "line": 26,
+            "text": "10.12.26 22:11:12.060 0000695 g005083 f0009030  WARNING hs: lsqa:0d575c26bb65446894a208e7f1b456fe:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-resume-clock",
+        "condition": "(and (not sv_menu_open) (> sv_seconds 430))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "76207ca545184d76b5165fc0369003fc",
+        "private_log": "checkpoint-resume-clock.log",
+        "log_sha256": "18d8f87b725d197581629f71e380d7c8f7aaef169a5df159ec8fbc804cdf92b7",
+        "start_offset": 2534,
+        "end_offset": 2890,
+        "cursor_at": "2026-10-13T02:11:06.235290+00:00",
+        "observed_at": "2026-10-13T02:11:09.917629+00:00",
+        "observations": [
+          {
+            "line": 24,
+            "text": "10.12.26 22:11:08.810 0000693 g005083 f0008835  WARNING hs: lsqa:76207ca545184d76b5165fc0369003fc:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-resume-view",
+        "condition": "(and (>= sv_view_current 2000) (< sv_view_current 3000))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "550828d8d4ba4c918040433b25981d9e",
+        "private_log": "checkpoint-resume-view.log",
+        "log_sha256": "c40a4c8ab0f44ff4ea10c753996eb5b03b23c100b3b4916c8d89ea60766225c2",
+        "start_offset": 3219,
+        "end_offset": 3588,
+        "cursor_at": "2026-10-13T02:11:13.164359+00:00",
+        "observed_at": "2026-10-13T02:11:17.056202+00:00",
+        "observations": [
+          {
+            "line": 28,
+            "text": "10.12.26 22:11:15.960 0000697 g005083 f0009264  WARNING hs: lsqa:550828d8d4ba4c918040433b25981d9e:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "idle-run-alive",
+        "condition": "(and sv_running (not sv_finished) (> (unit_get_health (sv_player)) 0))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "nonce": "7ddaeef4d1dd466098995111df5d14c9",
+        "private_log": "idle-run-alive.log",
+        "log_sha256": "037259c50c2b0b5678cfc84c2794171ec70e275216a18a6aed0c061b17f92fef",
+        "start_offset": 3266,
+        "end_offset": 3649,
+        "cursor_at": "2026-10-13T02:15:34.628392+00:00",
+        "observed_at": "2026-10-13T02:15:38.725641+00:00",
+        "observations": [
+          {
+            "line": 28,
+            "text": "10.12.26 22:15:37.615 0000702 g006785 f0013907  WARNING hs: lsqa:7ddaeef4d1dd466098995111df5d14c9:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "idle-run-clock",
+        "condition": "(and (>= sv_seconds 40) (<= sv_seconds 50))",
+        "outcome": "failed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "nonce": "9b6d67bac7af4fd685f55824dab4cfb7",
+        "private_log": "idle-run-clock.log",
+        "log_sha256": "478f792a5eeae70f87936740dd2b84cf877fdddfe304de471947bc6e945e60a7",
+        "start_offset": 2527,
+        "end_offset": 2883,
+        "cursor_at": "2026-10-13T02:15:26.833821+00:00",
+        "observed_at": "2026-10-13T02:15:30.501239+00:00",
+        "observations": [
+          {
+            "line": 24,
+            "text": "10.12.26 22:15:29.400 0000698 g006785 f0013414  WARNING hs: lsqa:9b6d67bac7af4fd685f55824dab4cfb7:fail ",
+            "outcome": "FAIL"
+          }
+        ]
+      },
+      {
+        "name": "idle-run-combat",
+        "condition": "(and (> sv_shots 0) (> sv_xp 0) (<= (ai_living_count sv_hostiles) 36))",
+        "outcome": "failed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "nonce": "10b528acdc54496a8730ee94ee2c3008",
+        "private_log": "idle-run-combat.log",
+        "log_sha256": "a3c9038325818c233d6ed12da90b71cb85495f2bd331c2317335d957c23df105",
+        "start_offset": 2883,
+        "end_offset": 3266,
+        "cursor_at": "2026-10-13T02:15:30.501861+00:00",
+        "observed_at": "2026-10-13T02:15:34.627791+00:00",
+        "observations": [
+          {
+            "line": 26,
+            "text": "10.12.26 22:15:33.515 0000700 g006785 f0013661  WARNING hs: lsqa:10b528acdc54496a8730ee94ee2c3008:fail ",
+            "outcome": "FAIL"
+          }
+        ]
+      },
+      {
+        "name": "idle-run-levelup",
+        "condition": "(and sv_menu_open (= sv_level 2) (= sv_tokens 4) (= sv_threshold 150))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "nonce": "f61fbea7b1a2458eb3f77df839caa342",
+        "private_log": "idle-run-levelup.log",
+        "log_sha256": "fc49747c8545965b29129228bd5c47338536a61b4e1c12e5a15dc448b0cc86f8",
+        "start_offset": 4225,
+        "end_offset": 4608,
+        "cursor_at": "2026-10-13T02:16:50.172312+00:00",
+        "observed_at": "2026-10-13T02:16:54.269246+00:00",
+        "observations": [
+          {
+            "line": 35,
+            "text": "10.12.26 22:16:53.167 0000717 g006785 f0018440  WARNING hs: lsqa:f61fbea7b1a2458eb3f77df839caa342:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "idle-run-paused-values",
+        "condition": "(and (= sv_seconds 20) (= sv_shots 34) (= sv_xp 0))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "nonce": "02225e15e763404fbea23bb4b9990c4c",
+        "private_log": "idle-run-paused-values.log",
+        "log_sha256": "a329ba31a8abf3faab3d2a9875fee467bc2fcaf5bac49f0538192563a06ec880",
+        "start_offset": 4608,
+        "end_offset": 4972,
+        "cursor_at": "2026-10-13T02:16:54.269652+00:00",
+        "observed_at": "2026-10-13T02:16:58.080358+00:00",
+        "observations": [
+          {
+            "line": 37,
+            "text": "10.12.26 22:16:56.983 0000720 g006785 f0018669  WARNING hs: lsqa:02225e15e763404fbea23bb4b9990c4c:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "new-run-initial",
+        "condition": "(and (= sv_stage 1) (= sv_seconds 0) (= sv_xp 0) (= sv_tokens 3) sv_menu_open)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "73b5b037c3dd41ec87b4831b3647bea2",
+        "private_log": "new-run-initial.log",
+        "log_sha256": "2469b8a80b258b7638fbd4bb5d03b96631a3d19d65fcc73c2caa78e12f41f58d",
+        "start_offset": 850,
+        "end_offset": 1241,
+        "cursor_at": "2026-10-13T02:13:10.342367+00:00",
+        "observed_at": "2026-10-13T02:13:14.560816+00:00",
+        "observations": [
+          {
+            "line": 14,
+            "text": "10.12.26 22:13:13.455 0000666 g004044 f0005263  WARNING hs: lsqa:73b5b037c3dd41ec87b4831b3647bea2:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "new-run-no-deathless",
+        "condition": "(not cheat_deathless_player)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "9fbe891e75c345148ae2ceb819e9427b",
+        "private_log": "new-run-no-deathless.log",
+        "log_sha256": "d7c57f1229ba52a2ea39624362227aac1283bd3a35ad3d27fe5802cf1627a4e8",
+        "start_offset": 1964,
+        "end_offset": 2305,
+        "cursor_at": "2026-10-13T02:13:22.112613+00:00",
+        "observed_at": "2026-10-13T02:13:25.545198+00:00",
+        "observations": [
+          {
+            "line": 20,
+            "text": "10.12.26 22:13:24.439 0000672 g004044 f0005922  WARNING hs: lsqa:9fbe891e75c345148ae2ceb819e9427b:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "new-run-no-enemies",
+        "condition": "(= (ai_living_count sv_hostiles) 0)",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "bd3d235e73074e41be07c7a5ac107ba0",
+        "private_log": "new-run-no-enemies.log",
+        "log_sha256": "ee6f7cf40ce0f0b717743034f134b05f0bb66c348ba21cd99dc8186604223e83",
+        "start_offset": 1616,
+        "end_offset": 1964,
+        "cursor_at": "2026-10-13T02:13:18.555992+00:00",
+        "observed_at": "2026-10-13T02:13:22.112360+00:00",
+        "observations": [
+          {
+            "line": 18,
+            "text": "10.12.26 22:13:21.005 0000670 g004044 f0005716  WARNING hs: lsqa:bd3d235e73074e41be07c7a5ac107ba0:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "new-run-ranks",
+        "condition": "(and (= sv_nl_u 1) (= sv_ar_u 0) (= sv_nl_d 0) (= sv_shots 0))",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "1f9168dd00a9435194fb907d9563c9e4",
+        "private_log": "new-run-ranks.log",
+        "log_sha256": "473f0866ae77a90bb88037781e306137eaf598e9a76373ba86eba49020d2c0d4",
+        "start_offset": 1241,
+        "end_offset": 1616,
+        "cursor_at": "2026-10-13T02:13:14.561115+00:00",
+        "observed_at": "2026-10-13T02:13:18.555716+00:00",
+        "observations": [
+          {
+            "line": 16,
+            "text": "10.12.26 22:13:17.455 0000668 g004044 f0005503  WARNING hs: lsqa:1f9168dd00a9435194fb907d9563c9e4:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "transport-duplicate",
+        "condition": "true",
+        "outcome": "unresolved",
+        "reason": "multiple_native_markers",
+        "run_kind": "seeded",
+        "nonce": "2cf28cbbbc6c42beb85fd3eeb8ecceaa",
+        "private_log": "transport-duplicate.log",
+        "log_sha256": "cdb740fde22abeaaef40c7544d366e407e2b456f0827c7f762622ca196a60d7a",
+        "start_offset": 2558,
+        "end_offset": 3192,
+        "cursor_at": "2026-10-13T02:05:59.750546+00:00",
+        "observed_at": "2026-10-13T02:06:05.368114+00:00",
+        "observations": [
+          {
+            "line": 25,
+            "text": "10.12.26 22:06:01.712 0000688 g001650 f0009803  WARNING hs: lsqa:2cf28cbbbc6c42beb85fd3eeb8ecceaa:pass ",
+            "outcome": "PASS"
+          },
+          {
+            "line": 27,
+            "text": "10.12.26 22:06:04.262 0000691 g001650 f0009956  WARNING hs: lsqa:2cf28cbbbc6c42beb85fd3eeb8ecceaa:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "transport-false",
+        "condition": "false",
+        "outcome": "failed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "8993e09284524c4da8ea9283c3637e45",
+        "private_log": "transport-false.log",
+        "log_sha256": "78c9e50032d1cde783e6282514d6cebee780f16fc3060fe844182b362a367ead",
+        "start_offset": 1913,
+        "end_offset": 2231,
+        "cursor_at": "2026-10-13T02:05:52.953019+00:00",
+        "observed_at": "2026-10-13T02:05:56.031790+00:00",
+        "observations": [
+          {
+            "line": 21,
+            "text": "10.12.26 22:05:54.929 0000684 g001650 f0009396  WARNING hs: lsqa:8993e09284524c4da8ea9283c3637e45:fail ",
+            "outcome": "FAIL"
+          }
+        ]
+      },
+      {
+        "name": "transport-invalid",
+        "condition": "sv_missing_qa_global",
+        "outcome": "unresolved",
+        "reason": "no_native_marker",
+        "run_kind": "seeded",
+        "nonce": "ab84200eded543c698ed9fe4e4381b69",
+        "private_log": "transport-invalid.log",
+        "log_sha256": "536001151cd5eb9bd9eaab1dcfb60f32b8cd3e7a21b451948f12407fb0a31531",
+        "start_offset": 3192,
+        "end_offset": 3420,
+        "cursor_at": "2026-10-13T02:06:05.368432+00:00",
+        "observed_at": "2026-10-13T02:06:08.681511+00:00",
+        "observations": []
+      },
+      {
+        "name": "transport-state-false",
+        "condition": "(= sv_stage 2)",
+        "outcome": "failed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "3eb711e71af045d59a9157d1d5bf2b15",
+        "private_log": "transport-state-false.log",
+        "log_sha256": "8f56ec04d3b0ee3d0a294eb366bda87c38cf44c66208ddbbcb949caffd57b7a7",
+        "start_offset": 2231,
+        "end_offset": 2558,
+        "cursor_at": "2026-10-13T02:05:56.032115+00:00",
+        "observed_at": "2026-10-13T02:05:59.249716+00:00",
+        "observations": [
+          {
+            "line": 23,
+            "text": "10.12.26 22:05:58.145 0000686 g001650 f0009589  WARNING hs: lsqa:3eb711e71af045d59a9157d1d5bf2b15:fail ",
+            "outcome": "FAIL"
+          }
+        ]
+      },
+      {
+        "name": "transport-true",
+        "condition": "true",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "nonce": "9119941a93254e8caa70505a1d53a301",
+        "private_log": "transport-true.log",
+        "log_sha256": "9e0f6c09ec2e75a04f857ece5280d768067b3c24068dbac9cd5a68d0e96e756d",
+        "start_offset": 1596,
+        "end_offset": 1913,
+        "cursor_at": "2026-10-13T02:05:49.902133+00:00",
+        "observed_at": "2026-10-13T02:05:52.952730+00:00",
+        "observations": [
+          {
+            "line": 19,
+            "text": "10.12.26 22:05:51.845 0000682 g001650 f0009211  WARNING hs: lsqa:9119941a93254e8caa70505a1d53a301:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "transport-undispatched",
+        "condition": "true",
+        "outcome": "unresolved",
+        "reason": "no_native_marker",
+        "run_kind": "seeded",
+        "nonce": "6f4af8d5381348c59c8d26fb191f2db0",
+        "private_log": "transport-undispatched.log",
+        "log_sha256": "8f56ec04d3b0ee3d0a294eb366bda87c38cf44c66208ddbbcb949caffd57b7a7",
+        "start_offset": 2558,
+        "end_offset": 2558,
+        "cursor_at": "2026-10-13T02:05:59.250028+00:00",
+        "observed_at": "2026-10-13T02:05:59.750240+00:00",
+        "observations": []
+      }
+    ],
+    "checkpoint": {
+      "generation": "bbf3a9382e5846878cdc0088d017c041",
+      "core_sha256": "a7038646384803ee878bfb2d921607aac315a336a07856f23953b743cf51c2d5",
+      "native_process_before": [
+        886192
+      ],
+      "native_process_after": [
+        891644
+      ],
+      "restored_values": {
+        "stage": 2,
+        "active_seconds": 430,
+        "xp": 81.25,
+        "points": 7,
+        "ar_unlock": 1,
+        "needler_power": 2,
+        "shots": 123,
+        "actors": 17,
+        "needler_cooldown": 7,
+        "ar_cooldown": 9
+      },
+      "new_run_preserved_old_generation_and_archived_pointer": true
+    },
+    "ordinary_interval": {
+      "wall_capture_seconds": 45,
+      "active_seconds": 20,
+      "shots": 34,
+      "level": 2,
+      "points": 4,
+      "threshold": 150,
+      "xp_remainder": 0,
+      "living_enemies": 2,
+      "player_health_fraction": 1.0,
+      "behavior": "Fresh New Run, initial Needler only, no purchases or gameplay cheats; real Resume key, stationary player. Native level-up paused in Armory. Read-only console assertions bracketed play; action resets cleared console input.",
+      "failed_expectations": "idle-run-clock and idle-run-combat deliberately remain failed. Initial checks assumed 40-50 active seconds and positive XP remainder; subsequent actual-state checks established a level-up pause at 20 seconds with XP spent. No death, full-run balance or performance result is inferred.",
+      "private_evidence": "idle-run.mp4 plus idle-run-after.png and native assertion logs."
+    },
+    "setup_guard": "Initial attempt selected stale archived candidate.hsc/UI; expected-hash guard rejected staging before any candidate copies. Correct integrated files were then verified/staged.",
+    "intentional_diagnostic": "transport-invalid invokes an undefined QA global to prove missing marker remains unresolved; its diagnostic is expected."
+  },
+  "launcher_cleanup": {
+    "environment": "sdk",
+    "qa_profile": "qa-saves/ls03-cleanup",
+    "candidate_fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+      "hsc": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500",
+      "private_assets": "2dd6294723a9e527753678545a780563319a523b49ac7a9865ad606ee61404f2"
+    },
+    "launcher_sha256": "28ed2e98e4df588265a134401fbbc771c32f0f90ec63868856a9a0350fb7f15c",
+    "installed_launcher_sha256": "547be946c33ca3496b0019fb367708111c8b031c11b021399afc3fe0dc819058",
+    "original_bug": "Old launcher left QA pending.bin after exit; following production Continue archived those QA bytes as stale. Production CURRENT and original files were unchanged. Exact matching QA bytes were relocated to private QA evidence.",
+    "fix": "After wrapper and native children exit, archive remaining pending bytes in the launching profile; partial bytes remain archives. Restore signals/init and preserve original monitor errors if cleanup fails.",
+    "native_verified": {
+      "save_valid_before_and_after": true,
+      "current_metadata_unchanged": true,
+      "pending_sha256_before": "b279b9eb9695d9fe4c2b0918c5bdffd9717b6458c510a7b86f623cbd7e0536b2",
+      "pending_absent_after": true,
+      "own_archive_matches_pending": true,
+      "native_children_exited": true,
+      "production_exactly_unchanged_before_restoration": true,
+      "init_sha256_after_exit": "ddbac943f7da56010656482418386525b1a63c47a04cc832b6d7bda22d90f5c3"
+    },
+    "limits": "Managed shutdown only. Partial/error paths are synthetic regressions; forced launcher kill/crash and legacy orphan attribution remain unresolved. Installed launch.py was not promoted."
+  },
+  "production_restoration": {
+    "fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+      "hsc": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500",
+      "private_assets": "2dd6294723a9e527753678545a780563319a523b49ac7a9865ad606ee61404f2"
+    },
+    "checkpoint_generation": "c4b9f383fa004dceab77a9639fc74a03",
+    "core_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430",
+    "original_profile_files": 16,
+    "changed_original_files": [],
+    "added_files": [
+      "launcher-sessions/24881a159052485593dbd3df4bddd55d/init-before.txt",
+      "launcher-sessions/24881a159052485593dbd3df4bddd55d/play.log",
+      "launcher-sessions/c55b4a0f04b640bf8c275160dd48b7b3/init-before.txt",
+      "launcher-sessions/c55b4a0f04b640bf8c275160dd48b7b3/play.log"
+    ],
+    "native_children_at_verification": [
+      901620
+    ],
+    "visual": "Original overhead v0.4 Continue and Armory observed after final restoration.",
+    "package_and_installed_launcher_changed": false
+  },
+  "remaining": [
+    "ordinary death/retry and ending recovery with observed assertions",
+    "full 20-minute runs and performance/metric baseline",
+    "all held-input/recovery permutations on an integrated final candidate",
+    "retail MCC and retail persistence capability",
+    "crash/orphan attribution across launcher profiles"
+  ],
+  "private_evidence_roots": [
+    "Onyx Halo3Survivors/qa-ls03",
+    "Onyx Halo3Survivors/qa-ls03-cleanup"
+  ]
+}

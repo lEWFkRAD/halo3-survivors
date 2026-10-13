@@ -69,7 +69,8 @@ Source regressions use synthetic logs, including actual SDK envelope examples.
 Run them with `python -B -m unittest discover -s tests -p test_native_qa.py -v`.
 Synthetic coverage does not validate game recovery, retail compatibility or
 ordinary-run balance. Native experiments and remaining work are recorded in
-the LS-03 issue and its bounded evidence record.
+the [LS-03 issue](https://github.com/lEWFkRAD/halo3-survivors/issues/4) and its
+[bounded evidence record](native-validation-ls03.json).
 
 ## Session cleanup
 
