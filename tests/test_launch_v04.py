@@ -1,6 +1,9 @@
 """Launcher/save behavior in temporary directories; never starts a game or GUI."""
+from contextlib import nullcontext, redirect_stderr, redirect_stdout
 from pathlib import Path
+import io
 import json
+import shlex
 import sys
 import tempfile
 import unittest
@@ -29,6 +32,10 @@ class LauncherTests(unittest.TestCase):
             path = self.paths.kit / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
+        wine = launcher.wine_path(self.paths)
+        wine.parent.mkdir(parents=True, exist_ok=True)
+        wine.write_bytes(b'owned Proton Wine fixture')
+        wine.chmod(0o755)
         self.paths.pending.parent.mkdir()
         self.compatibility = launcher.fingerprint(self.paths)
         self.data = b'A' * (launcher.MIN_CORE + 64)
@@ -52,6 +59,111 @@ class LauncherTests(unittest.TestCase):
     def test_missing_profile_validation_is_read_only(self):
         self.assertFalse(launcher.validate_save(self.paths, self.compatibility)['found'])
         self.assertFalse(self.paths.profile.exists())
+
+    def test_default_steam_path_keeps_current_installation_layout(self):
+        expected = self.paths.kit.parent.parent.parent
+        self.assertEqual(self.paths.steam, expected)
+        words = shlex.split(launcher.game_command(self.paths)[-1])
+        self.assertIn(str(expected / 'steamapps/common/Proton - Experimental/files/bin/wine'), words)
+        qa = launcher.Paths(self.paths.root, self.paths.kit, self.paths.root / 'qa-saves/third-argument')
+        self.assertTrue(qa.qa)
+        self.assertEqual(qa.steam, expected)
+
+    def test_explicit_steam_supports_isolated_kit_and_paths_with_spaces(self):
+        steam = self.paths.root / 'Owned Steam Installation'
+        kit = self.paths.root / 'qa build/clean kit'
+        qa = self.paths.root / 'qa-saves/path-proof'
+        paths = launcher.Paths(self.paths.root, kit, qa, steam=steam / 'unused/..')
+        self.assertEqual(paths.steam, steam.resolve())
+        self.assertEqual(paths.profile, qa.resolve())
+        command = launcher.game_command(paths)
+        self.assertEqual(command[:-1], ['snap', 'run', '--shell', 'steam', '-c'])
+        words = shlex.split(command[-1])
+        self.assertEqual(words[:4], ['cd', str(kit.resolve()), '&&', 'env'])
+        expected_wine = str(steam.resolve() / 'steamapps/common/Proton - Experimental/files/bin/wine')
+        self.assertEqual(words.count(expected_wine), 1)
+        self.assertEqual(words[words.index(expected_wine) + 1], str(kit.resolve() / 'halo3_tag_test.exe'))
+        self.assertEqual(words[-3:], ['-window', '1600', '900'])
+        self.assertNotIn(str(kit.resolve().parents[2] / 'steamapps/common/Proton - Experimental/files/bin/wine'), words)
+
+    def test_steam_selection_does_not_change_checkpoint_fingerprint(self):
+        paths = launcher.Paths(self.paths.root, self.paths.kit, steam=self.paths.root / 'other Steam')
+        self.assertEqual(launcher.fingerprint(paths), self.compatibility)
+
+    def test_invalid_runtime_preserves_profile_pending_resume_and_init(self):
+        self.commit()
+        self.paths.pending.write_bytes(b'pending checkpoint')
+        self.paths.resume.write_bytes(b'previous resume')
+        roots = (self.paths.root, self.paths.kit)
+        def snapshot():
+            return {path: path.read_bytes() for root in roots for path in root.rglob('*') if path.is_file()}
+        wine = launcher.wine_path(self.paths)
+        wine.unlink()
+        for mode in ('new', 'continue'):
+            for directory in (False, True):
+                with self.subTest(mode=mode, directory=directory):
+                    if directory:
+                        wine.mkdir()
+                    before = snapshot()
+                    with patch.object(launcher, 'native_children') as children, patch.object(launcher.subprocess, 'Popen') as start:
+                        with self.assertRaisesRegex(launcher.SaveError, 'Pass --steam'):
+                            launcher.launch(self.paths, mode, self.compatibility, self.report)
+                    children.assert_not_called()
+                    start.assert_not_called()
+                    self.assertEqual(snapshot(), before)
+                    if directory:
+                        wine.rmdir()
+        self.assertFalse((self.paths.profile / 'archives').exists())
+        self.assertFalse((self.paths.profile / 'launcher-sessions').exists())
+
+    def test_non_executable_wine_fails_before_launch_mutations(self):
+        original = self.paths.init.read_bytes()
+        with patch.object(launcher.os, 'access', return_value=False), patch.object(launcher.subprocess, 'Popen') as start:
+            with self.assertRaisesRegex(launcher.SaveError, 'non-executable Proton Wine'):
+                launcher.launch(self.paths, 'new', self.compatibility, self.report)
+        start.assert_not_called()
+        self.assertEqual(self.paths.init.read_bytes(), original)
+        self.assertFalse(self.paths.profile.exists())
+
+    def test_cli_forwards_explicit_steam_root_to_launch(self):
+        steam = self.paths.root / 'Separate Steam'
+        wine = steam / 'steamapps/common/Proton - Experimental/files/bin/wine'
+        wine.parent.mkdir(parents=True)
+        wine.write_bytes(b'owned executable')
+        wine.chmod(0o755)
+        args = ['--root', str(self.paths.root), '--kit', str(self.paths.kit),
+                '--steam', str(steam), '--new']
+        with patch.object(launcher, 'launcher_lock', return_value=nullcontext()), patch.object(launcher, 'launch', return_value=0) as launch:
+            self.assertEqual(launcher.main(args), 0)
+        paths, mode, compatibility, _ = launch.call_args.args
+        self.assertEqual(paths.steam, steam.resolve())
+        self.assertEqual(mode, 'new')
+        self.assertEqual(compatibility, self.compatibility)
+        self.assertFalse(self.paths.profile.exists())
+
+    def test_cli_checks_missing_runtime_before_lock_or_profile_changes(self):
+        steam = self.paths.root / 'Missing Steam'
+        args = ['--root', str(self.paths.root), '--kit', str(self.paths.kit),
+                '--steam', str(steam), '--new']
+        with patch.object(launcher, 'launcher_lock') as lock, patch.object(launcher, 'launch') as launch, patch.object(launcher.subprocess, 'Popen'), redirect_stderr(io.StringIO()):
+            self.assertEqual(launcher.main(args), 1)
+        lock.assert_not_called()
+        launch.assert_not_called()
+        self.assertFalse(self.paths.profile.exists())
+
+    def test_cli_validate_does_not_require_runtime_or_mutate_save(self):
+        self.commit()
+        before = self.paths.current.read_bytes()
+        args = ['--root', str(self.paths.root), '--kit', str(self.paths.kit),
+                '--steam', str(self.paths.root / 'Missing Steam'), '--validate']
+        output = io.StringIO()
+        with patch.object(launcher, 'validate_runtime') as runtime, patch.object(launcher, 'launcher_lock') as lock, patch.object(launcher.subprocess, 'Popen') as start, redirect_stdout(output):
+            self.assertEqual(launcher.main(args), 0)
+        self.assertTrue(json.loads(output.getvalue())['valid'])
+        runtime.assert_not_called()
+        lock.assert_not_called()
+        start.assert_not_called()
+        self.assertEqual(self.paths.current.read_bytes(), before)
 
     def test_choose_continue_accepts_empty_success_output(self):
         status = {'found': True, 'valid': True, 'reason': ''}

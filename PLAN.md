@@ -51,8 +51,10 @@ monetization and replacing the native game are outside this plan.
   clock, spawn clearance, batched XP, full-process Continue and final victory.
   The broader checks preceded a final one-line victory correction; the exact
   scope is recorded in [native-validation-v04.json](native-validation-v04.json).
-- Retail MCC loading and retail persistence are unverified. Fresh-clone native
-  builds still require the prepared private scenario and local tool setup.
+- Retail MCC loading and retail persistence are unverified. The original v0.4
+  build required a prepared private scenario; the supported LS-01 stock-input
+  route now removes that dependency. See [LS-01 evidence](native-validation-ls01.json)
+  and [BOOTSTRAP.md](BOOTSTRAP.md) for its SDK scope and remaining release limits.
 
 ## Proposed delivery sequence
 
@@ -75,10 +77,10 @@ the dependent feature, not preliminary read-only research or isolated design.
 | Node IDs, branches, costs, effects | `progression_catalog.py` | Stable IDs should drive UI and any future permanent profile |
 | Run state, menu, stages, checkpoint hooks | `generate_progression.py` | Shared integration hotspot; coordinate changes |
 | Camera, enemy observation/spawn, auto attacks | `progression_hsc.py` | Shared hotspot; emits bounded native functions |
-| Scenario, placement, private damage tags | `progression_tags.py`, `author_effects.py`, `outdoors.py`, `birds_eye.py`, `author_hangar.py` | Requires owned native assets and `blam_tags` |
+| Scenario, placement, private damage tags | `bootstrap_tags.py`, `progression_tags.py` | Supported stock-input path; requires owned native assets and `blam_tags`. Older map authors remain historical |
 | Native titles and Armory presentation | `author_progression_ui.py` | Current title guard has little spare capacity |
 | SDK launch and saves | `launch_v04.py`, `install_launcher_v04.py` | Opaque exact-build native cores; production and QA profiles separated |
-| Native orchestration | `prepare_progression.py`, `fetch_progression_inputs.py`, `onyx_progression.py`, `progression_remote.py`, `remote_build.py` | Several entry points act at import/top level; inspect before running |
+| Native orchestration | `fetch_progression_inputs.py`, `prepare_progression.py`, `native_workspace.py` | Configured fetch/author/stage/readback; manual native compile/cache. Historical Onyx helpers retain machine assumptions |
 | Validation and promotion | `qa_progression.py`, `qa_v03_final.py`, `qa_v04.py`, `promote_v03.py` | Historical filenames do not necessarily identify the current target version |
 | Source tests and distribution | `tests/`, `bundle_source.py` | Source VM is not the native compiler; archive uses an explicit allowlist |
 | Generated outputs | `source/progression.hsc`, `progression-contract.json`, `progression-layout.json` | Edit authoring sources, then regenerate deliberately |
@@ -92,7 +94,10 @@ changed code.
 
 ### LS-01 Portable configuration and native bootstrap
 
-Priority: P0. Can start now. Owner area: helper/configuration and authoring setup.
+Priority: P0. Supported stock bootstrap acceptance is met; see
+[native-validation-ls01.json](native-validation-ls01.json). Owner area:
+helper/configuration and authoring setup. The task issue remains the live
+publication/closure record.
 
 Replace embedded machine paths, SSH assumptions and tool locations with a small
 documented configuration layer while preserving current defaults. Inventory the
@@ -108,13 +113,31 @@ fresh inputs. Keep gameplay changes out of this task.
 
 Acceptance:
 
-- [ ] A source-only checkout runs the applicable tests with explicit skips.
-- [ ] Configured paths work with spaces and fail clearly when tools are missing.
-- [ ] An isolated prepared installation can author and compile a candidate using
+- [x] A source-only checkout runs the applicable tests with explicit skips.
+- [x] Configured paths work with spaces and fail clearly when tools are missing.
+- [x] An isolated prepared installation can author and compile a candidate using
   the documented sequence without reading an undeclared development artifact.
-- [ ] A second run preserves user data and does not silently replace saves or
+- [x] A second run preserves user data and does not silently replace saves or
   install into unrelated game folders.
-- [ ] Owned assets, executables, credentials and local profiles stay untracked.
+- [x] Owned assets, executables, credentials and local profiles stay untracked.
+
+Evidence scope: implementation `dc4d80e58111ad026b0a722899130ce4e5caa2b2`
+provides configured stock fetching, direct baseline authoring, isolated
+preparation and exact manifest staging/readback. The isolated SDK rebuild
+starts from freshly extracted owned kit inputs and uses no historical private
+scenario templates. It includes baseline native save/readback, final script
+compilation, a fresh cache and short checks in all four stages. Source-only
+checks, path/error guards, repeat/rollback checks and production preservation
+are recorded in [native-validation-ls01.json](native-validation-ls01.json).
+Historical Onyx helpers are outside the supported route, which is documented
+in [BOOTSTRAP.md](BOOTSTRAP.md).
+
+This completes the supported source/bootstrap task, not the whole reproducible
+native-baseline milestone: LS-02 and LS-03 remain open. The cache has a success
+marker and 25 stock-asset error diagnostic lines; its native tool exit code was
+not captured. The 19 short SDK assertions include ordinary stage-one play and
+seeded/deathless stages two through four. They do not satisfy retail, full-run,
+complete arena reachability or release gates in LS-02/LS-10/LS-11.
 
 ### LS-02 Retail MCC compatibility and save capability
 
@@ -411,7 +434,8 @@ compatibility behavior instead of relaxing validation to force a load.
 
 ## Work that can begin immediately
 
-- A tooling agent can take LS-01 without controlling the running native game.
+- A tooling agent can maintain the supported LS-01 path or propose a focused
+  follow-up; check its issue for current acceptance and publication status.
 - A QA agent can improve source-side reporting/recovery tests under LS-03.
 - A presentation agent can design LS-04/LS-05 and queue a bounded native spike.
 - A gameplay agent can review encounter/cost data for LS-09 using existing evidence.

@@ -34,6 +34,7 @@ author_hangar.py
 author_progression_ui.py
 armory_presentation.py
 birds_eye.py
+bootstrap_tags.py
 bundle_source.py
 fetch_progression_inputs.py
 generate.py
@@ -41,6 +42,7 @@ generate_progression.py
 launch-installed.py
 launch_v04.py
 native_qa.py
+native_workspace.py
 install_launcher_v04.py
 launcher-install-v04.json
 record_v03_clip.py
@@ -73,12 +75,15 @@ tests/test_progression_native.py
 tests/test_promote_v03.py
 tests/test_launch_v04.py
 tests/test_native_qa.py
+tests/test_native_workspace.py
 tests/test_spawn_geometry.py
 tests/test_spawn_runtime.py
 tests/test_survival.py
 tests/test_workspace_config.py
 tests/test_preflight.py
 tests/test_prepare_progression.py
+tests/test_bootstrap_tags.py
+tests/test_fetch_progression_inputs.py
 source/last_stand.hsc
 source/progression.hsc
 camera-grid.json
@@ -96,6 +101,7 @@ native-validation-v04.json
 native-validation-ls04.json
 native-validation-ls05.json
 native-validation-ls03.json
+native-validation-ls01.json
 build-result-v04.json
 victory-fix.diff
 victory-cleanup-v04.diff

@@ -1,141 +1,318 @@
-# Native bootstrap status and input inventory
+# Native bootstrap and input inventory
 
-The source checkout supports source tests and read-only prerequisite checks.
-Progression authoring still needs an owned, prepared outdoor baseline. A fresh
-H3EK installation cannot yet reproduce that baseline using a verified sequence
-in this repository. This is the remaining work in
-[LS-01](https://github.com/lEWFkRAD/halo3-survivors/issues/2).
+The supported authoring path now starts from three canonical stock scenario/UI
+tags and the owned progression templates. Configured helpers fetch those inputs,
+author a direct outdoor baseline, prepare progression in isolation, and transfer
+exact manifests to a local editing kit. The LS-01 candidate completed a fresh
+owned-kit rebuild through native compilation, cache creation and bounded SDK
+gameplay checks. See [the native milestone record](native-validation-ls01.json)
+and [LS-01](https://github.com/lEWFkRAD/halo3-survivors/issues/2) for evidence and
+the task handoff. This milestone is not a retail release or promotion.
 
-Do not run the historical helpers in sequence assuming that they form an
-installer. Some execute native operations when imported. Follow the native
-ownership rules in [AGENTS.md](AGENTS.md) before staging or compiling anything.
+Read [AGENTS.md](AGENTS.md) before staging or compiling. Reserve the native slot,
+identify the current game/session owner, and preserve its build and checkpoint.
+Use an isolated kit and QA profile. The fetch, authoring and transfer helpers
+never stop an existing session, launch SDK tools, change saves or `init.txt`, or
+promote an installed package.
 
-## Read-only checks
+## Verified LS-01 native milestone
 
-Run from the checkout, without staging files or opening Halo:
+The tested source is commit `dc4d80e58111ad026b0a722899130ce4e5caa2b2`.
+The operator extracted 57,706 files from the owned `H3EK.7z` into an isolated kit,
+fetched all 21 declared stock tags, authored the baseline, performed native
+save/readback, prepared progression from that fresh baseline and staged the
+exact final output set. The final native readback contains 402 scripts,
+178 globals, 43,180 syntax datums and 128 titles. It does not depend on the three
+legacy private Needler weapons.
+
+The experiment used the coordinator's private byte-copy helper for baseline
+staging and scenario readback. Final progression staging exercised the public
+`native_workspace.py` API with 140 exact files. The public bootstrap/readback
+commands below are transfer interfaces; their receipts never evaluate or certify
+the native compiler result.
+
+The cache log contains `successfully built cache file.` and the fresh map is
+702,328,832 bytes. The record retains 25 error diagnostics involving stock model,
+decorator and watchtower data. The asynchronous launcher did not capture the
+tool exit code; the evidence is the success marker, fresh cache and recorded
+hashes, not a claimed zero exit status or error-free compiler log.
+
+SDK testing includes brief ordinary stage-one play, then seeded, deathless
+checks of stages two through four for overhead camera, auto-fire, actor bounds
+and movement. Nineteen native assertion observations were retained. Five
+additional geometry tests passed against the fresh compiled baseline, including
+navigation selection and safe cohort rings across all four arenas. These checks
+do not establish complete native path reachability, exhaustive geometry coverage,
+an ordinary 20-minute run or retail MCC behavior. The original production build
+and valid checkpoint were restored; this candidate was not installed or promoted.
+
+## Configuration and check semantics
+
+Use `last-stand.local.json`, an explicit `--config FILE`, or `LAST_STAND_CONFIG`.
+Set `editing_kit` to an owned H3EK installation with its stock tags extracted
+under `tags/`. `--root PATH` selects the input/output workspace; it does not
+select a different Python implementation. See [DEVELOPMENT.md](DEVELOPMENT.md)
+for configuration precedence and the optional native binding.
+
+Keep the complete owned SDK runtime and support files when preparing an isolated
+kit. Copying only the three executables and extracting the tag archive is not
+enough to run Sapien. The current kit also needs its owned `bin/` runtime files,
+FMOD libraries and `maps/fonts` support data. The fresh baseline experiment
+initially failed on missing `XAudio2_9Redist.dll` until the owned runtime/support
+files were restored. The preflight inventories selected prerequisites; it does
+not certify that every runtime dependency is installed.
+
+| Check | What it reads | What success establishes |
+| --- | --- | --- |
+| `preflight.py --stage source` | Authored source inventory | Required source files exist |
+| `fetch_progression_inputs.py --check` | Stock input sizes/types and output paths | Declared fetch inputs are present and destinations are safe |
+| `preflight.py --stage bootstrap` | Three fetched stock inputs, binding discovery, output paths | Bootstrap prerequisites are present |
+| `bootstrap_tags.py --check` | Owned tags through `blam_tags`; authors output in memory | Templates, palette identities and byte round trips pass without writing outputs |
+| `prepare_progression.py --check --json` | Direct preparation inputs, binding discovery, output paths | Preparation prerequisites pass; authoring modules are not imported |
+| `native_workspace.py --check stage-bootstrap` / `stage-progression` | Exact manifests/files and local native processes | Candidate bytes and transfer destinations pass before staging |
+| `native_workspace.py --check readback --kind bootstrap` / `progression` | Kit scenario, destination and local native processes | Readback bytes can be copied; compilation is not verified |
+| `preflight.py --stage native` | Configured kit tools and selected staged files | A selected native prerequisite inventory is present |
+
+These checks write no outputs. `preflight.py --remote --json` uses only a
+standard-library file-stat probe on the configured SSH host. Fetch `--remote
+--check` similarly checks remote stock inputs without transferring tag bytes.
+SSH requires an already trusted host key and noninteractive authentication;
+paths travel as JSON data, not shell-interpreted copy arguments.
+
+Exit 0 means the requested operation/check succeeded; 2 means blocked/error.
+Preflight and fetch support `--json`; preparation supports it with `--check`.
+Bootstrap and native-workspace commands always print JSON on success.
+Presence, hashes, headers and parser round trips do not prove dependency closure,
+native compilation, gameplay, retail MCC support or save compatibility.
+
+## Fetch canonical owned inputs
+
+From a workspace with a configured local kit:
 
 ```sh
-python -B preflight.py --stage source
-python -B prepare_progression.py --check --json
-python -B preflight.py --stage native --tools /path/to/H3EK
-python -B preflight.py --remote --json
+python -B fetch_progression_inputs.py --config last-stand.local.json --check --json
+python -B fetch_progression_inputs.py --config last-stand.local.json
 ```
 
-Source checks need no game assets or native binding. Authoring checks report
-every missing direct input, discover `blam_tags`, and check output paths before
-any authoring module is imported. Native checks inspect the configured editing
-kit and selected staged files. The remote check sends only a standard-library
-file-stat probe over SSH; it does not copy files, import project helpers,
-compile, launch, control a window or alter a save. SSH requires an existing
-trusted host key and noninteractive authentication; it does not accept a new
-host key automatically.
+Explicitly add `--remote` to both commands to read the configured remote kit.
+Omitting `editing_kit` does not implicitly contact Onyx. Remote fetching needs
+only Python's standard library and SSH; fetching never imports `blam_tags`.
 
-Exit code 0 means the requested prerequisite checks passed; 2 means blocked
-or an invalid configuration/probe. `--json` produces a schema-versioned report
-with per-path status and limitations. READY does **not** establish that tag
-contents are valid, all referenced dependencies exist, native compilation
-succeeds, retail MCC works, or gameplay is correct. See
-[DEVELOPMENT.md](DEVELOPMENT.md) for configuration and binding installation.
+The exact 21-tag inventory is declared in `fetch_progression_inputs.py`. Its
+three baseline inputs are:
 
-## Direct inputs for progression authoring
+| Canonical path under the kit's `tags/` | Fetched workspace path |
+| --- | --- |
+| `levels/solo/020_base/020_base.scenario` | `private-inputs/bootstrap/020_base.scenario` |
+| `levels/solo/070_waste/070_waste.scenario` | `private-inputs/bootstrap/070_waste.scenario` |
+| `ui/chapter_titles/020_base.multilingual_unicode_string_list` | `private-inputs/bootstrap/020_base.multilingual_unicode_string_list` |
 
-All paths below are relative to the checkout. These 18 files are mandatory
-before `prepare_progression.py` writes anything:
+The other 18 tags go to `private-inputs/v3/`: six damage templates, six effect
+templates, the energy-blade weapon, infection/carrier characters, carrier biped,
+watchtower machine and gravlift light. The sword damage source is the canonical
+`objects/weapons/damage_effects/dash_melee.damage_effect`; the weapon is retained
+as supporting provenance. Source mappings are explicit, including the stock
+Battle Rifle impact used for the Assault Rifle's cosmetic effect.
+
+Fetching checks all required inputs and output paths before staging. It validates
+tag kinds/headers and SHA-256 hashes before publishing only declared outputs.
+Missing, changed, corrupt or failed remote transfers preserve previous fetched
+data. Ordinary publication errors roll back; a rollback failure retains recovery
+files at the path reported in the error. Publication is not crash-atomic across
+the whole set. Unrelated files remain untouched.
+
+`private-inputs/bootstrap/sources.json` and `private-inputs/v3/sources.json`
+record source paths, origin, byte sizes and hashes. The v3 manifest also retains
+its legacy `damage`, `effects`, `characters` and `support` mappings.
+`private-inputs/v3/character-paths.json` retains the character-ID to native-tag-path
+mapping consumed by progression authoring. These owned files stay local.
+
+## Author the direct outdoor baseline
+
+```sh
+python -B preflight.py --stage bootstrap --config last-stand.local.json
+python -B bootstrap_tags.py --config last-stand.local.json --check
+python -B bootstrap_tags.py --config last-stand.local.json
+```
+
+The baseline preserves stock `070_waste` geometry, lighting, scenery, machines,
+navigation and PVS. It selects the outdoor `bsp_000` zone set by identity and BSP
+mask. Character/weapon palettes and sanitized objective/squad templates come
+from stock `020_base`, with explicit identity checks for progression's palette
+indices. It creates one Master Chief spawn, one AR `sv_start` profile, one title,
+and a minimal bootstrap script. It ignores old prepared intermediate files and
+does not inherit the three private Needler profiles or upgrade beacons.
+
+Exact authored outputs are:
+
+- `native-tags/levels/survivors/last_stand/bootstrap.scenario`
+- `native-tags/levels/survivors/last_stand/bootstrap.hsc`
+- `native-tags/ui/survivors/last_stand.multilingual_unicode_string_list`
+- `native-tags/levels/survivors/last_stand/bootstrap-manifest.json`
+
+The manifest records exact input/output hashes and the selected stock navigation
+point. All tags parse and round-trip before publication. Publication stages all
+four files and restores prior bytes on ordinary replacement failures; this is
+not a crash-atomic batch. `--check` renders the same report without creating
+outputs or staging directories.
+
+Stock navigation differs from the historical `outdoor-compiled.scenario` at some
+firing positions and bindings. Source preservation does not explain that delta.
+The fresh baseline native save/readback also changed firing-position bindings
+and still differed from the historical prepared navigation. Do not label the two
+baselines equivalent. The final LS-01 candidate passed fresh geometry checks and
+bounded movement/actor tests in all four arenas; complete native reachability
+and exhaustive geometry coverage remain unverified.
+
+## Stage, compile and read back
+
+`native_workspace.py` operates on a **local** configured `editing_kit`. Run it
+on the kit host with the source workspace, owned candidate files and matching
+manifests present. Remote fetch settings do not turn staging into an SSH command.
+This helper needs no tag binding and provides no native compiler automation.
+
+For a fresh, isolated destination:
+
+```sh
+python -B native_workspace.py --config last-stand.local.json --check stage-bootstrap
+python -B native_workspace.py --config last-stand.local.json stage-bootstrap
+```
+
+Staging validates the manifest against input/output bytes, then copies the
+scenario to `tags/levels/survivors/last_stand/last_stand.scenario`, HSC to
+`data/levels/survivors/last_stand/scripts/last_stand.hsc`, and only the declared
+UI/private tags to their kit paths. It rejects existing destinations by default.
+`--replace` explicitly permits replacement after backing up the previous set
+under workspace `backups/native-workspace-<operation-id>/`.
+
+Open the staged
+`tags/levels/survivors/last_stand/last_stand.scenario` in Sapien, using the complete
+owned runtime. Press **Ctrl+Shift+C** to compile scripts, inspect the fresh
+compiler diagnostics, then press **Ctrl+S** to save. Verify the save completed
+and close Sapien before readback. An operator must review native errors; a saved
+file or successful copy does not establish that compilation passed:
+
+```sh
+python -B native_workspace.py --config last-stand.local.json --check readback --kind bootstrap
+python -B native_workspace.py --config last-stand.local.json readback --kind bootstrap
+```
+
+Bootstrap readback writes `native-tags/levels/survivors/last_stand/outdoor-compiled.scenario`.
+It only copies bytes: every transfer receipt explicitly records
+`native_compilation_verified: false`. A filename ending in `compiled` is not
+compilation evidence. Retain the separate native save/readback results and
+navigation/binding checks before preparing progression.
+
+Native-workspace receipts are stored at `native-workspace/<operation-id>.json`.
+Stage/readback include a conservative host-wide native-process check and refuse
+when a relevant process is active or the check is unresolved. This snapshot is
+not an ownership lock; the issue reservation and session handoff remain required.
+No command automatically stops a process, starts a tool, edits a save or publishes
+a package. Existing readback files also require explicit `--replace`.
+
+## Prepare the progression candidate
+
+These 18 direct files are required before preparation starts:
 
 | Input | Use |
 | --- | --- |
-| `native-tags/levels/survivors/last_stand/outdoor-compiled.scenario` | Prepared outdoor scenario with compiled navigation and inherited palettes |
-| `native-tags/ui/survivors/last_stand.multilingual_unicode_string_list` | Base native string-list template |
-| `private-inputs/v3/carrier.character` | Private carrier character |
-| `private-inputs/v3/floodcarrier.biped` | Carrier body with automatic children disabled during authoring |
-| `private-inputs/v3/watchtower_base.device_machine` | Private watchtower machine |
-| `private-inputs/v3/watchtower_gravlift.light` | Private gravlift light |
-| `private-inputs/v3/<weapon>.damage_effect` (six files) | Per-weapon damage templates |
-| `private-inputs/v3/<weapon>.effect` (six files) | Cosmetic impact templates |
+| `native-tags/levels/survivors/last_stand/outdoor-compiled.scenario` | Native baseline readback with outdoor navigation and sanitized templates |
+| `native-tags/ui/survivors/last_stand.multilingual_unicode_string_list` | Baseline string-list template |
+| `private-inputs/v3/carrier.character` | Carrier character template |
+| `private-inputs/v3/floodcarrier.biped` | Carrier body; automatic death children are removed during authoring |
+| `private-inputs/v3/watchtower_base.device_machine` | Watchtower machine template |
+| `private-inputs/v3/watchtower_gravlift.light` | Gravlift light template |
+| `private-inputs/v3/<weapon>.damage_effect` (six) | Damage templates |
+| `private-inputs/v3/<weapon>.effect` (six) | Cosmetic impact templates |
 
-The six weapon names are `needler`, `assault_rifle`, `shotgun`, `plasma_rifle`,
-`rocket_launcher` and `energy_sword`. Every effect is required because the
-generated HaloScript references every impact tag. Checking damage templates
-alone could otherwise produce a partial candidate with missing effects.
-The checkout's `source/` directory must also exist: the HSC generator writes
-into it without creating it. Preflight reports a missing output parent as unsafe.
+Weapon IDs are `needler`, `assault_rifle`, `shotgun`, `plasma_rifle`,
+`rocket_launcher` and `energy_sword`. `source/` must exist. Optional
+`private-inputs/v3/character-paths.json` is copied into the isolated input snapshot
+when present. `infection.character`, `energy_blade.weapon` and fetch provenance
+files are not direct preparation prerequisites.
 
-`private-inputs/v3/character-paths.json` is optional metadata read by the tag
-author; absent metadata uses the stock infection/carrier references. If present,
-its contents must be valid JSON. `sources.json` records fetch provenance.
-`infection.character` and `energy_blade.weapon` are fetch-time inputs/evidence,
-not direct preparation prerequisites. The sword damage template originates
-from `objects/weapons/damage_effects/dash_melee.damage_effect` in the current
-owned kit. The fetcher still needs path adaptation and an operator review.
+```sh
+python -B prepare_progression.py --config last-stand.local.json --check --json
+python -B prepare_progression.py --config last-stand.local.json
+```
 
-The preflight checks presence and file types, not native tag contents or
-optional metadata validity. Preparation imports all authoring modules before
-the first write, catching binding-load failures early. Later authoring/content
-errors can still leave partial generated outputs; preparation is not a
-transaction and does not roll back a failed run.
+Preparation imports the authors before writing, copies exact owned inputs to a
+temporary workspace, and runs scenario, HSC, damage/effect and UI authors there.
+It checks the exact returned outputs and rejects undeclared files or changes to
+the input snapshot. Authoring/archive failures leave previous outputs untouched.
+Publication uses individual atomic replacements, not an atomic batch; the build
+manifest is published last. Consumers must validate its hashes before staging.
 
-## Outputs and inherited native dependencies
+Outputs include progression and progression-UI scenarios, declared private tags
+under `native-tags/objects/survivors/v3/`, the progression UI string list,
+`progression-layout.json`, `progression-contract.json`, `source/progression.hsc`,
+`v3-native.tar` and `progression-build.json`. The manifest records exact input,
+loaded-source and output hashes, plus the archive hash and member list. Existing
+stale private tags stay on disk but cannot enter this archive or receipt.
 
-Preparation runs tag authoring, script generation, damage authoring and UI
-authoring, in that order. It creates or replaces:
+Stage this candidate with `native_workspace.py --replace stage-progression`
+(run the same command with `--check` first). It validates the authored manifest,
+source hashes and exact archive contents. After the operator's final native
+compile/save in Sapien (**Ctrl+Shift+C**, review diagnostics, **Ctrl+S**) and tool
+shutdown, `native_workspace.py readback --kind progression`
+copies the result to `native-tags/levels/survivors/last_stand/compiled-progression.scenario`.
+Use the same `--config`/`--root` settings and explicit `--replace` for an existing
+destination. Readback still reports compilation as unverified.
 
-- `native-tags/levels/survivors/last_stand/progression.scenario`
-- `native-tags/levels/survivors/last_stand/progression-ui.scenario`
-- Private carrier, watchtower, damage and impact tags under
-  `native-tags/objects/survivors/v3/`
-- `native-tags/ui/survivors/progression.multilingual_unicode_string_list`
-- `progression-layout.json`, `progression-contract.json`, `source/progression.hsc`
-- `v3-native.tar`
+Build the cache from the kit working directory with the owned `tool.exe` and
+these arguments:
 
-Generated layout/contract files are outputs, not required seed inputs. Existing
-output links, linked parents, wrong path types and non-file children in the
-flat private-tag directory block preparation. The archive still includes all
-files already in that private-tag directory; pruning stale tags and producing
-an exact output manifest remain bootstrap work.
+```text
+tool.exe build-cache-file "levels\survivors\last_stand\last_stand" pc none english
+```
 
-The archive does not contain the inherited
-`objects/survivors/needler_1.weapon` through `needler_3.weapon`, which the native
-profiles reference. They exist in the current owned kit. Native preflight
-checks them, the staged scenario/HSC/UI, six private impact tags, SDK programs
-and tags/data directories. This is a selected prerequisite inventory, not a
-complete dependency closure for the scenario or damage/effect references.
+On Onyx, invoke that executable and those arguments inside the established
+Steam Snap/Proton environment with the private Wine prefix; do not run a legacy
+helper merely to obtain its tool launch command. Preserve the fresh cache log,
+map, hashes and tool exit status when available. Review diagnostics even when
+the success marker appears. The LS-01 experiment retained its stock errors and
+explicitly reports that its asynchronous launcher did not capture the exit code.
 
-## Historical baseline sequence and unresolved steps
+Fresh compiler diagnostics, script/global/title readback, cache creation,
+isolated gameplay/launcher checks and a cache receipt remain separate native
+gates for every changed candidate. The milestone above records those observations
+for the tested LS-01 candidate within its stated limits. A source archive or
+transfer receipt cannot substitute for them. Retail installation/update/rollback
+is still unfinished.
 
-The early authoring sources refer to these additional owned inputs:
+## Launch an isolated SDK candidate
 
-- `private-inputs/tags/levels/solo/020_base/020_base.scenario`
-- `private-inputs/titles.multilingual_unicode_string_list`
-- `private-inputs/needler.weapon`
-- `private-inputs/070_waste.scenario`
-- Legacy `private-inputs/auto_damage.damage_effect` and `private-inputs/impact.effect`
+The Linux SDK launcher accepts a separate Steam installation root. An isolated
+kit outside Steam's `steamapps/common/` tree must supply `--steam` explicitly;
+the default derives that path from `--kit` and is unsuitable for such a layout.
+Use the Steam root containing `steamapps`, not the Steam executable or the kit:
 
-The historical sequence was hangar authoring, native compilation/readback,
-native polishing, another saved scenario, overhead-camera authoring, outdoor
-conversion, another compilation/readback, and progression authoring. It is
-**an inventory of dependencies, not a tested rebuild recipe**:
+```sh
+python3 launch_v04.py --root /path/to/LastStand \
+  --kit /path/to/isolated/H3EK --steam /path/to/Steam \
+  --qa-profile /path/to/LastStand/qa-saves/ls01 --new
+```
 
-1. `author_hangar.py` produces a hangar scenario, base strings and the three
-   inherited Needler weapon tags.
-2. `polish_native.py` expects `compiled.scenario`; no checked-in command
-   produces that baseline from the current sources.
-3. `birds_eye.py` expects `birdbase.scenario`; its native round trip is likewise
-   undocumented. It produces the overhead grid and camera bindings.
-4. `outdoors.py` combines the hangar baseline and `070_waste.scenario`. It
-   reuses `hangar-overhead.scenario` if that backup already exists, which can
-   silently preserve an old input.
-5. Progression expects `outdoor-compiled.scenario`; its creation also requires
-   an explicit, verified native save/readback step.
-6. The v3 fetcher obtains private progression templates from the owned kit;
-   `prepare_progression.py` authors the final candidate from the prepared set.
+This is an explicit game launch, unlike the read-only checks and transfer
+helpers. It requires the existing Linux/Steam Snap/Proton runtime and a prepared
+private Wine prefix. The QA profile must stay strictly inside `ROOT/qa-saves`;
+never select a production profile for candidate tests. Checkpoints are bound to
+the exact engine/scenario/HSC/private-asset fingerprints. `--steam` supplies a
+runtime location; it does not make the launcher platform-independent or migrate
+existing checkpoints.
 
-Current `generate.py` already references beacon, overhead and camera-grid
-bindings that the initial hangar author does not create. Replaying the old
-scripts against a fresh kit therefore cannot be presented as a reliable first
-compile. The initial generic string and legacy damage/effect template fetch
-steps also need explicit provenance.
+## Historical helpers
 
-LS-01 remains open until the baseline sequence is redesigned or recovered,
-all helper paths are configurable, the complete required dependency set is
-staged, and a fresh owned kit produces a natively verified cache. Retain input
-provenance, exact commands and readback/build evidence for that experiment.
+`author_hangar.py`, `polish_native.py`, `birds_eye.py` and `outdoors.py` describe
+the earlier hangar-to-outdoor experiment. Its `compiled.scenario`,
+`birdbase.scenario` and `hangar-overhead.scenario` intermediates are historical
+private exports, not prerequisites for the direct bootstrap. Some legacy scripts
+execute work on import or select stale backups by existence.
+
+Legacy remote build, launch, promotion and QA scripts are operator-specific
+historical tools. Do not run them as a portable installer or infer that they
+consume the new configuration. The supported configured fetch/bootstrap/prepare/
+transfer path above replaces the old authoring chain. The tested candidate has
+fresh native evidence; future changes need their own evidence. Retail support,
+complete playthroughs and a player installation/update path remain separate
+roadmap tasks.

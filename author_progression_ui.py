@@ -43,10 +43,11 @@ def native_title_text(text):
     """Halo's title renderer consumes |n; ordinary LF is silently ignored."""
     return text.replace('\r\n', '\n').replace('\n', '|n')
 
-def main():
-    contract=json.loads((ROOT/'progression-contract.json').read_text())
+def main(root=None):
+    root=Path(root) if root is not None else ROOT
+    contract=json.loads((root/'progression-contract.json').read_text())
     titles=contract['titles'];assert len(titles)<=128
-    tag=b.TagFile.read(ROOT/'native-tags/levels/survivors/last_stand/progression.scenario')
+    tag=b.TagFile.read(root/'native-tags/levels/survivors/last_stand/progression.scenario')
     r=tag.root();block=r.field('cutscene titles').as_block()
     assert len(block)>0
     while len(block)>1:block.delete(len(block)-1)
@@ -57,7 +58,7 @@ def main():
         for k,v in {'name':name,**title_style(name)}.items():row.field(k).set(v)
     assert [block[i].field('name').value for i in range(len(block))]==list(titles)
     r.field('chapter title text').set((0x756e6963,r'ui\survivors\progression'))
-    strings=b.TagFile.read(ROOT/'native-tags/ui/survivors/last_stand.multilingual_unicode_string_list')
+    strings=b.TagFile.read(root/'native-tags/ui/survivors/last_stand.multilingual_unicode_string_list')
     sr=strings.root();refs=sr.field('string references').as_block();refs.clear();data=bytearray()
     for name,text in titles.items():
         j=refs.add();refs[j].field('string id').set(name)
@@ -65,9 +66,12 @@ def main():
             if field.endswith(' offset'):refs[j].field(field).set(len(data))
         data.extend(native_title_text(text).encode('utf-8')+b'\0')
     sr.field('string data utf8').set(bytes(data))
-    for obj,path in [(strings,ROOT/'native-tags/ui/survivors/progression.multilingual_unicode_string_list'),
-                     (tag,ROOT/'native-tags/levels/survivors/last_stand/progression-ui.scenario')]:
+    written=[]
+    for obj,path in [(strings,root/'native-tags/ui/survivors/progression.multilingual_unicode_string_list'),
+                     (tag,root/'native-tags/levels/survivors/last_stand/progression-ui.scenario')]:
         obj.recompute_checksum();obj.write(path)
         assert b.TagFile.read(path).write_to_bytes()==path.read_bytes()
+        written.append(path)
     print(f'Authored {len(titles)} titles into progression-ui.scenario; base candidate unchanged.')
+    return tuple(written)
 if __name__=='__main__':main()

@@ -12,16 +12,18 @@ recorded media or player saves. Cloning it alone does not install the game.
 
 The current development copy is on Windows, with native compilation and play
 testing on Onyx-Linux using Steam Snap, Proton Experimental and the owned
-Halo 3 Editing Kit. The preflight supports local configuration; legacy remote
-build, fetch, launch and QA helpers still contain that workspace's paths and
-the `onyx-linux` SSH alias. Read and adapt those helpers before another setup.
+Halo 3 Editing Kit. The supported fetch, direct-bootstrap, preparation,
+preflight and native-workspace transfer helpers consume local configuration.
+Legacy remote build, launch, promotion and QA scripts remain operator-specific
+historical tools; they are not a portable installation workflow.
 
 ## Configuration and prerequisite checks
 
 Copy `last-stand.example.json` to the ignored `last-stand.local.json` and edit
 the paths for your installation. The example's `../H3EK` is a placeholder.
-You can omit `editing_kit` for source-only work. The workspace is always the
-checkout; `preflight.py --root PATH` can inspect a different source workspace.
+You can omit `editing_kit` for source-only work. Set it to an owned extracted kit
+for local fetch or staging. `--root PATH` selects a different input/output
+workspace; the Python implementations still come from the executing checkout.
 
 Selection order is `--config FILE`, `LAST_STAND_CONFIG`, then the optional
 `last-stand.local.json` in the workspace. An explicitly selected missing or
@@ -32,28 +34,43 @@ the current Onyx alias and remote workspace; they do not configure a local kit.
 
 ```sh
 python -B preflight.py --stage source
+python -B fetch_progression_inputs.py --check --json
+python -B preflight.py --stage bootstrap
+python -B bootstrap_tags.py --check
 python -B prepare_progression.py --check --json
 python -B preflight.py --config last-stand.local.json --stage native
 python -B preflight.py --tools /path/to/H3EK --json
 python -B preflight.py --remote --json
 ```
 
-All five commands are read-only. The source check works without owned assets.
-The authoring check lists all missing direct inputs and checks output paths;
-it does not import the native binding or authors. Native checks inspect the
-configured local or remote SDK/staged files, without running SDK programs.
-Remote checks require an already trusted SSH host and noninteractive login.
-Exit 0 means the selected prerequisites passed; exit 2 means blocked/error.
+All listed commands are read-only. Source checks need no owned assets. Fetch
+checks use input sizes/types and output safety without reading tag contents.
+Bootstrap preflight discovers the binding; `bootstrap_tags.py --check` then
+imports it, parses the three stock tags and authors/round-trips the baseline in
+memory without writing. Preparation's `--check` lists direct prerequisites and
+output safety without importing authors or the native binding. Native preflight
+inspects SDK/staged files without running SDK programs. Exit 0 means the selected
+operation passed; 2 means blocked/error. None establishes a playable build.
 
-Configuration currently applies to preflight and preparation's prerequisite
-check. Preparation still writes beside its own source files; config cannot
-redirect its workspace. `tools.scp` is reserved for subsequent helper migration
-and is not invoked here. Existing staging, fetch, compile, launch and QA helpers
-do **not** consume this config yet. Do not infer that changing the JSON moves
-the installed game or makes the historical bootstrap portable.
+Fetch defaults to a configured local kit. `fetch_progression_inputs.py --remote`
+explicitly selects the remote kit, using trusted, noninteractive SSH and Python
+stdin requests for literal paths. `--remote --check` is stat-only. Actual fetch
+stages all 21 stock tags, validates headers/hashes, and publishes only declared
+files plus provenance metadata. Missing or failed inputs preserve the previous
+set; ordinary publication failures roll back. `tools.scp` remains unused by this
+path. Changing configuration alone does not alter the installed game.
 
-See [BOOTSTRAP.md](BOOTSTRAP.md) for the 18 direct authoring inputs, output
-inventory, inherited native dependencies and known fresh-installation gaps.
+`native_workspace.py` stages or reads back a local `editing_kit`; it has no
+remote-execution mode. Its `--check` validates the exact candidate and performs
+a conservative native-process inspection without writing. Actual staging checks
+manifest hashes and archive contents, rejects existing destinations unless
+`--replace` is supplied, backs up replacements, and records transfer receipts.
+It neither stops/launches tools nor edits `init.txt`, saves or installed maps.
+Readback receipts always report `native_compilation_verified: false`.
+
+See [BOOTSTRAP.md](BOOTSTRAP.md) for exact input/output inventories, check
+semantics, the verified direct-stock native milestone and its remaining limits.
+The helper modules are import-safe; historical helpers may not be.
 
 ## Source tests
 
@@ -63,14 +80,19 @@ Tested with CPython 3.14.6. From the repository root:
 python -B -m unittest discover -s tests -v
 ```
 
-The complete owner workspace passes all 217 tests, including 29 Armory model,
-scheduler and title-style checks added for LS-05. A clean source export passes
-212 tests (213 reported entries, one skipped module). Source-only checkouts skip
-one module containing five spawn-geometry tests when the external `blam_tags`
-binding is unavailable; its owned-navigation test also needs the local scenario
-asset. The remaining source checks require no third-party Python package.
-The historical v0.4 native release passed 109 tests. Passing source tests does
-not establish native validation or a new release.
+The LS-01 owner suite passes 331 tests with six skips (337 reported entries).
+The clean source export passes 326 tests with seven skipped entries (333
+reported entries). Six owned-bootstrap tests skip without canonical private
+inputs/binding; a source-only checkout also skips the module containing five
+spawn-geometry tests when `blam_tags` is unavailable. An additional run of all
+five geometry tests passed using the freshly compiled LS-01 baseline and the
+isolated binding. These geometry tests validate navigation selection and safe
+cohort rings, not full native path reachability.
+
+The preceding LS-05 baseline passed 217 owner tests and 212 clean-export tests;
+the historical v0.4 release passed 109. Source checks requiring neither owned
+assets nor the native binding need no third-party Python package. Passing them
+does not establish native validation or a new release.
 
 The test VM exercises the emitted HaloScript subset. It is not a Halo compiler
 or a replacement for engine play testing. Native test evidence is recorded in
@@ -86,9 +108,9 @@ The reader records a bounded log window and candidate metadata. Operators must
 independently verify the emitting process, profile and build, and preserve log
 snapshots before restarting the engine.
 
-The LS-03 reader adds 28 synthetic evidence regressions; launcher shutdown adds
-five profile-cleanup regressions. The combined owner suite passes 250 tests;
-the preceding 217-test count above describes the LS-05 source baseline.
+The LS-03 reader added 28 synthetic evidence regressions; launcher shutdown added
+five profile-cleanup regressions. That historical owner suite passed 250 tests;
+the current LS-01 suite counts are recorded above.
 Native SDK checks are separate from these source tests and
 do not establish retail support or complete ordinary-run recovery coverage.
 
@@ -128,8 +150,9 @@ camera, and resumed auto-fire. The original staged build and checkpoint were
 restored afterward; all 14 original profile files are byte-identical. Initial
 QA-driver failures were excluded and rerun as documented in the evidence.
 
-The installed v0.4 package remains unchanged. This candidate has no fresh cache
-or promotion receipt. Changed scripts, titles and the added tree-clock global
+The installed v0.4 package remains unchanged. The historical LS-05 validation
+did not include a fresh cache or promotion receipt; the later LS-01 candidate
+has its own fresh-kit cache evidence below. Changed scripts, titles and the added tree-clock global
 produce a new exact-build fingerprint; native testing must use its own QA core,
 and existing production checkpoints are not migrated to it.
 
@@ -178,33 +201,99 @@ cache or promotion receipt; previous production cores are not migrated to it.
 
 ## Native authoring and validation
 
-1. Install and extract the owned Halo 3 Editing Kit and prepare the private
-   scenario/tag inputs. Native authoring currently depends on the existing
-   local `private-inputs/` and `native-tags/` baseline, including the outdoor
-   navigation scenario. Rebuilding that baseline from a fresh installation is
-   not yet a one-command workflow.
-2. Run `python -B prepare_progression.py --check` in that prepared workspace.
-   Resolve every missing prerequisite before running
-   `python -B prepare_progression.py` to author progression tags, HaloScript,
-   damage effects and UI titles. Preparation repeats the guard and loads all
-   authoring modules before writing. Content errors later in authoring can
-   still leave partial outputs; this is not an atomic build. It does not
-   compile a playable map.
-3. Use the adapted `onyx_progression.py stage` and `compile` helpers to stage
-   and compile in Sapien. Check compiler diagnostics and read back the compiled
-   script counts/bindings before running the native QA tools.
-4. Run native gameplay and launcher QA in an isolated QA profile. These scripts
-   drive the active SDK window and can alter test state; they are development
-   tools, not a player launcher.
-5. Build a fresh cache and retain its receipt. `promote_v03.py` retains its
-   historical filename but targets v0.4.0 and requires matching validation and
-   cache evidence. Never reuse old receipts as proof of a changed build.
+The fresh-kit path was exercised at source commit
+`dc4d80e58111ad026b0a722899130ce4e5caa2b2`; see
+[LS-01 native evidence](native-validation-ls01.json). The isolated kit began with
+57,706 files extracted from the owned archive, followed by the 21-tag fetch,
+baseline native save/readback, fresh preparation, staging and final compilation.
+Baseline staging/readback used the coordinator's private byte-copy helper;
+final progression staging exercised `native_workspace.py` with 140 exact files.
+Readback contains 402 scripts, 178 globals, 43,180 syntax datums and 128 titles.
+The cache log reports success and the fresh map is 702,328,832 bytes. Twenty-five
+stock error diagnostics are retained; the tool exit code was not captured.
+
+Nineteen native assertion observations cover brief ordinary stage-one play and
+seeded, deathless checks of stages two through four for camera, auto-fire, actor
+bounds and movement. Fresh geometry tests also pass as described above. This
+does not prove a full ordinary 20-minute run, exhaustive geometry or native path
+reachability, retail compatibility or installation/update/rollback. The original
+production build and valid checkpoint were preserved and restored. No installed
+package was promoted. Repeat the relevant native gates after candidate changes.
+
+1. Install/extract the complete owned Halo 3 Editing Kit, configure its location, then
+   check and run `fetch_progression_inputs.py`. It obtains canonical stock
+   inputs from that kit, not old prepared intermediates. Explicit `--remote`
+   can fetch from another owned kit over SSH. An isolated kit must retain the
+   owned runtime/support files as well as tags: the current kit needs its `bin/`
+   runtime files, FMOD libraries and `maps/fonts` data. Executables plus the tag
+   archive alone failed to launch Sapien with a missing `XAudio2_9Redist.dll`.
+2. Check and run `bootstrap_tags.py`. It authors the outdoor baseline directly
+   from stock `020_base`, `070_waste` and the base chapter-title string list.
+   Palette identities and sanitized templates preserve progression's expected
+   indices. One AR starting profile replaces inherited private Needler profiles.
+   Stock navigation is preserved before native processing. Native save/readback
+   changes some firing-position bindings; revalidate the resulting candidate.
+3. Reserve native ownership and use `native_workspace.py stage-bootstrap`
+   against an isolated local kit on its host. Open the staged
+   `tags/levels/survivors/last_stand/last_stand.scenario` in Sapien. Press
+   **Ctrl+Shift+C**, review the fresh compiler diagnostics, then **Ctrl+S**.
+   Verify the save completed and close Sapien. Then
+   `native_workspace.py readback --kind bootstrap` copies the scenario into
+   `outdoor-compiled.scenario`. Validate the actual navigation and bindings;
+   the transfer does not certify compilation. See BOOTSTRAP for `--check`,
+   configuration and explicit replacement examples.
+4. Run `prepare_progression.py --check`, then `prepare_progression.py` with the
+   same workspace/config. Preparation copies direct inputs to a private
+   temporary workspace before authoring, rejects undeclared writes/input
+   mutation, and builds an exact archive. Content/archive failures preserve
+   previous outputs. Final files are replaced individually and
+   `progression-build.json` is published last; this is not a crash-atomic batch.
+   The receipt hashes actual loaded Python sources, owned inputs, outputs and
+   archive members. Stale tags outside the declared set cannot enter the archive.
+5. Use `native_workspace.py --replace stage-progression` to replace the staged
+   baseline with the exact progression candidate, after a read-only check.
+   Open the staged scenario in Sapien again, compile with **Ctrl+Shift+C**,
+   review diagnostics, save with **Ctrl+S**, and close the tools
+   and use `readback --kind progression`. Inspect compiled script/global/title
+   counts and bindings before gameplay. An existing readback also requires
+   explicit `--replace`; transfer receipts remain compilation-unverified.
+6. Run gameplay and launcher QA in an isolated QA profile, then build a fresh
+   cache from the kit working directory with
+   `tool.exe build-cache-file "levels\survivors\last_stand\last_stand" pc none english`,
+   using the established Steam Snap/Proton/private-prefix runtime on Onyx.
+   Review errors as well as the success marker; retain the log, fresh map,
+   hashes and tool exit code when available. These remain operator steps, not actions
+   performed by the configured transfer helper. The LS-01 record demonstrates
+   the fresh-kit milestone with bounded gameplay coverage; source checks alone
+   cannot establish the remaining release gates or close other roadmap tasks.
+
+The historical `onyx_progression.py`, `remote_build.py` and `promote_v03.py`
+helpers are not the portable rebuild interface. The promotion helper retains
+its historical filename while targeting v0.4.0; native promotion still requires
+matching validation and cache evidence plus a coordinated session handoff.
+Never reuse old receipts as proof of a changed build.
 
 The installed launcher is `launch_v04.py`, deployed as the Onyx workspace's
 `launch.py`. Checkpoints require matching engine, scenario, script and private
 asset fingerprints. Changing the build can invalidate Continue compatibility.
 The Git attributes preserve exact file bytes because release receipts include
 content hashes.
+
+For an isolated kit outside the usual Steam library layout, pass the Steam
+installation root explicitly. It must contain `steamapps`; `--kit` alone cannot
+identify the real runtime when the candidate is elsewhere:
+
+```sh
+python3 launch_v04.py --root /path/to/LastStand \
+  --kit /path/to/isolated/H3EK --steam /path/to/Steam \
+  --qa-profile /path/to/LastStand/qa-saves/ls01 --new
+```
+
+This explicitly launches the SDK game using the existing Linux/Steam Snap/Proton
+environment and prepared private prefix. The QA profile must stay inside
+`ROOT/qa-saves`. The new `--steam` override does not make the Linux launcher a
+portable retail installer or alter checkpoint compatibility. Coordinate native
+ownership before running it; stage/readback helpers themselves never launch it.
 
 The existing native build is documented in the README. Retail MCC menu loading,
 retail save support and a portable installation workflow remain unfinished;
