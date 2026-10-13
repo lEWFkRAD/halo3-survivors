@@ -4,7 +4,7 @@ import json,sys,unittest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from hsc_vm import VM,parse,Symbol
-from generate_progression import build,normalized_catalog,node_label,objective_strings
+from generate_progression import build,normalized_catalog,node_label
 
 class ProgressionVM(VM):
     def __init__(self):
@@ -12,12 +12,11 @@ class ProgressionVM(VM):
         self.data=normalized_catalog();self.layout=json.loads((ROOT/'progression-layout.json').read_text())
         source,titles,self.damage_values=build(self.data,self.layout)
         self.contract['cutscene_titles']=titles
-        self.contract['objective_strings']=objective_strings(self.data)
         self.contract['starting_profiles']=['sv_start']
         self.globals={};self.scripts={};self.input=set();self.held_input=set();self.ai_enabled=True;self.teleports=[]
         self.movement_disabled=False;self.player_protected=False
         self.logical_ticks=0;self.notice_events=[];self.page_events=[]
-        self.wallet_events=[];self.training_enabled=False;self.training_text=None;self.training_shown=False
+        self.price_events=[];self.wallet_events=[];self.training_enabled=False;self.training_text=None;self.training_shown=False
         self.queried_since_reset=set()
         self.living={s['name']:0 for st in self.layout['stages'] for s in st['squads']}
         for form in parse(source):
@@ -67,12 +66,13 @@ class ProgressionVM(VM):
             self.actor_health[target]-=int(path.rsplit('_d',1)[1]);self.calls.append((op,[path,target]));return None
         if op=='cinematic_set_title':
             values=[self.eval(a) for a in args]
-            events=self.wallet_events if str(values[0]).startswith('sv_points_') else self.notice_events
+            events=(self.wallet_events if str(values[0]).startswith('sv_points_') else
+                    self.price_events if str(values[0]).startswith('sv_cost_') else self.notice_events)
             events.append((self.logical_ticks,str(values[0])))
             self.calls.append((op,values));return None
         if op=='cinematic_set_chud_objective':
             value=str(self.eval(args[0]))
-            assert value in self.contract['cutscene_titles'] or value in self.contract['objective_strings'],value
+            assert value in self.contract['cutscene_titles'],value
             self.calls.append((op,[value]));return None
         if op=='hud_enable_training':
             self.training_enabled=self.eval(args[0]);return None
@@ -269,7 +269,7 @@ class NativeProgressionTests(unittest.TestCase):
     def test_help_and_live_wallet_repeat_without_input(self):
         v=self.v;v.calls.clear()
         for _ in range(180):v.menu_sample()
-        titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title' and not str(args[0]).startswith('sv_points_')]
+        titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title' and not str(args[0]).startswith(('sv_points_','sv_cost_'))]
         self.assertTrue(titles and set(titles)=={'sv_controls'})
         self.assertEqual(len(v.wallet_events),18)
         self.assertTrue(all(name=='sv_points_3' for _,name in v.wallet_events))
@@ -292,7 +292,7 @@ class NativeProgressionTests(unittest.TestCase):
         v=self.v;v.calls.clear();before=len(v.notice_events)
         v.run('sv_menu_next')
         objectives=[args[0] for op,args in v.calls if op=='cinematic_set_chud_objective']
-        self.assertEqual(objectives,['sv_detail_1_0'])
+        self.assertEqual(objectives,['sv_node_1'])
         self.assertEqual(v.globals['sv_selection'],1)
         self.assertEqual(len(v.notice_events),before)
     def test_status_burst_never_emits_two_titles_inside_one_display_window(self):
@@ -309,7 +309,7 @@ class NativeProgressionTests(unittest.TestCase):
         self.assertTrue(all(name.startswith('sv_rank_') for _,name in events[1:]))
     def test_node_hud_preserves_information_within_line_budget(self):
         v=self.v;titles=v.contract['cutscene_titles']
-        self.assertEqual(len(titles),128)
+        self.assertEqual(len(titles),127)
         for i,n in enumerate(v.data['nodes']):
             text=titles[f'sv_node_{i}']
             self.assertLessEqual(len(text),100,n['id'])
@@ -361,7 +361,7 @@ class NativeProgressionTests(unittest.TestCase):
         self.assertTrue(v.globals['sv_menu_open']);self.assertEqual(v.globals['sv_seconds'],0)
         self.assertEqual(v.globals['sv_stage_seconds'],0);self.assertFalse(v.spawns)
         objectives=[args[0] for op,args in v.calls if op=='cinematic_set_chud_objective']
-        self.assertEqual(objectives,['sv_detail_0_1'])
+        self.assertEqual(objectives,['sv_node_0'])
         # Resuming once must return to gameplay, without another earned-level pause.
         v.run('sv_close_menu');v.tick()
         self.assertFalse(v.globals['sv_menu_open']);self.assertEqual(v.globals['sv_seconds'],1)

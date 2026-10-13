@@ -24,8 +24,9 @@ class ArmorySchedulerTests(unittest.TestCase):
         v.menu_sample('primary_trigger')
         self.assertEqual(v.globals['sv_nl_d'],1)
         self.assertEqual(v.globals['sv_tokens'],2)
-        self.assertEqual([a[0] for op,a in v.calls if op=='cinematic_set_chud_objective'][-1],'sv_detail_1_1')
-        self.assertIn('R1/3 Next1',v.contract['objective_strings']['sv_detail_1_1'])
+        self.assertEqual([a[0] for op,a in v.calls if op=='cinematic_set_chud_objective'][-1],'sv_node_1')
+        self.assertEqual(v.globals['sv_selected_rank'],1)
+        self.assertEqual(v.globals['sv_cost'],1)
         v.menu_sample();v.fast_frames(8)
         self.assertNotEqual(v.training_text,before)
         self.assertEqual(v.wallet_events[-1][1],'sv_points_2')
@@ -51,11 +52,11 @@ class ArmorySchedulerTests(unittest.TestCase):
             v.globals['sv_selection']=i
             for rank in range(node['max_rank']+1):
                 v.setrank(node['id'],rank);v.run('sv_show_node')
-                name=[a[0] for op,a in v.calls if op=='cinematic_set_chud_objective'][-1]
-                text=v.contract['objective_strings'][name]
-                self.assertIn(f'R{rank}/{node["max_rank"]}',text)
-                self.assertIn('MAX' if rank==node['max_rank'] else f'Next{node["costs"][rank]}',text)
-                self.assertLessEqual(len(text),110)
+                self.assertEqual(v.globals['sv_selected_rank'],rank)
+                expected=-1 if rank==node['max_rank'] else node['costs'][rank]
+                self.assertEqual(v.globals['sv_cost'],expected)
+                v.run('sv_price_display')
+                self.assertEqual(v.price_events[-1][1],'sv_cost_max' if expected<0 else f'sv_cost_{expected}')
 
     def test_all_eight_pages_follow_first_and_last_node_of_each_category(self):
         v = self.vm

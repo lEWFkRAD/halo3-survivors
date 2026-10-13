@@ -8,8 +8,8 @@ def title_style(name):
     # Binding constructor is (top, left, bottom, right), not XYWH:
     # blam-tags-py/src/generated.rs:1026. The status scheduler emits at
     # most once every 3 seconds; use one wide strip with a 2.3-second life.
-    if name.startswith('sv_points_'):
-        return {'text bounds (on screen)':b.Rectangle2d(118,32,158,1120),
+    if name.startswith(('sv_points_', 'sv_cost_')):
+        return {'text bounds (on screen)':b.Rectangle2d(158 if name.startswith('sv_cost_') else 118,32,198 if name.startswith('sv_cost_') else 158,1120),
                 'text color':b.RgbColor(0xFF111820),
                 'shadow color':b.RgbColor(0xFFF4F6F8),
                 'justification':'left','vertical justification':'top',
@@ -67,11 +67,7 @@ def main(root=None):
     r.field('chapter title text').set((0x756e6963,r'ui\survivors\progression'))
     strings=b.TagFile.read(root/'native-tags/ui/survivors/last_stand.multilingual_unicode_string_list')
     sr=strings.root();refs=sr.field('string references').as_block();refs.clear();data=bytearray()
-    messages=dict(titles)
-    for name,text in contract.get('objective_strings',{}).items():
-        if name in messages:raise ValueError(f'Duplicate objective string: {name}')
-        messages[name]=text
-    for name,text in messages.items():
+    for name,text in titles.items():
         j=refs.add();refs[j].field('string id').set(name)
         for field in refs[j].field_names():
             if field.endswith(' offset'):refs[j].field(field).set(len(data))

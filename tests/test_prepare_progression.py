@@ -350,7 +350,7 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(set(written), {self.root / 'source/progression.hsc', self.root / 'progression-contract.json'})
         self.assertEqual((repo / 'source/progression.hsc').read_bytes(), original)
         contract = json.loads((self.root / 'progression-contract.json').read_text())
-        self.assertEqual(len(contract['titles']), 128)
+        self.assertEqual(len(contract['titles']), 127)
         self.assertEqual(len(contract['catalog']['nodes']), 50)
 
     def test_json_requires_check_to_prevent_implicit_mutation(self):

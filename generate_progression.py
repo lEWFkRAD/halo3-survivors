@@ -2,12 +2,11 @@
 from pathlib import Path
 import json
 import re
-from armory_presentation import native_page_titles
 from armory_live import emit_runtime, page_layout
 from progression_hsc import HSC, expr, dispatch, cameras, enemies, combat
 ROOT=Path(__file__).resolve().parent
 
-# Native title budget: 50 nodes + 51 points + 4 ranks + 16 notices + 7 tree pages.
+# Native title budget: 50 nodes + 51 points + 4 ranks + 16 notices + 6 next-cost labels.
 TITLES={
  'sv_controls':'ARMORY | Space next / Q back / Click buy / Space+Q page / 1 resume\nRank: + buy / - locked / o owned / * max | Autosaves',
  'sv_purchased':'UPGRADE PURCHASED | Your ranks carry into the next stage.',
@@ -100,26 +99,16 @@ def serialize_status_titles(h,titles):
 (sv_notice_flush)''')
 
 
-def objective_strings(data):
-    """Rank-specific selected details use the string table, not title slots."""
-    byid={n['id']:n for n in data['nodes']}
-    result={}
-    for i,node in enumerate(data['nodes']):
-        original=compact_node_title(node,byid)
-        prices='Cost'+'/'.join(map(str,node['costs']))
-        for rank in range(node['max_rank']+1):
-            next_cost='MAX' if rank==node['max_rank'] else 'Next'+str(node['costs'][rank])
-            result[f'sv_detail_{i}_{rank}']=original.replace(prices,f'R{rank}/{node["max_rank"]} {next_cost}')
-    return result
-
-
 def build(data,layout):
     nodes=data['nodes'];weapons=data['weapons'];stages=layout['stages'];byid={n['id']:n for n in nodes}
     assert len(nodes)==50
     titles=dict(TITLES)
     for i,n in enumerate(nodes):
         titles[f'sv_node_{i}']=compact_node_title(n,byid)
-    titles.update(native_page_titles(data))
+    prices=sorted({price for n in nodes for price in n['costs']})
+    titles['sv_cost_max']='SELECTED SKILL | MAX RANK'
+    for price in prices:
+        titles[f'sv_cost_{price}']=f'SELECTED SKILL | Next rank: {price} points'
     assert len(titles)<=128,len(titles)
     h=HSC()
     initial={'sv_running':('boolean','false'),'sv_finished':('boolean','false'),'sv_menu_open':('boolean','false'),
@@ -172,11 +161,14 @@ def build(data,layout):
     dispatch(h,'sv_show_points','sv_tokens',[(i,f'(cinematic_set_title sv_points_{i})') for i in range(51)])
     dispatch(h,'sv_show_rank','sv_selected_rank',[(i,f'(cinematic_set_title sv_rank_{i})') for i in range(4)])
     dispatch(h,'sv_show_stage','sv_stage',[(i,f'(cinematic_set_title sv_stage_{i})') for i in range(1,5)])
+    selections=[]
     for i,n in enumerate(nodes):
-        h.script(f'sv_detail_{i}','\n'.join(
-            f'(if (= {n["native_global"]} {rank}) (cinematic_set_chud_objective sv_detail_{i}_{rank}))'
-            for rank in range(n['max_rank']+1)))
-    dispatch(h,'sv_show_node','sv_selection',[(i,f"(begin (set sv_selected_rank {n['native_global']}) (sv_detail_{i}))") for i,n in enumerate(nodes)])
+        rank=n['native_global']
+        body=[f'(set sv_selected_rank {rank})','(set sv_cost -1)']
+        body.extend(f'(if (= {rank} {r}) (set sv_cost {cost}))' for r,cost in enumerate(n['costs']))
+        body.append(f'(cinematic_set_chud_objective sv_node_{i})')
+        selections.append((i,'(begin '+' '.join(body)+')'))
+    dispatch(h,'sv_show_node','sv_selection',selections)
     purchases=[]
     for i,n in enumerate(nodes):
         rank=n['native_global'];body=['(set sv_cost 0)']
@@ -370,6 +362,7 @@ def build(data,layout):
     h.global_('short','sv_tree_clock',0)
     emit_runtime(h,data)
     dispatch(h,'sv_wallet_display','sv_tokens',[(i,f'(cinematic_set_title sv_points_{i})') for i in range(51)])
+    dispatch(h,'sv_price_display','sv_cost',[(-1,'(cinematic_set_title sv_cost_max)')]+[(i,f'(cinematic_set_title sv_cost_{i})') for i in prices])
     # Keep the refresh limit through a rapid close/reopen. A saved clock is
     # always 0..30, so Continue repairs the page within one second without
     # touching ranks or run state. Input is handled before this scheduler, so a
@@ -380,7 +373,7 @@ def build(data,layout):
         (if (and sv_menu_open (= sv_tree_clock 0))
             (begin (set sv_tree_clock 30)
                 (hud_enable_training true) (sv_tree_display)
-                (hud_show_training_text true) (sv_wallet_display) (sv_show_node))))
+                (hud_show_training_text true) (sv_wallet_display) (sv_show_node) (sv_price_display))))
     (hud_enable_training false))''')
     assert len(h.globals)<512 and len(h.scripts)<1024
     source=h.render()
@@ -393,7 +386,7 @@ def main(root=None):
     data=normalized_catalog(); layout=json.loads((root/'progression-layout.json').read_text())
     source,titles,damages=build(data,layout)
     (root/'source/progression.hsc').write_text(source,encoding='utf-8')
-    contract={'catalog':data,'layout':layout,'titles':titles,'objective_strings':objective_strings(data),'damage_values':damages,'version':'0.4.0',
+    contract={'catalog':data,'layout':layout,'titles':titles,'damage_values':damages,'version':'0.4.0',
               'persistence':'Armory checkpoints resume the complete native run through the SDK launcher; saves require the exact same build. Permanent unlocks are not integrated.'}
     (root/'progression-contract.json').write_text(json.dumps(contract,indent=2)+'\n')
     print(f'Generated {len(source)} bytes of HSC; {len(titles)} native titles.')
