@@ -21,6 +21,7 @@ import tempfile
 import uuid
 
 from workspace_config import ConfigError, ProjectConfig, load_config
+import native_qa
 
 
 SCENARIO = 'tags/levels/survivors/last_stand/last_stand.scenario'
@@ -34,6 +35,9 @@ MAX_FILE = 64 * 1024 * 1024
 MAX_TOTAL = 256 * 1024 * 1024
 LIMITATION = ('File transfer and process snapshots do not prove native compilation, '
               'dependency closure, gameplay, ownership or retail compatibility.')
+RESERVATION_PATH = 'native-workspace/reservation.json'
+RESERVATION_KEYS = {'operator', 'source_commit', 'branch', 'purpose', 'qa_profile',
+                    'environment', 'run_kind', 'scenario', 'package', 'updated_at'}
 
 
 class WorkspaceError(ValueError):
@@ -393,6 +397,93 @@ def readback(config: ProjectConfig, kind: str, *, replace=False, check=False, pr
               'files': {READBACK[kind]: _record(data)}, 'process_preflight': observed,
               'native_compilation_verified': False, 'limitations': [LIMITATION]}
     return report if check else _publish(config, root, payloads, originals, report, probe)
+
+
+def read_qa_reservation(config: ProjectConfig, path=None) -> dict:
+    """Read the reservation record that carries the staged candidate identity.
+
+    The record lives at ``native-workspace/reservation.json`` beside the other
+    workspace receipts. It names the operator, source revision, branch, QA
+    profile, environment/run kind, and the scenario/package identity of the
+    staged candidate. Missing or malformed records raise rather than default,
+    so a QA run can never silently proceed unbound to a reserved candidate.
+    """
+    target = _file(_root(config.workspace), path or RESERVATION_PATH)
+    try:
+        data = json.loads(_read(target).decode('utf-8'))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise WorkspaceError(f'Invalid reservation JSON: {target}') from error
+    if not isinstance(data, dict) or set(data) != RESERVATION_KEYS:
+        raise WorkspaceError('Reservation record must name exactly: '
+                             + ', '.join(sorted(RESERVATION_KEYS)))
+    for key in RESERVATION_KEYS:
+        value = data[key]
+        if (not isinstance(value, str) or not value.strip()
+                or any(ord(char) < 32 for char in value)):
+            raise WorkspaceError(f'Reservation {key} must be a short printable string')
+    if re.fullmatch('[0-9a-f]{40}', data['source_commit']) is None:
+        raise WorkspaceError('Reservation source_commit must be a full Git commit SHA')
+    return data
+
+
+def run_qa(config: ProjectConfig, *, log_path, condition: str,
+           context=None, reservation_path=None, decode_line=None) -> dict:
+    """Run the read-only native QA evidence path bound to the reservation.
+
+    The caller dispatches ``native_qa.new_assertion(condition).command`` in the
+    reserved native console, lets the verified transport flush, then calls this
+    with the same condition. The reservation's recorded source revision, QA
+    profile, environment and run kind are forwarded into the evidence context,
+    and the staged candidate files (the kit's current scenario and HSC plus the
+    recorded package) are hashed into the fingerprint, so every report —
+    including a passed() result — names the exact candidate the observation
+    refers to. An explicit ``context`` must agree with the reservation on every
+    shared identity field; a mismatch (a stale or wrong deployment) raises
+    before any evidence is evaluated. No game process is started and no file is
+    written here.
+    """
+    reservation = read_qa_reservation(config, reservation_path)
+    root, kit = _kit(config)
+    package_name = reservation['package']
+    package = _file(kit, package_name)
+    candidate_files = {
+        'engine': package,
+        'scenario': _file(kit, SCENARIO),
+        'hsc': _file(kit, HSC),
+        'private_assets': _file(kit, package_name),
+    }
+    fingerprint = native_qa.candidate_fingerprint_from_files(candidate_files)
+    if context is None:
+        context = native_qa.EvidenceContext(
+            source_commit=reservation['source_commit'],
+            candidate_fingerprint=fingerprint,
+            profile=reservation['qa_profile'],
+            environment=reservation['environment'],
+            run_kind=reservation['run_kind'],
+            evidence_kind='native',
+            candidate_path=str(package),
+        )
+    else:
+        for field, reserved in (('source_commit', reservation['source_commit']),
+                                ('profile', reservation['qa_profile']),
+                                ('environment', reservation['environment']),
+                                ('run_kind', reservation['run_kind'])):
+            if getattr(context, field) != reserved:
+                raise WorkspaceError(
+                    f'QA context {field} does not match the reservation: '
+                    f'{getattr(context, field)!r} != {reserved!r}')
+        if dict(context.candidate_fingerprint) != fingerprint:
+            raise WorkspaceError('QA context candidate fingerprint does not match '
+                                 'the staged candidate files')
+    if not condition:
+        raise WorkspaceError('run_qa needs an explicit condition; the command string '
+                             'alone is not an assertion condition')
+    assertion = native_qa.new_assertion(condition)
+    cursor = native_qa.capture_cursor(log_path)
+    # The caller dispatches assertion.command in the reserved native console
+    # and lets the verified transport flush before this window is read.
+    kwargs = {'decode_line': decode_line} if decode_line is not None else {}
+    return native_qa.evaluate(assertion, native_qa.read_window(cursor), context, **kwargs)
 
 
 def main(argv=None):

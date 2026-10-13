@@ -30,8 +30,9 @@ class NativeEvidenceTests(unittest.TestCase):
         with self.path.open('ab') as stream:
             stream.write(text.encode('utf-8'))
 
-    def result(self, **kwargs):
-        return qa.evaluate(self.assertion, qa.read_window(self.cursor), self.context, **kwargs)
+    def result(self, *, context=None, **kwargs):
+        return qa.evaluate(self.assertion, qa.read_window(self.cursor),
+                           context or self.context, **kwargs)
 
     def test_false_assertion_is_failed_with_exact_evidence(self):
         self.append(self.marker('FAIL') + '\r\n')
@@ -250,6 +251,39 @@ class NativeEvidenceTests(unittest.TestCase):
         self.assertEqual(context.candidate_fingerprint['hsc'], 'b' * 64)
         with self.assertRaises(TypeError):
             context.candidate_fingerprint['hsc'] = 'c' * 64
+
+    def test_candidate_path_defaults_empty_and_appears_in_report(self):
+        legacy = replace(self.context)
+        self.assertEqual(legacy.candidate_path, '')
+        self.append(self.marker() + '\n')
+        result = self.result()
+        self.assertEqual(result['candidate']['path'], '')
+        bound = replace(self.context, candidate_path='C:/kit/pkg.zip')
+        self.assertEqual(self.result(context=bound)['candidate']['path'], 'C:/kit/pkg.zip')
+
+    def test_candidate_path_rejects_control_characters(self):
+        for bad in ('line\nbreak', 'tab\there', 'nul\x00', 'bell\x07'):
+            with self.subTest(candidate_path=bad), self.assertRaises(ValueError):
+                replace(self.context, candidate_path=bad)
+
+    def test_fingerprint_from_files_hashes_exact_bytes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            files = {}
+            expected = {}
+            for index, key in enumerate(('engine', 'scenario', 'hsc', 'private_assets')):
+                path = Path(temp) / key
+                data = bytes([index]) * (index + 1)
+                path.write_bytes(data)
+                files[key] = path
+                expected[key] = hashlib.sha256(data).hexdigest()
+            self.assertEqual(qa.candidate_fingerprint_from_files(files), expected)
+            (Path(temp) / 'hsc').write_bytes(b'mutated')
+            self.assertNotEqual(qa.candidate_fingerprint_from_files(files)['hsc'],
+                                expected['hsc'])
+            for change in ({}, {**files, 'extra': files['engine']},
+                           {key: value for key, value in files.items() if key != 'hsc'}):
+                with self.subTest(keys=sorted(change)), self.assertRaises(ValueError):
+                    qa.candidate_fingerprint_from_files(change)
 
 
 if __name__ == '__main__':

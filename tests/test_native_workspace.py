@@ -12,6 +12,7 @@ import unittest
 from unittest.mock import patch
 
 import bootstrap_tags
+import native_qa
 import native_workspace as native
 from preflight import AUTHORING_INPUTS
 from prepare_progression import FIXED_OUTPUTS, ARCHIVE_FIXED_OUTPUTS
@@ -281,6 +282,110 @@ import native_workspace
                 with self.assertRaisesRegex(native.WorkspaceError, '--replace'):
                     native.readback(self.config, kind, process_probe=self.probe)
         self.assertEqual(self.snapshot(self.kit), before)
+
+    def reservation(self):
+        record = {'operator': 'qa', 'source_commit': 'a' * 40, 'branch': 'ls-03',
+                  'purpose': 'seeded save', 'qa_profile': 'qa-saves/ls03',
+                  'environment': 'sdk', 'run_kind': 'seeded',
+                  'scenario': native.SCENARIO, 'package': 'candidate.zip',
+                  'updated_at': '2026-10-13T00:00:00+00:00'}
+        self.write('native-workspace/reservation.json', json.dumps(record).encode())
+        self.write(native.SCENARIO, b'staged scenario', self.kit)
+        self.write(native.HSC, b'staged hsc', self.kit)
+        self.write('candidate.zip', b'staged package', self.kit)
+        return record
+
+    def qa_files(self, kit):
+        return {'engine': kit / 'candidate.zip', 'scenario': kit / native.SCENARIO,
+                'hsc': kit / native.HSC, 'private_assets': kit / 'candidate.zip'}
+
+    def test_run_qa_binds_report_to_reserved_candidate(self):
+        self.reservation()
+        log = Path(self.temp.name) / 'debug.log'
+        log.write_bytes(b'')
+        report = native.run_qa(self.config, log_path=log, condition='(= sv_stage 2)')
+        self.assertEqual(report['outcome'], 'unresolved')
+        candidate = report['candidate']
+        self.assertEqual(candidate['source_commit'], 'a' * 40)
+        self.assertEqual(report['profile'], 'qa-saves/ls03')
+        self.assertEqual(report['environment'], 'sdk')
+        self.assertEqual(report['run_kind'], 'seeded')
+        self.assertEqual(report['evidence_kind'], 'native')
+        self.assertEqual(candidate['path'], str((self.kit / 'candidate.zip').absolute()))
+        self.assertEqual(candidate['fingerprint'],
+                         native_qa.candidate_fingerprint_from_files(self.qa_files(self.kit)))
+
+    def test_run_qa_rejects_context_from_a_different_deployment(self):
+        self.reservation()
+        log = Path(self.temp.name) / 'debug.log'
+        log.write_bytes(b'')
+        stale = native_qa.EvidenceContext(
+            source_commit='b' * 40,
+            candidate_fingerprint={name: '0' * 64 for name in
+                                   ('engine', 'scenario', 'hsc', 'private_assets')},
+            profile='qa-saves/ls03', environment='sdk', run_kind='seeded',
+            evidence_kind='native')
+        with self.assertRaisesRegex(native.WorkspaceError, 'source_commit does not match'):
+            native.run_qa(self.config, log_path=log, condition='(= sv_stage 2)',
+                          context=stale)
+        self.assertEqual(log.read_bytes(), b'')
+
+    def test_run_qa_rejects_context_with_stale_candidate_files(self):
+        self.reservation()
+        log = Path(self.temp.name) / 'debug.log'
+        log.write_bytes(b'')
+        context = native_qa.EvidenceContext(
+            source_commit='a' * 40,
+            candidate_fingerprint=native_qa.candidate_fingerprint_from_files(
+                self.qa_files(self.kit)),
+            profile='qa-saves/ls03', environment='sdk', run_kind='seeded',
+            evidence_kind='native')
+        (self.kit / native.HSC).write_bytes(b'(mutated after reservation)')
+        with self.assertRaisesRegex(native.WorkspaceError, 'fingerprint does not match'):
+            native.run_qa(self.config, log_path=log, condition='(= sv_stage 2)',
+                          context=context)
+
+    def test_run_qa_requires_reserved_package_to_be_a_regular_file(self):
+        self.reservation()
+        log = Path(self.temp.name) / 'debug.log'
+        log.write_bytes(b'')
+        (self.kit / 'candidate.zip').unlink()
+        with self.assertRaises(native.WorkspaceError):
+            native.run_qa(self.config, log_path=log, condition='(= sv_stage 2)')
+        (self.kit / 'candidate.zip').mkdir()
+        with self.assertRaises(native.WorkspaceError):
+            native.run_qa(self.config, log_path=log, condition='(= sv_stage 2)')
+
+    def test_run_qa_requires_an_explicit_condition(self):
+        self.reservation()
+        log = Path(self.temp.name) / 'debug.log'
+        log.write_bytes(b'')
+        for bad in ('', '   '):
+            with self.subTest(condition=bad):
+                with self.assertRaises(ValueError):
+                    native.run_qa(self.config, log_path=log, condition=bad)
+        self.assertEqual(log.read_bytes(), b'')
+
+    def test_read_qa_reservation_rejects_malformed_records(self):
+        record = self.reservation()
+        path = self.root / native.RESERVATION_PATH
+        bad_records = [
+            'not json',
+            json.dumps({key: 'x' for key in native.RESERVATION_KEYS}),
+            json.dumps({**record, 'extra': 'field'}),
+            json.dumps({key: ('deadbeef' if key == 'source_commit' else value)
+                        for key, value in record.items()}),
+            json.dumps({key: ('tab\tinside' if key == 'operator' else value)
+                        for key, value in record.items()}),
+        ]
+        for bad in bad_records:
+            with self.subTest(record=bad[:48]):
+                path.write_text(bad, encoding='utf-8')
+                with self.assertRaises(native.WorkspaceError):
+                    native.read_qa_reservation(self.config)
+        path.unlink()
+        with self.assertRaises(native.WorkspaceError):
+            native.read_qa_reservation(self.config)
 
     def test_cli_config_root_kind_and_check_are_forwarded(self):
         settings = self.root / 'settings.json'

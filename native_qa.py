@@ -82,6 +82,22 @@ def new_assertion(condition: str) -> Assertion:
     return Assertion(condition, uuid.uuid4().hex)
 
 
+def candidate_fingerprint_from_files(files: Mapping[str, os.PathLike[str] | str]) -> dict[str, str]:
+    """Hash the exact staged candidate files into EvidenceContext fingerprint keys.
+
+    Keys must be exactly engine/scenario/hsc/private_assets; each value is the
+    sha256 of that file's bytes. This is how a staged candidate path becomes the
+    identity a passed() line is bound to.
+    """
+    keys = ('engine', 'scenario', 'hsc', 'private_assets')
+    if set(files) != set(keys):
+        raise ValueError('Candidate files must name exactly: ' + ', '.join(keys))
+    result = {}
+    for key in keys:
+        result[key] = hashlib.sha256(Path(files[key]).read_bytes()).hexdigest()
+    return result
+
+
 @dataclass(frozen=True)
 class EvidenceContext:
     """Caller-supplied provenance, checked for shape but not independently bound.
@@ -96,6 +112,7 @@ class EvidenceContext:
     environment: str
     run_kind: str
     evidence_kind: str
+    candidate_path: str = ''
 
     def __post_init__(self):
         if not re.fullmatch(r'[0-9a-f]{40}', self.source_commit):
@@ -116,6 +133,9 @@ class EvidenceContext:
             raise ValueError('Run kind must explicitly be seeded or ordinary')
         if self.evidence_kind not in ('native', 'synthetic'):
             raise ValueError('Evidence kind must explicitly be native or synthetic')
+        if (not isinstance(self.candidate_path, str)
+                or any(ord(char) < 32 for char in self.candidate_path)):
+            raise ValueError('Candidate path must be a printable single-line string')
 
 
 @dataclass(frozen=True)
@@ -274,7 +294,8 @@ def evaluate(assertion: Assertion, window: LogWindow, context: EvidenceContext,
         'assertion': {'condition': assertion.condition, 'nonce': assertion.nonce,
                       'command': assertion.command},
         'candidate': {'source_commit': context.source_commit,
-                      'fingerprint': dict(context.candidate_fingerprint)},
+                      'fingerprint': dict(context.candidate_fingerprint),
+                      'path': context.candidate_path},
         'profile': context.profile, 'environment': context.environment,
         'run_kind': context.run_kind, 'evidence_kind': context.evidence_kind,
         'transport': transport,
