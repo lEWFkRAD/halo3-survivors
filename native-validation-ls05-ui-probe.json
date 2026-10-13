@@ -1,0 +1,494 @@
+{
+  "schema_version": 1,
+  "task": "LS-05",
+  "kind": "bounded_native_ui_feasibility_probe",
+  "dates": [
+    "2026-10-12",
+    "2026-10-13"
+  ],
+  "implementation_commit": "43463871e4f6d7ae55752521b74ecedd68941e02",
+  "baseline_commit": "4f9290a7b8e2d6f67f06e38e1f5fc9f8e4745a1c",
+  "environment": "Halo 3 SDK tag test on Onyx-Linux, isolated extracted kit; not retail MCC",
+  "qa_profile": "qa-saves/ls05-live",
+  "public_author_outputs": {
+    "tags/levels/survivors/last_stand/last_stand.scenario": {
+      "native_destination": "tags/levels/survivors/last_stand/last_stand.scenario",
+      "bytes": 10184438,
+      "sha256": "d4febc06ccb9a8b1d580fe67181b071b801b761573a186ba32b96ca38a40c1a5"
+    },
+    "tags/ui/survivors/progression.multilingual_unicode_string_list": {
+      "native_destination": "tags/ui/survivors/progression.multilingual_unicode_string_list",
+      "bytes": 21937,
+      "sha256": "dfb71de96b36e98f6dcbaf2dedad79327410c7858c21bf0b06178ef6a456133b"
+    },
+    "tags/objects/survivors/armory_probe.biped": {
+      "native_destination": "tags/objects/survivors/armory_probe.biped",
+      "bytes": 35312,
+      "sha256": "2e038a1d3e1351082997240def90a9688d8b273b9d6c57eddb8d07e2d0414973"
+    },
+    "tags/ui/survivors/armory_probe.chud_definition": {
+      "native_destination": "tags/ui/survivors/armory_probe.chud_definition",
+      "bytes": 106581,
+      "sha256": "921677b56f4cbd8be5110b2bb1c69db378daea74098ef7e9844ca20432817510"
+    },
+    "tags/ui/survivors/armory_messages.multilingual_unicode_string_list": {
+      "native_destination": "tags/ui/survivors/armory_messages.multilingual_unicode_string_list",
+      "bytes": 229409,
+      "sha256": "7db024ce1e5142ed9951e8703bf4209b4880a6c64aa4dbcb7b09a58596235dbc"
+    },
+    "tags/ui/chud/globals.chud_globals_definition": {
+      "native_destination": "tags/ui/chud/globals.chud_globals_definition",
+      "bytes": 40072,
+      "sha256": "bfb54ba090254618482c725ff9bf785a40580c37f310c5818c868c4b5b43f05c"
+    }
+  },
+  "author_inputs": {
+    "scenario": {
+      "bytes": 10184013,
+      "sha256": "c1a3828caebd123702dabd4dda5fb7c445f4f6d48e8c8da45b1394c9a0eaf48a"
+    },
+    "ui": {
+      "bytes": 21937,
+      "sha256": "dfb71de96b36e98f6dcbaf2dedad79327410c7858c21bf0b06178ef6a456133b"
+    },
+    "biped": {
+      "bytes": 35301,
+      "sha256": "611f3677a82a8bf09658cfcce735b4edaa3fa4ffec01ca123aff2cb71417dd4b"
+    },
+    "chud": {
+      "bytes": 106581,
+      "sha256": "1a299932611bad3cc3694aabb8eabdff18e4ab04abce7b34b5a70e67ba8d52fa"
+    },
+    "chud_globals": {
+      "bytes": 40042,
+      "sha256": "5cce50e9129b66cee2c46ce02c65b2f5dbb2cea314d714cd968085c21e00d1be"
+    },
+    "hud_messages": {
+      "bytes": 227637,
+      "sha256": "65fca209c373494383e5a00667048cc674ab11b13777ce12d423fd6d1ac9f3b0"
+    },
+    "globals": {
+      "bytes": 306588,
+      "sha256": "cb9e4f71c5efa7f348d1071b1d38bfa4c4080ad57f9519c63058e148b8ec722c"
+    }
+  },
+  "source_checks": {
+    "suite": {
+      "entries": 366,
+      "passed": 359,
+      "skipped": 7
+    },
+    "owned_author_checks": {
+      "entries": 18,
+      "passed": 18
+    },
+    "new_focused_checks_without_assets": {
+      "entries": 29,
+      "passed": 28,
+      "skipped": 1
+    },
+    "suite_log": {
+      "bytes": 59584,
+      "sha256": "82f3600204517486b839595b7f2372da67169661fd4f27628b53eb61e5360bee"
+    }
+  },
+  "observations": [
+    {
+      "id": "title_capacity",
+      "result": "four_concurrent_titles_observed",
+      "details": "Initial attempt was saturated by repeated 90-second wallet titles and is not capacity evidence. After disabling sv_running and allowing old titles to expire, calls sv_points_0 through 3 were accepted; calls 4 through 31 logged no free chapter title slots. Tags still contained 128 definitions. First grid positions overlapped due native bounds/clamping."
+    },
+    {
+      "id": "training_and_objective",
+      "result": "observed_together",
+      "details": "Stock training_shieldsrecharging and sv_node_0 objective appeared together with the repair loop inactive."
+    },
+    {
+      "id": "scenario_string_lookup",
+      "result": "negative",
+      "details": "hud_set_training_text sv_tree_0 rendered #sv_tree_0#; scenario title strings were not found through this channel."
+    },
+    {
+      "id": "private_hud_route",
+      "result": "observed_with_override_flag",
+      "details": "Representation + private biped/CHUD alone retained stock panel. Setting cleaned binding flag override globals (bit 4) activated the visibly enlarged private training panel. All three CHUD global skin text references pointed to the appended private messages table."
+    },
+    {
+      "id": "long_training_text",
+      "result": "clipped",
+      "details": "339- and 364-character graph samples ended after roughly four visible lines; both END markers were absent. No exact character or glyph cap established."
+    },
+    {
+      "id": "short_multiline",
+      "result": "all_twelve_lines_observed",
+      "details": "94-character CRLF sample LINE01 through LINE12 rendered completely alongside the objective. This rules out a universal four-line limit in this configuration."
+    },
+    {
+      "id": "compact_sample",
+      "result": "complete_static_sample",
+      "details": "75-character SEEDED sample showed MAX, OWN, BUY, LOCK and END. It is a display fixture, not proof of live game ranks or a purchase."
+    },
+    {
+      "id": "ruler",
+      "result": "inconclusive_for_exact_limit",
+      "details": "320-character unwrapped ruler began off-screen and clipped. Layout and glyph/character limits remain unresolved."
+    },
+    {
+      "id": "visibility",
+      "result": "training_disable_required",
+      "details": "hud_show_training_text false allowed the stock Use mouse to turn prompt; hud_enable_training false hid the panel."
+    }
+  ],
+  "graph_budget_options": [
+    {
+      "name": "original_seven_pages",
+      "page_count": 7,
+      "covered_node_count": 50,
+      "cross_page_prerequisites": [],
+      "snapshot_totals": {
+        "full_reason": 30814,
+        "buy_available": 15429,
+        "coarse_ownership": 10482
+      },
+      "ten_case_dispatch_by_scheme": {
+        "full_reason": {
+          "scheme": "full_reason",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 30814,
+          "leaf_scripts": 3085,
+          "routing_scripts": 352,
+          "page_and_key_helpers": 8,
+          "total_added_scripts": 3445,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 3847,
+          "approx_leaf_source_bytes": 2064538,
+          "leaf_ast_atoms": 184884,
+          "leaf_ast_list_forms": 92442,
+          "routing_case_edges": 3430,
+          "leaf_plus_route_ast_nodes": 325346
+        },
+        "buy_available": {
+          "scheme": "buy_available",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 15429,
+          "leaf_scripts": 1545,
+          "routing_scripts": 182,
+          "page_and_key_helpers": 8,
+          "total_added_scripts": 1735,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 2137,
+          "approx_leaf_source_bytes": 1033743,
+          "leaf_ast_atoms": 92574,
+          "leaf_ast_list_forms": 46287,
+          "routing_case_edges": 1720,
+          "leaf_plus_route_ast_nodes": 162941
+        },
+        "coarse_ownership": {
+          "scheme": "coarse_ownership",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 10482,
+          "leaf_scripts": 1051,
+          "routing_scripts": 117,
+          "page_and_key_helpers": 8,
+          "total_added_scripts": 1176,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 1578,
+          "approx_leaf_source_bytes": 702294,
+          "leaf_ast_atoms": 62892,
+          "leaf_ast_list_forms": 31446,
+          "routing_case_edges": 1161,
+          "leaf_plus_route_ast_nodes": 110592
+        }
+      }
+    },
+    {
+      "name": "six_weapon_plus_two_support_pages",
+      "page_count": 8,
+      "covered_node_count": 50,
+      "cross_page_prerequisites": [],
+      "snapshot_totals": {
+        "full_reason": 2675,
+        "buy_available": 1580,
+        "coarse_ownership": 966
+      },
+      "ten_case_dispatch_by_scheme": {
+        "full_reason": {
+          "scheme": "full_reason",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 2675,
+          "leaf_scripts": 272,
+          "routing_scripts": 37,
+          "page_and_key_helpers": 9,
+          "total_added_scripts": 318,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 720,
+          "approx_leaf_source_bytes": 179225,
+          "leaf_ast_atoms": 16050,
+          "leaf_ast_list_forms": 8025,
+          "routing_case_edges": 301,
+          "leaf_plus_route_ast_nodes": 28289
+        },
+        "buy_available": {
+          "scheme": "buy_available",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 1580,
+          "leaf_scripts": 161,
+          "routing_scripts": 27,
+          "page_and_key_helpers": 9,
+          "total_added_scripts": 197,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 599,
+          "approx_leaf_source_bytes": 105860,
+          "leaf_ast_atoms": 9480,
+          "leaf_ast_list_forms": 4740,
+          "routing_case_edges": 180,
+          "leaf_plus_route_ast_nodes": 16740
+        },
+        "coarse_ownership": {
+          "scheme": "coarse_ownership",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 966,
+          "leaf_scripts": 100,
+          "routing_scripts": 13,
+          "page_and_key_helpers": 9,
+          "total_added_scripts": 122,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 524,
+          "approx_leaf_source_bytes": 64722,
+          "leaf_ast_atoms": 5796,
+          "leaf_ast_list_forms": 2898,
+          "routing_case_edges": 105,
+          "leaf_plus_route_ast_nodes": 10164
+        }
+      }
+    },
+    {
+      "name": "six_weapon_plus_three_support_pages",
+      "page_count": 9,
+      "covered_node_count": 50,
+      "cross_page_prerequisites": [],
+      "snapshot_totals": {
+        "full_reason": 1874,
+        "buy_available": 1019,
+        "coarse_ownership": 601
+      },
+      "ten_case_dispatch_by_scheme": {
+        "full_reason": {
+          "scheme": "full_reason",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 1874,
+          "leaf_scripts": 193,
+          "routing_scripts": 29,
+          "page_and_key_helpers": 10,
+          "total_added_scripts": 232,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 634,
+          "approx_leaf_source_bytes": 125558,
+          "leaf_ast_atoms": 11244,
+          "leaf_ast_list_forms": 5622,
+          "routing_case_edges": 213,
+          "leaf_plus_route_ast_nodes": 19848
+        },
+        "buy_available": {
+          "scheme": "buy_available",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 1019,
+          "leaf_scripts": 105,
+          "routing_scripts": 21,
+          "page_and_key_helpers": 10,
+          "total_added_scripts": 136,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 538,
+          "approx_leaf_source_bytes": 68273,
+          "leaf_ast_atoms": 6114,
+          "leaf_ast_list_forms": 3057,
+          "routing_case_edges": 117,
+          "leaf_plus_route_ast_nodes": 10809
+        },
+        "coarse_ownership": {
+          "scheme": "coarse_ownership",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 601,
+          "leaf_scripts": 65,
+          "routing_scripts": 9,
+          "page_and_key_helpers": 10,
+          "total_added_scripts": 84,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 486,
+          "approx_leaf_source_bytes": 40267,
+          "leaf_ast_atoms": 3606,
+          "leaf_ast_list_forms": 1803,
+          "routing_case_edges": 65,
+          "leaf_plus_route_ast_nodes": 6319
+        }
+      }
+    },
+    {
+      "name": "six_weapon_plus_four_connected_support_components",
+      "page_count": 10,
+      "covered_node_count": 50,
+      "cross_page_prerequisites": [],
+      "snapshot_totals": {
+        "full_reason": 1816,
+        "buy_available": 989,
+        "coarse_ownership": 581
+      },
+      "ten_case_dispatch_by_scheme": {
+        "full_reason": {
+          "scheme": "full_reason",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 1816,
+          "leaf_scripts": 187,
+          "routing_scripts": 29,
+          "page_and_key_helpers": 11,
+          "total_added_scripts": 227,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 629,
+          "approx_leaf_source_bytes": 121672,
+          "leaf_ast_atoms": 10896,
+          "leaf_ast_list_forms": 5448,
+          "routing_case_edges": 206,
+          "leaf_plus_route_ast_nodes": 19228
+        },
+        "buy_available": {
+          "scheme": "buy_available",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 989,
+          "leaf_scripts": 102,
+          "routing_scripts": 20,
+          "page_and_key_helpers": 11,
+          "total_added_scripts": 133,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 535,
+          "approx_leaf_source_bytes": 66263,
+          "leaf_ast_atoms": 5934,
+          "leaf_ast_list_forms": 2967,
+          "routing_case_edges": 112,
+          "leaf_plus_route_ast_nodes": 10469
+        },
+        "coarse_ownership": {
+          "scheme": "coarse_ownership",
+          "leaf_cases": 10,
+          "routing_fanout": 10,
+          "literal_training_text_cases": 581,
+          "leaf_scripts": 63,
+          "routing_scripts": 8,
+          "page_and_key_helpers": 11,
+          "total_added_scripts": 82,
+          "native_baseline_estimate": 402,
+          "native_total_estimate": 484,
+          "approx_leaf_source_bytes": 38927,
+          "leaf_ast_atoms": 3486,
+          "leaf_ast_list_forms": 1743,
+          "routing_case_edges": 61,
+          "leaf_plus_route_ast_nodes": 6083
+        }
+      }
+    }
+  ],
+  "local_evidence": {
+    "ls05-title-capacity-clean.png": {
+      "bytes": 3125581,
+      "sha256": "f02076fbc42c7254dc6592bb9389f1150c34d87ae21844810f21ac8be51cff0b"
+    },
+    "ls05-training-stock.png": {
+      "bytes": 3091819,
+      "sha256": "0d92b4d37f3134ed5dbb26b551d6709d7e5b35421c388f406adcbd53ae8646ec"
+    },
+    "ls05-training-scenario.png": {
+      "bytes": 3095671,
+      "sha256": "b0fa82e4291d8338a7cbe17833fd4193867735f3c8a17febaa7d83f504b3454c"
+    },
+    "ls05-panel-route-valid.png": {
+      "bytes": 3030744,
+      "sha256": "0f395aeca433f479ba8508be01507a2dc6af054b43088c04adf1f828a08cd08c"
+    },
+    "ls05-messages-flag.png": {
+      "bytes": 2925418,
+      "sha256": "068dc2479f5abcd59be344c3aaa56399a65188aaff9a688e9978a6b9427652eb"
+    },
+    "ls05-owned-truncation.png": {
+      "bytes": 2923372,
+      "sha256": "d60a02e41102e65d6a2c7bbfb9b8f9acc3a4dca98eb17fe09bb3aa5ae40c32d8"
+    },
+    "ls05-wallet.png": {
+      "bytes": 2910383,
+      "sha256": "6662293cd6c14adba761111ac668b12589a879b5a342e7a6ead80202e585b89f"
+    },
+    "ls05-panel-hidden.png": {
+      "bytes": 2910416,
+      "sha256": "891300b2674166bb7a32008e2e92cfc94981b65ef04bd36b783e73a859e37dd6"
+    },
+    "ls05-panel-disabled.png": {
+      "bytes": 3123691,
+      "sha256": "351c6172aa3d9a254dfd6a92968cadf912f763c6839f0a6e246b1d5a1d09c769"
+    },
+    "ls05-final-lines.png": {
+      "bytes": 2912946,
+      "sha256": "6f682291a13a21128521be3c7a7d5033afc50c754f6542744f5471701dfe2e53"
+    },
+    "ls05-final-ruler.png": {
+      "bytes": 2906946,
+      "sha256": "fb2d9b8ff17166bdfeb591fb47833221231a659ca7a9662c8a1438577db4c68a"
+    },
+    "ls05-final-compact.png": {
+      "bytes": 2914120,
+      "sha256": "a0ae4d0fbf2f13032c1bce3107fc8c6df06916ea8fcb7b0813121dda7f8158f5"
+    },
+    "ls05-production-restored.png": {
+      "bytes": 5630125,
+      "sha256": "d69e25e86626720bf1a89a3d4e6d3fc924781674a026ed1fbd4eafc74033edec"
+    },
+    "ls05-title-probe-debug.txt": {
+      "bytes": 434139,
+      "sha256": "1eeee3c69c26d38920a061295b57ee71b160a5aa279fb28bf1cb5baf920a953c"
+    },
+    "ls05-title-probe-hs.txt": {
+      "bytes": 9665,
+      "sha256": "eaa76f3ea0669ab5b96c2692a6ab58cc25b6b688a72a79f2f7a0198193808bfa"
+    },
+    "ls05-route-probe-hs.txt": {
+      "bytes": 1569,
+      "sha256": "6c776b56ab06159a17ef88581c10007a733503e156165eddc8d2772c21d54a2e"
+    },
+    "ls05-flag-probe-hs.txt": {
+      "bytes": 1945,
+      "sha256": "aeae6008ed44f822647ed6338a4ceef6190170b419d7c5d186d36381869f85db"
+    },
+    "ls05-public-probe-hs.txt": {
+      "bytes": 2268,
+      "sha256": "cb6ad8da4ea502b5e3c017096cec6e74655cd387ebe3217e32e84e002d43cdb4"
+    }
+  },
+  "evidence_distribution": "Owned tags, logs and local media are excluded from Git; sanitized hashes and observed results are recorded here. No native_qa assertion passes are claimed for these visual checks.",
+  "restoration": {
+    "generation": "c4b9f383fa004dceab77a9639fc74a03",
+    "checkpoint_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430",
+    "fingerprint_unchanged": true,
+    "existing_profile_files_unchanged": 22,
+    "new_launcher_session_files": 2,
+    "continue_visually_confirmed": true,
+    "launcher_pid": 1215185,
+    "native_pid": 1215364,
+    "native_slot_release": "https://github.com/lEWFkRAD/halo3-survivors/issues/1#issuecomment-6146373499",
+    "installed_package_changed": false
+  },
+  "limits": [
+    "No new HSC compilation or cache build: the LS-01 compiled script blocks were retained.",
+    "No live graph, new input or purchase validation, exhaustive reachability, full run, retail or release validation.",
+    "Large probe panel remains translucent and poorly contrasted; it is not approved game UI.",
+    "Budget estimates assume separate selected focus, wallet and selected details; they do not establish native render or string-pool capacity.",
+    "LS-05 remains open. Next step is a compact live-state display composed with readable labels, followed by native purchase and Continue tests."
+  ]
+}

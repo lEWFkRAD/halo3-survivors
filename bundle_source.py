@@ -26,6 +26,7 @@ TASKS.md
 DEVELOPMENT.md
 BOOTSTRAP.md
 NATIVE_QA.md
+ARMORY_NATIVE_PROBE.md
 ROADMAP.md
 last-stand.example.json
 workspace_config.py
@@ -104,6 +105,7 @@ cache-build-receipt-v04.json
 native-validation-v04.json
 native-validation-ls04.json
 native-validation-ls05.json
+native-validation-ls05-ui-probe.json
 native-validation-ls03.json
 native-validation-ls01.json
 build-result-v04.json
