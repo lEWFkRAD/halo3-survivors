@@ -33,7 +33,9 @@ workspace_config.py
 author_effects.py
 author_hangar.py
 author_progression_ui.py
+author_armory_hud.py
 armory_presentation.py
+armory_live.py
 armory_native_probe.py
 armory_graph_budget.py
 birds_eye.py
@@ -69,6 +71,8 @@ qa_v04_gallery.py
 remote_build.py
 tests/hsc_vm.py
 tests/test_armory_presentation.py
+tests/test_armory_live.py
+tests/test_author_armory_hud.py
 tests/test_armory_native_probe.py
 tests/test_armory_graph_budget.py
 tests/test_armory_scheduler.py

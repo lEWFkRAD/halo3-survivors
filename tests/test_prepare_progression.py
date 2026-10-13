@@ -66,6 +66,7 @@ class PreparationTests(unittest.TestCase):
             name: SimpleNamespace(__file__=str(self.root / (name + '.py')))
             for name in ('progression_tags', 'generate_progression', 'author_progression_ui',
                          'progression_catalog', 'progression_hsc', 'armory_presentation',
+                         'author_armory_hud', 'armory_live', 'armory_graph_budget',
                          'workspace_config', 'preflight')
         }
         modules['progression_tags'].main = writer('tags', (
@@ -78,6 +79,12 @@ class PreparationTests(unittest.TestCase):
             objects + 'needler_d7.damage_effect', objects + 'impact_needler.effect'))
         modules['author_progression_ui'].main = writer('ui', (
             scenario + 'progression-ui.scenario', prepare_progression.UI_OUTPUT))
+        hud_writer = writer('hud', preflight.ARMORY_OUTPUTS)
+        def hud(*, root):
+            path = root / scenario / 'progression-ui.scenario'
+            path.write_bytes(path.read_bytes() + b' with HUD override')
+            return hud_writer(root=root)
+        modules['author_armory_hud'].main = hud
         return modules
 
     def run_authors(self, modules, args=(), events=None):
@@ -104,6 +111,15 @@ class PreparationTests(unittest.TestCase):
             self.assertEqual(prepare_progression.main([]), 2)
         author_import.assert_not_called()
         archive.assert_not_called()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_missing_armory_template_blocks_before_any_author_import(self):
+        self.inputs()
+        (self.root / preflight.ARMORY_INPUTS[-1]).unlink()
+        before = self.snapshot()
+        with patch.object(prepare_progression.importlib, 'import_module') as author_import, redirect_stdout(io.StringIO()):
+            self.assertEqual(prepare_progression.main([]), 2)
+        author_import.assert_not_called()
         self.assertEqual(self.snapshot(), before)
 
     def test_successful_check_does_not_import_authors_or_modify_files(self):
@@ -187,8 +203,8 @@ class PreparationTests(unittest.TestCase):
             return actual_open(*args, **kwargs)
         with patch.object(prepare_progression.tarfile, 'open', side_effect=archive_open):
             self.assertEqual(self.run_authors(modules, events=events), 0)
-        self.assertEqual(set(events[:8]), {'import ' + name for name in modules})
-        self.assertEqual(events[8:], ['tags', 'scripts', 'damage', 'ui', 'archive'])
+        self.assertEqual(set(events[:11]), {'import ' + name for name in modules})
+        self.assertEqual(events[11:], ['tags', 'scripts', 'damage', 'ui', 'hud', 'archive'])
 
     def test_declared_archive_excludes_stale_files_and_manifest_matches_bytes(self):
         self.inputs()
@@ -216,7 +232,7 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(manifest['archive']['size'], len(archive_bytes))
         with tarfile.open(self.root / 'v3-native.tar') as archive:
             self.assertEqual(archive.getnames(), manifest['archive']['members'])
-            self.assertEqual(len(archive.getmembers()), 7)
+            self.assertEqual(len(archive.getmembers()), 11)
             for member in archive.getmembers():
                 self.assertTrue(member.isfile())
                 self.assertIn('native-tags/' + member.name, manifest['outputs'])
@@ -259,6 +275,19 @@ class PreparationTests(unittest.TestCase):
         before = self.snapshot()
         with patch.object(prepare_progression.tarfile, 'open', side_effect=OSError('archive failed')):
             self.assertEqual(self.run_authors(self.fake_authors()), 2)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_hud_failure_after_scenario_rewrite_preserves_all_published_outputs(self):
+        self.inputs()
+        self.assertEqual(self.run_authors(self.fake_authors()), 0)
+        before = self.snapshot()
+        modules = self.fake_authors()
+        author = modules['author_armory_hud'].main
+        def fail(*, root):
+            author(root=root)
+            raise ValueError('HUD validation failed')
+        modules['author_armory_hud'].main = fail
+        self.assertEqual(self.run_authors(modules), 2)
         self.assertEqual(self.snapshot(), before)
 
     def test_undeclared_or_invalid_output_never_reaches_publication(self):

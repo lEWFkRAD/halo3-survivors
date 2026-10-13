@@ -125,6 +125,9 @@ class FetchInputsTests(unittest.TestCase):
         self.assertEqual(fetch.INPUTS['private-inputs/bootstrap/020_base.multilingual_unicode_string_list'], 'ui/chapter_titles/020_base.multilingual_unicode_string_list')
         self.assertEqual(fetch.DAMAGE['energy_sword'], 'objects/weapons/damage_effects/dash_melee.damage_effect')
         self.assertEqual(fetch.INPUTS['private-inputs/v3/energy_blade.weapon'], 'objects/weapons/melee/energy_blade/energy_blade.weapon')
+        self.assertEqual(len(fetch.ARMORY), 5)
+        for name, path in fetch.ARMORY.items():
+            self.assertEqual(fetch.INPUTS['private-inputs/armory/' + name], path)
 
     def test_local_spaces_exact_files_hashes_and_compatible_metadata(self):
         old = self.seed_outputs()
@@ -137,7 +140,7 @@ class FetchInputsTests(unittest.TestCase):
         for name, blob in self.blobs.items():
             self.assertEqual((self.root / name).read_bytes(), blob)
             self.assertEqual(result['files'][name]['sha256'], hashlib.sha256(blob).hexdigest())
-        for area in ('bootstrap', 'v3'):
+        for area in ('bootstrap', 'armory', 'v3'):
             manifest = json.loads((self.root / f'private-inputs/{area}/sources.json').read_text())
             self.assertEqual(manifest['source'], {'mode': 'local', 'editing_kit': str(self.kit)})
             expected = {name: record for name, record in result['files'].items()

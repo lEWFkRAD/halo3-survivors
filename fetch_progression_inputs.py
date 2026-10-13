@@ -51,21 +51,31 @@ BOOTSTRAP = {
     '070_waste.scenario': 'levels/solo/070_waste/070_waste.scenario',
     '020_base.multilingual_unicode_string_list': 'ui/chapter_titles/020_base.multilingual_unicode_string_list',
 }
+ARMORY = {
+    'masterchief.biped': 'objects/characters/masterchief/masterchief.biped',
+    'spartan.chud_definition': 'ui/chud/spartan.chud_definition',
+    'globals.chud_globals_definition': 'ui/chud/globals.chud_globals_definition',
+    'hud_messages.multilingual_unicode_string_list': 'ui/hud/hud_messages.multilingual_unicode_string_list',
+    'globals.globals': 'globals/globals.globals',
+}
 INPUTS = {
     **{f'private-inputs/bootstrap/{name}': path for name, path in BOOTSTRAP.items()},
+    **{f'private-inputs/armory/{name}': path for name, path in ARMORY.items()},
     'private-inputs/v3/energy_blade.weapon': 'objects/weapons/melee/energy_blade/energy_blade.weapon',
     **{f'private-inputs/v3/{name}.damage_effect': path for name, path in DAMAGE.items()},
     **{f'private-inputs/v3/{name}.effect': path for name, path in EFFECTS.items()},
     **{f'private-inputs/v3/{name}{PurePosixPath(path).suffix}': path for name, path in SUPPORT.items()},
     **{f'private-inputs/v3/{name}.character': path + '.character' for name, path in CHARACTERS.items()},
 }
-METADATA = ('private-inputs/bootstrap/sources.json', 'private-inputs/v3/sources.json',
+METADATA = ('private-inputs/bootstrap/sources.json', 'private-inputs/armory/sources.json',
+            'private-inputs/v3/sources.json',
             'private-inputs/v3/character-paths.json')
 OUTPUTS = tuple(INPUTS) + METADATA
 TAG_GROUPS = {
     '.scenario': b'rncs', '.multilingual_unicode_string_list': b'cinu',
     '.weapon': b'paew', '.damage_effect': b'!tpj', '.effect': b'effe',
     '.device_machine': b'hcam', '.light': b'hgil', '.biped': b'dpib', '.character': b'rahc',
+    '.chud_definition': b'tdhc', '.chud_globals_definition': b'dghc', '.globals': b'gtam',
 }
 MAX_FILE = 64 * 1024 * 1024
 MAX_TOTAL = 128 * 1024 * 1024
@@ -305,7 +315,7 @@ def _stage_metadata(config: ProjectConfig, staging: Path, records: dict, remote:
               'editing_kit': config.remote_editing_kit if remote else str(config.editing_kit)}
     if remote:
         origin['host'] = config.remote_host
-    for area in ('bootstrap', 'v3'):
+    for area in ('bootstrap', 'armory', 'v3'):
         prefix = f'private-inputs/{area}/'
         manifest = {'schema_version': 1, 'source': origin,
                     'files': {name: record for name, record in records.items() if name.startswith(prefix)},

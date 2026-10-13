@@ -155,7 +155,8 @@ def _bootstrap(root):
 
 def _progression(root):
     from preflight import AUTHORING_INPUTS
-    from prepare_progression import FIXED_OUTPUTS, PRIVATE_TAG, UI_OUTPUT, OPTIONAL_INPUTS
+    from prepare_progression import (FIXED_OUTPUTS, PRIVATE_TAG, ARCHIVE_FIXED_OUTPUTS,
+                                     OPTIONAL_INPUTS)
     manifest, receipt = _manifest(root, 'progression-build.json')
     if manifest.get('stage') != 'authored' or manifest.get('native_compilation_required') is not True:
         raise WorkspaceError('Expected an authored progression manifest')
@@ -180,7 +181,7 @@ def _progression(root):
             or not all(isinstance(name, str) for name in archive['members'])):
         raise WorkspaceError('Invalid progression archive record')
     expected = {name.removeprefix('native-tags/'): data for name, data in outputs.items()
-                if PRIVATE_TAG.fullmatch(name) or name == UI_OUTPUT}
+                if PRIVATE_TAG.fullmatch(name) or name in ARCHIVE_FIXED_OUTPUTS}
     if (len(archive['members']) != len(expected)
             or set(archive['members']) != set(expected)):
         raise WorkspaceError('Archive member manifest differs from exact authored tag set')

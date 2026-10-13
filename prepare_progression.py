@@ -18,7 +18,7 @@ import sys
 import tarfile
 import tempfile
 
-from preflight import AUTHORING_INPUTS, inspect_workspace, print_report
+from preflight import ARMORY_OUTPUTS, AUTHORING_INPUTS, inspect_workspace, print_report
 from workspace_config import ConfigError, load_config
 
 ROOT = Path(__file__).resolve().parent
@@ -28,11 +28,12 @@ FIXED_OUTPUTS = frozenset((
     'native-tags/levels/survivors/last_stand/progression-ui.scenario',
     'native-tags/ui/survivors/progression.multilingual_unicode_string_list',
     'progression-layout.json', 'progression-contract.json', 'source/progression.hsc',
-))
+)) | frozenset(ARMORY_OUTPUTS)
 PRIVATE_TAG = re.compile(
     r'native-tags/objects/survivors/v3/[a-z][a-z0-9_]*\.'
     r'(?:light|device_machine|biped|character|damage_effect|effect)\Z')
 UI_OUTPUT = 'native-tags/ui/survivors/progression.multilingual_unicode_string_list'
+ARCHIVE_FIXED_OUTPUTS = frozenset((UI_OUTPUT, *ARMORY_OUTPUTS))
 
 
 def _safe_file(root: Path, relative: str, *, required: bool) -> Path:
@@ -80,8 +81,9 @@ def _declared_outputs(stage: Path, declared) -> dict[str, Path]:
 
 
 def _archive(stage: Path, outputs: dict[str, Path]) -> list[str]:
-    """Only declared private tags and the declared UI enter the native archive."""
-    names = sorted(name for name in outputs if PRIVATE_TAG.fullmatch(name) or name == UI_OUTPUT)
+    """Only declared private tags and the exact UI/HUD set enter the archive."""
+    names = sorted(name for name in outputs
+                   if PRIVATE_TAG.fullmatch(name) or name in ARCHIVE_FIXED_OUTPUTS)
     members = []
     with tarfile.open(stage / 'v3-native.tar', 'w', format=tarfile.USTAR_FORMAT) as archive:
         for name in names:
@@ -97,7 +99,7 @@ def _archive(stage: Path, outputs: dict[str, Path]) -> list[str]:
     return members
 
 
-def prepare(config, tags, generator, ui, *, source_modules=()) -> dict:
+def prepare(config, tags, generator, ui, hud, *, source_modules=()) -> dict:
     """Run already-loaded authors against copied inputs and publish their outputs."""
     root = config.workspace
     input_names = list(AUTHORING_INPUTS)
@@ -121,7 +123,8 @@ def prepare(config, tags, generator, ui, *, source_modules=()) -> dict:
             input_records[name] = _record(target)
         (stage / 'source').mkdir()
         declared = [*tags.main(root=stage), *generator.main(root=stage),
-                    *tags.author_damage(root=stage), *ui.main(root=stage)]
+                    *tags.author_damage(root=stage), *ui.main(root=stage),
+                    *hud.main(root=stage)]
         outputs = _declared_outputs(stage, declared)
         # An author's forgotten return entry must not silently disappear from
         # the receipt. Neither may an author rewrite its input snapshot.
@@ -179,10 +182,12 @@ def main(argv=None) -> int:
         # including transitive helpers and the native binding.
         names = ('progression_tags', 'generate_progression', 'author_progression_ui',
                  'progression_catalog', 'progression_hsc', 'armory_presentation',
+                 'author_armory_hud', 'armory_live', 'armory_graph_budget',
                  'workspace_config', 'preflight')
         modules = {name: importlib.import_module(name) for name in names}
         prepare(config, modules['progression_tags'], modules['generate_progression'],
-                modules['author_progression_ui'], source_modules=modules.values())
+                modules['author_progression_ui'], modules['author_armory_hud'],
+                source_modules=modules.values())
         print('Prepared native tags and scripts; hashes are in progression-build.json. '
               'Engine compilation still required.')
         return 0
