@@ -82,17 +82,18 @@ import armory_live
 
     def test_every_node_has_one_page_and_all_dependencies_remain_local(self):
         layout = live.page_layout()
-        self.assertEqual([len(nodes) for _, nodes in layout], [7] * 6 + [5, 3])
+        self.assertEqual([len(nodes) for _, nodes in layout], [7] * 6 + [3, 2, 3])
         owners = {node_id: page_id for page_id, nodes in layout for node_id in nodes}
         self.assertEqual(sum(len(nodes) for _, nodes in layout), 50)
         self.assertEqual(set(owners), {node['id'] for node in CATALOG['nodes']})
-        self.assertEqual(self.pages[6].indices, (42, 43, 44, 45, 46))
-        self.assertEqual(self.pages[7].indices, (47, 48, 49))
+        self.assertEqual(self.pages[6].indices, (42, 43, 44))
+        self.assertEqual(self.pages[7].indices, (45, 46))
+        self.assertEqual(self.pages[8].indices, (47, 48, 49))
         for node in CATALOG['nodes']:
             for prerequisite in node['prerequisites']:
                 self.assertEqual(owners[node['id']], owners[prerequisite['id']])
 
-    def test_all_966_snapshots_match_independent_presentation_and_execute_correct_lookup(self):
+    def test_all_601_snapshots_match_independent_presentation_and_execute_correct_lookup(self):
         vm = LiveVM()
         seen = set()
         for page in self.pages:
@@ -115,7 +116,7 @@ import armory_live
                     self.assertIn(live._label(node) + str(rank) + live.STATE_MARKERS[state],
                                   self.messages[actual])
                 seen.add(actual)
-        self.assertEqual(len(seen), 966)
+        self.assertEqual(len(seen), 601)
         self.assertEqual(seen | {live.FALLBACK_ID}, set(self.messages))
 
     def test_every_selection_resolves_its_actual_page(self):
@@ -207,7 +208,7 @@ import armory_live
         self.assertEqual(h1.render(), h2.render())
         self.assertEqual(len(h1.globals), 3)
         self.assertIn('(global long sv_tree_key 0)', h1.render())
-        self.assertEqual(len(h1.scripts), 122)
+        self.assertEqual(len(h1.scripts), 84)
         for form in parse(h1.render()):
             if form[0] == 'script' and '_leaf' in form[3]:
                 self.assertLessEqual(len(form[4:]), 10)
@@ -234,7 +235,7 @@ import armory_live
         with self.assertRaisesRegex(ValueError, 'exclusivity changed'):
             live.messages(altered)
         altered = deepcopy(CATALOG)
-        altered['nodes'][43]['prerequisites'] = [{'id': 'support.aegis', 'rank': 1}]
+        altered['nodes'][43]['prerequisites'] = [{'id': 'support.shield', 'rank': 1}]
         with self.assertRaisesRegex(ValueError, 'Support prerequisites/exclusivity changed'):
             live.messages(altered)
 

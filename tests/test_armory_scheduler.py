@@ -39,8 +39,10 @@ class ArmorySchedulerTests(unittest.TestCase):
             v.run(action);v.fast_frames(1)
             self.assertFalse(v.training_enabled,action)
 
-    def test_support_category_chord_visits_both_pages_then_wraps(self):
+    def test_support_category_chord_visits_three_pages_then_wraps(self):
         v=self.vm;v.globals['sv_selection']=42
+        v.menu_sample();v.menu_sample('jump','melee')
+        self.assertEqual(v.globals['sv_selection'],45)
         v.menu_sample();v.menu_sample('jump','melee')
         self.assertEqual(v.globals['sv_selection'],47)
         v.menu_sample();v.menu_sample('jump','melee')
@@ -58,10 +60,10 @@ class ArmorySchedulerTests(unittest.TestCase):
                 v.run('sv_price_display')
                 self.assertEqual(v.price_events[-1][1],'sv_cost_max' if expected<0 else f'sv_cost_{expected}')
 
-    def test_all_eight_pages_follow_first_and_last_node_of_each_category(self):
+    def test_all_nine_pages_follow_first_and_last_node_of_each_category(self):
         v = self.vm
         for category, (first, last) in enumerate([(0, 6), (7, 13), (14, 20),
-                                                 (21, 27), (28, 34), (35, 41), (42, 46), (47, 49)]):
+                                                 (21, 27), (28, 34), (35, 41), (42, 44), (45, 46), (47, 49)]):
             for selection in (first, last):
                 with self.subTest(category=category, selection=selection):
                     before = len(pages(v))
@@ -163,7 +165,7 @@ class ArmorySchedulerTests(unittest.TestCase):
         self.assertTrue(all(b[0] - a[0] >= 90 for a, b in zip(v.notice_events, v.notice_events[1:])))
         for tick, title in pages(v):
             selection = ((tick // 3) - 1) % 50
-            self.assertEqual(title, f'sv_tree_{min(selection // 7, 6) if selection < 47 else 7}')
+            self.assertEqual(title, f'sv_tree_{min(selection // 7, 6) if selection < 45 else 7 if selection < 47 else 8}')
         self.assertTrue(all(not name.startswith('sv_tree_') for _, name in v.notice_events))
 
 

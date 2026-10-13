@@ -90,6 +90,85 @@ class LauncherTests(unittest.TestCase):
         paths = launcher.Paths(self.paths.root, self.paths.kit, steam=self.paths.root / 'other Steam')
         self.assertEqual(launcher.fingerprint(paths), self.compatibility)
 
+    def test_legacy_fingerprint_is_exact_and_ignores_unreferenced_canonical_hud(self):
+        self.assertEqual(self.compatibility['private_assets'],
+                         '7dbec8094325c34d3e73ec76cd1c2357ea274e312db94f5c4c1132b35087a13e')
+        canonical = self.paths.kit / 'tags/ui/chud/globals.chud_globals_definition'
+        canonical.parent.mkdir(parents=True)
+        for content in (b'stock globals', b'another stock build'):
+            canonical.write_bytes(content)
+            self.assertEqual(launcher.fingerprint(self.paths), self.compatibility)
+        canonical.unlink()
+        self.assertEqual(launcher.fingerprint(self.paths), self.compatibility)
+
+    def install_live_hud(self):
+        armory = self.paths.kit / 'tags/ui/survivors/armory.chud_definition'
+        canonical = self.paths.kit / 'tags/ui/chud/globals.chud_globals_definition'
+        armory.write_bytes(b'live HUD')
+        canonical.parent.mkdir(parents=True)
+        canonical.write_bytes(b'live HUD globals')
+        return armory, canonical
+
+    def test_canonical_live_hud_change_invalidates_continue_without_save_mutations(self):
+        _, canonical = self.install_live_hud()
+        self.compatibility = launcher.fingerprint(self.paths)
+        self.commit()
+        self.assertTrue(launcher.validate_save(self.paths)['valid'])
+        before = {p.relative_to(self.paths.profile): p.read_bytes()
+                  for p in self.paths.profile.rglob('*') if p.is_file()}
+        canonical.write_bytes(b'changed routing')
+        changed = launcher.fingerprint(self.paths)
+        self.assertNotEqual(changed['private_assets'], self.compatibility['private_assets'])
+        self.assertEqual({k: v for k, v in changed.items() if k != 'private_assets'},
+                         {k: v for k, v in self.compatibility.items() if k != 'private_assets'})
+        status = launcher.validate_save(self.paths)
+        self.assertFalse(status['valid'])
+        self.assertIn('incompatible', status['reason'])
+        with patch.object(launcher, 'native_children', return_value=[]), \
+                patch.object(launcher.subprocess, 'Popen') as start, \
+                self.assertRaisesRegex(launcher.SaveError, 'incompatible'):
+            launcher.launch(self.paths, 'continue', changed, self.report)
+        start.assert_not_called()
+        self.assertFalse(self.paths.resume.exists())
+        self.assertEqual({p.relative_to(self.paths.profile): p.read_bytes()
+                          for p in self.paths.profile.rglob('*') if p.is_file()}, before)
+
+    def test_live_hud_requires_a_regular_canonical_dependency(self):
+        _, canonical = self.install_live_hud()
+        canonical.unlink()
+        with self.assertRaisesRegex(launcher.SaveError, 'Missing or linked file'):
+            launcher.fingerprint(self.paths)
+        canonical.mkdir()
+        with self.assertRaisesRegex(launcher.SaveError, 'Missing or linked file'):
+            launcher.fingerprint(self.paths)
+
+    def test_live_hud_rejects_linked_canonical_file_and_parent(self):
+        _, canonical = self.install_live_hud()
+        outside = self.paths.root / 'other globals'
+        outside.write_bytes(b'preserve')
+        canonical.unlink()
+        try:
+            canonical.symlink_to(outside)
+        except OSError as error:
+            self.skipTest(str(error))
+        with self.assertRaisesRegex(launcher.SaveError, 'Linked live Armory dependency'):
+            launcher.fingerprint(self.paths)
+        canonical.unlink()
+        canonical.parent.rmdir()
+        directory = self.paths.root / 'redirected chud'
+        directory.mkdir()
+        (directory / canonical.name).write_bytes(b'other globals')
+        canonical.parent.symlink_to(directory, target_is_directory=True)
+        with self.assertRaisesRegex(launcher.SaveError, 'Linked live Armory dependency'):
+            launcher.fingerprint(self.paths)
+        self.assertEqual(outside.read_bytes(), b'preserve')
+
+    def test_live_hud_marker_cannot_be_a_directory(self):
+        armory = self.paths.kit / 'tags/ui/survivors/armory.chud_definition'
+        armory.mkdir()
+        with self.assertRaisesRegex(launcher.SaveError, 'Missing or linked file'):
+            launcher.fingerprint(self.paths)
+
     def test_invalid_runtime_preserves_profile_pending_resume_and_init(self):
         self.commit()
         self.paths.pending.write_bytes(b'pending checkpoint')

@@ -24,8 +24,8 @@ SUPPORT_LABELS = {
     'support.aegis_cycle': 'Cycle', 'support.reach': 'Reach',
     'support.insight': 'Insight', 'support.scholar': 'Scholar',
 }
-DEFENSE_IDS = frozenset(('support.vitality', 'support.body', 'support.shield',
-                         'support.aegis', 'support.aegis_cycle'))
+VITALITY_IDS = frozenset(('support.vitality', 'support.body', 'support.shield'))
+RECOVERY_IDS = frozenset(('support.aegis', 'support.aegis_cycle'))
 
 
 @dataclass(frozen=True)
@@ -65,9 +65,12 @@ def _compact(page_id, nodes, states):
         unlock, power, cadence, branch_a, cap_a, branch_b, cap_b = labels
         lines = [unlock, ' / \\', power + ' ' + cadence, ' \\ /',
                  branch_a + ' ' + branch_b, ' |     |', cap_a + ' ' + cap_b]
-    elif page_id == 'support_defense':
-        vitality, armor, shield, aegis, cycle = labels
-        lines = [vitality, ' / \\', armor + ' ' + shield, aegis, ' |', cycle]
+    elif page_id == 'support_vitality_armor':
+        vitality, armor, shield = labels
+        lines = [vitality, ' / \\', armor + ' ' + shield]
+    elif page_id == 'support_recovery':
+        aegis, cycle = labels
+        lines = [aegis, ' |', cycle]
     else:
         reach, insight, scholar = labels
         lines = [reach, insight, ' |', scholar]
@@ -92,12 +95,13 @@ def _groups(catalog):
               for key in catalog['weapons']]
     support = [n for n in catalog['nodes'] if n['weapon'] is None]
     groups.extend([
-        ('support_defense', [n for n in support if n['id'] in DEFENSE_IDS]),
-        ('support_reach_xp', [n for n in support if n['id'] not in DEFENSE_IDS]),
+        ('support_vitality_armor', [n for n in support if n['id'] in VITALITY_IDS]),
+        ('support_recovery', [n for n in support if n['id'] in RECOVERY_IDS]),
+        ('support_reach_xp', [n for n in support if n['id'] not in VITALITY_IDS | RECOVERY_IDS]),
     ])
     validate_groups(groups, catalog)
-    if len(groups) != 8 or [len(nodes) for _, nodes in groups] != [7] * 6 + [5, 3]:
-        raise ValueError('Compact layout requires six seven-node weapons and two support pages')
+    if len(groups) != 9 or [len(nodes) for _, nodes in groups] != [7] * 6 + [3, 2, 3]:
+        raise ValueError('Compact layout requires six seven-node weapons and three support pages')
     expected_support = list(SUPPORT_LABELS)
     if [n['id'] for n in support] != expected_support:
         raise ValueError('Support topology/order changed; update the compact graph layout')
