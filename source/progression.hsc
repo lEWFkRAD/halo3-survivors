@@ -6041,6 +6041,8 @@
 (if (and sv_running (not sv_finished))
     (begin
         (if (> sv_tree_clock 0) (set sv_tree_clock (max 0 (- sv_tree_clock 3))))
+        (if (and sv_menu_open (= sv_tree_clock 15))
+            (begin (sv_wallet_display) (sv_price_display)))
         (if (and sv_menu_open (= sv_tree_clock 0))
             (begin (set sv_tree_clock 30)
                 (hud_enable_training true) (sv_tree_display)

@@ -73,6 +73,21 @@ class ArmorySchedulerTests(unittest.TestCase):
                     self.assertEqual(len(pages(v)) - before, 1)
         self.assertTrue(all(b[0] - a[0] == 30 for a, b in zip(pages(v), pages(v)[1:])))
 
+    def test_wallet_and_price_refresh_mid_cycle_while_graph_stays_throttled(self):
+        v = self.vm
+        v.fast_frames(40)
+        # Graph pages keep the 30-tick throttle; wallet/price also refresh
+        # at the 15-tick midpoint so their 0.95s titles cannot lapse open.
+        self.assertTrue(all(b[0] - a[0] == 30 for a, b in zip(pages(v), pages(v)[1:])))
+        self.assertGreater(len(v.wallet_events), len(pages(v)))
+        self.assertTrue(all(b[0] - a[0] == 15 for a, b in zip(v.wallet_events, v.wallet_events[1:])))
+        self.assertTrue(all(b[0] - a[0] == 15 for a, b in zip(v.price_events, v.price_events[1:])))
+        # Closing the menu stops every Armory refresh, mid-cycle included.
+        v.run('sv_close_menu')
+        counts = (len(pages(v)), len(v.wallet_events), len(v.price_events))
+        v.fast_frames(20)
+        self.assertEqual((len(pages(v)), len(v.wallet_events), len(v.price_events)), counts)
+
     def test_rapid_category_input_coalesces_to_latest_category_at_refresh(self):
         v = self.vm
         v.menu_sample()

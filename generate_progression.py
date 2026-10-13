@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parent
 
 # Native title budget: 50 nodes + 51 points + 4 ranks + 16 notices + 6 next-cost labels.
 TITLES={
- 'sv_controls':'ARMORY | Space next / Q back / Click buy / Space+Q page / 1 resume\nRank: + buy / - locked / o owned / * max | Autosaves',
+ 'sv_controls':'ARMORY | Space next / Q back / Click buy / Space+Q page / 1 resume\n> selected detail | + buy / - locked / o owned / * max | Autosaves',
  'sv_purchased':'UPGRADE PURCHASED | Your ranks carry into the next stage.',
  'sv_need_points':'NOT ENOUGH POINTS | Defeat enemies to earn more.',
  'sv_prerequisite':'PREREQUISITE REQUIRED | Buy the earlier skill in this branch.',
@@ -67,7 +67,11 @@ def compact_node_title(node,byid):
     parts=[node_label(node),effect_text,'Cost'+ '/'.join(map(str,node['costs']))]
     if requirements:parts.append('Req '+','.join(requirements))
     parts.append('S'+str(node['stage']))
-    title=' | '.join(parts)
+    # The CHUD objective is the selected skill's detail. Prefix it with an
+    # explicit selection marker at zero title/reference cost: an in-graph
+    # highlight would need one training-text snapshot per (state, selection)
+    # pair (601 -> 3,848 snapshots) and blow the compiler reference budget.
+    title='> '+' | '.join(parts)
     assert len(title)<=100,(node['id'],len(title),title)
     return title
 
@@ -367,9 +371,15 @@ def build(data,layout):
     # always 0..30, so Continue repairs the page within one second without
     # touching ranks or run state. Input is handled before this scheduler, so a
     # Resume action suppresses even a refresh due on that same frame.
+    # Wallet/price titles live 0.95s, just under the 30-tick graph cycle, so
+    # they briefly expired before each redraw. Refresh wallet/price alone at
+    # the 15-tick midpoint: the graph throttle, the sub-second title expiry
+    # after Resume and the saved-clock range all stay unchanged.
     h.script('sv_tree_tick','''(if (and sv_running (not sv_finished))
     (begin
         (if (> sv_tree_clock 0) (set sv_tree_clock (max 0 (- sv_tree_clock 3))))
+        (if (and sv_menu_open (= sv_tree_clock 15))
+            (begin (sv_wallet_display) (sv_price_display)))
         (if (and sv_menu_open (= sv_tree_clock 0))
             (begin (set sv_tree_clock 30)
                 (hud_enable_training true) (sv_tree_display)
