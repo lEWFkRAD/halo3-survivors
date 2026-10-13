@@ -9,9 +9,10 @@ def title_style(name):
     # blam-tags-py/src/generated.rs:1026. The status scheduler emits at
     # most once every 3 seconds; use one wide strip with a 2.3-second life.
     if name.startswith(('sv_points_', 'sv_cost_')):
+        # Wallet and next cost sit over the opaque black Armory panel.
         return {'text bounds (on screen)':b.Rectangle2d(158 if name.startswith('sv_cost_') else 118,32,198 if name.startswith('sv_cost_') else 158,1120),
-                'text color':b.RgbColor(0xFF111820),
-                'shadow color':b.RgbColor(0xFFF4F6F8),
+                'text color':b.RgbColor(0xFFFFFFFF),
+                'shadow color':b.RgbColor(0xFF000000),
                 'justification':'left','vertical justification':'top',
                 'font':'large body text font','fade in time [seconds]':0.0,
                 'up time [seconds]':0.95,'fade out time [seconds]':0.0}

@@ -65,11 +65,15 @@ class TitleStyleTests(unittest.TestCase):
         self.assertEqual(self.author.native_title_text('A\nB\r\nC | S2'), 'A|nB|nC | S2')
         self.assertEqual(self.author.native_title_text('Cost1/2/3 |nS4'), 'Cost1/2/3 |nS4')
 
-    def test_wallet_expires_before_next_refresh_and_sits_below_notices(self):
-        style=self.author.title_style('sv_points_3')
-        self.assertGreaterEqual(style['text bounds (on screen)'][0],116)
-        self.assertLess(sum(style[k] for k in ('fade in time [seconds]',
-            'up time [seconds]','fade out time [seconds]')),1)
+    def test_wallet_and_cost_are_readable_over_panel_and_expire_before_refresh(self):
+        for name in ('sv_points_3', 'sv_cost_2', 'sv_cost_max'):
+            with self.subTest(name=name):
+                style=self.author.title_style(name)
+                self.assertEqual(style['text color'],0xFFFFFFFF)
+                self.assertEqual(style['shadow color'],0xFF000000)
+                self.assertGreaterEqual(style['text bounds (on screen)'][0],116)
+                self.assertLess(sum(style[k] for k in ('fade in time [seconds]',
+                    'up time [seconds]','fade out time [seconds]')),1)
 
 
 if __name__ == '__main__':

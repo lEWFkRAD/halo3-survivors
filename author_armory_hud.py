@@ -35,7 +35,7 @@ DESTINATIONS = {
     'chud_globals': 'native-tags/ui/chud/globals.chud_globals_definition',
 }
 ADDITIONAL_OUTPUTS = tuple(path for role, path in DESTINATIONS.items() if role != 'scenario')
-BACKGROUND_ARGB = 0xF2111820
+BACKGROUND_ARGB = 0xFF000000
 TEXT_ARGB = 0xFFFAFCFF
 
 
@@ -148,11 +148,15 @@ def build_payloads(originals, b, messages):
     bitmap_base = bitmap.field('base').as_struct()
     bitmap_placements = bitmap_base.field('placement data').as_block()
     _require(len(bitmap_placements) == 1, 'Expected one bitmap placement')
-    bitmap_placements[0].field('widget scale').set(b.RealPoint2d(55.0, 8.0))
+    bitmap_placements[0].field('widget scale').set(b.RealPoint2d(85.0, 8.0))
     bitmap.field('flags').set_flag('scale alpha by col. out A', True)
     renders = bitmap_base.field('render data').as_block()
     _require(len(renders) == 1 and renders[0].field('shader type').value == 'simple',
              'Unexpected bitmap shader')
+    # The stock simple shader takes opacity from the help bitmap. The solid
+    # shader's native enum retains its historical warning; an isolated SDK
+    # experiment verifies this opaque panel, while retail remains unverified.
+    renders[0].field('shader type').set("solid (don't use)")
     renders[0].field('custom color A').set(b.ArgbColor(BACKGROUND_ARGB))
     for letter in 'ABCDEF':
         renders[0].field(f'color output {letter}').set('custom color A')
