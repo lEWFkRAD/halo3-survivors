@@ -46,6 +46,16 @@ Live graphical states across every node remain unfinished. See
 category, Resume and checkpoint-restart checks. The installed release
 remains v0.4.0; this candidate has no new cache or package promotion.
 
+Native QA now has an import-safe [evidence reader](NATIVE_QA.md) that separates
+emitted pass/fail results from echoed commands. Missing or ambiguous output
+stays unresolved. It records exact candidate hashes and distinguishes SDK,
+retail, seeded and ordinary observations. This tooling does not change gameplay
+or promote the installed package; broader recovery and full-run testing remain
+on the roadmap. The launcher source also keeps shutdown checkpoint archives in
+their originating profile. See [LS-03 native evidence](native-validation-ls03.json)
+for true/false transport checks, Continue/New Run, a natural level-up and the
+native cleanup test. The installed launcher remains the original v0.4 baseline.
+
 ## Play
 
 Open **Last Stand - Halo 3 Survivors** on Onyx-Linux. The shortcut uses the

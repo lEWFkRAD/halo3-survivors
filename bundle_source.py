@@ -25,6 +25,7 @@ PLAN.md
 TASKS.md
 DEVELOPMENT.md
 BOOTSTRAP.md
+NATIVE_QA.md
 ROADMAP.md
 last-stand.example.json
 workspace_config.py
@@ -39,6 +40,7 @@ generate.py
 generate_progression.py
 launch-installed.py
 launch_v04.py
+native_qa.py
 install_launcher_v04.py
 launcher-install-v04.json
 record_v03_clip.py
@@ -70,6 +72,7 @@ tests/test_title_style.py
 tests/test_progression_native.py
 tests/test_promote_v03.py
 tests/test_launch_v04.py
+tests/test_native_qa.py
 tests/test_spawn_geometry.py
 tests/test_spawn_runtime.py
 tests/test_survival.py
@@ -92,6 +95,7 @@ cache-build-receipt-v04.json
 native-validation-v04.json
 native-validation-ls04.json
 native-validation-ls05.json
+native-validation-ls03.json
 build-result-v04.json
 victory-fix.diff
 victory-cleanup-v04.diff

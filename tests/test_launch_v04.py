@@ -216,6 +216,117 @@ class LauncherTests(unittest.TestCase):
                 launcher.launch(self.paths, 'new', self.compatibility, self.report)
         self.assertEqual(self.paths.init.read_bytes(), original)
 
+    def test_qa_shutdown_archives_valid_and_partial_pending_without_production_handoff(self):
+        self.commit()
+        production_current = self.paths.current.read_bytes()
+        original_init = self.paths.init.read_bytes()
+        for index, data in enumerate((b'Q' * len(self.data), b'partial QA checkpoint')):
+            with self.subTest(partial=len(data) < launcher.MIN_CORE):
+                qa = launcher.Paths(self.paths.root, self.paths.kit,
+                                    self.paths.root / f'qa-saves/cleanup-{index}')
+                self.commit(paths=qa)
+                qa_current = qa.current.read_bytes()
+                def finish(*args, **kwargs):
+                    qa.pending.write_bytes(data)
+                    return 0
+                with patch.object(launcher, 'native_children', return_value=[]), \
+                     patch.object(launcher.subprocess, 'Popen', return_value=Mock(poll=Mock(return_value=0))), \
+                     patch.object(launcher, 'monitor', side_effect=finish):
+                    self.assertEqual(launcher.launch(qa, 'continue', self.compatibility, self.report), 0)
+                archived = list((qa.profile / 'archives').glob('*-session-pending.bin'))
+                self.assertEqual(len(archived), 1)
+                self.assertEqual(archived[0].read_bytes(), data)
+                self.assertFalse(qa.pending.exists())
+                self.assertEqual(qa.current.read_bytes(), qa_current)
+                self.assertEqual(self.paths.current.read_bytes(), production_current)
+                self.assertEqual(self.paths.init.read_bytes(), original_init)
+                # The next production Continue has no QA pending file to archive.
+                self.fake_launch('continue')
+                self.assertFalse((self.paths.profile / 'archives').exists())
+                self.assertEqual(self.paths.current.read_bytes(), production_current)
+
+    def test_monitor_failure_waits_for_native_exit_then_archives_qa_pending(self):
+        qa = launcher.Paths(self.paths.root, self.paths.kit, self.paths.root / 'qa-saves/failure')
+        original_init = self.paths.init.read_bytes()
+        failure = RuntimeError('monitor broke')
+        data = b'partial checkpoint at shutdown'
+        def fail_monitor(*args, **kwargs):
+            qa.pending.write_bytes(data)
+            raise failure
+        def wait_for_native(delay):
+            self.assertEqual(qa.pending.read_bytes(), data)
+            self.assertFalse((qa.profile / 'archives').exists())
+            self.assertNotEqual(qa.init.read_bytes(), original_init)
+        with patch.object(launcher, 'native_children', side_effect=[[], [123], [123], []]), \
+             patch.object(launcher.subprocess, 'Popen', return_value=Mock(poll=Mock(return_value=0))), \
+             patch.object(launcher, 'monitor', side_effect=fail_monitor), \
+             patch.object(launcher, 'safe_poll') as poll, \
+             patch.object(launcher.time, 'sleep', side_effect=wait_for_native) as sleep:
+            with self.assertRaises(RuntimeError) as caught:
+                launcher.launch(qa, 'new', self.compatibility, self.report)
+        self.assertIs(caught.exception, failure)
+        self.assertEqual(sleep.call_count, 2)
+        self.assertEqual(poll.call_count, 2)
+        archived = list((qa.profile / 'archives').glob('*-session-pending.bin'))
+        self.assertEqual([path.read_bytes() for path in archived], [data])
+        self.assertFalse(qa.pending.exists())
+        self.assertEqual(qa.init.read_bytes(), original_init)
+
+    def check_pending_cleanup_failure(self, monitor_error=None, report=None):
+        qa = launcher.Paths(self.paths.root, self.paths.kit, self.paths.root / 'qa-saves/archive-error')
+        self.commit(paths=qa)
+        qa_current = qa.current.read_bytes()
+        original_init = qa.init.read_bytes()
+        original_archive = launcher.archive_file
+        data = b'pending bytes must remain recoverable'
+        def finish(*args, **kwargs):
+            qa.pending.write_bytes(data)
+            if monitor_error is not None:
+                raise monitor_error
+            return 0
+        def fail_cleanup(paths, path, label):
+            if label == 'session-pending.bin':
+                raise OSError('cleanup archive failed')
+            return original_archive(paths, path, label)
+        previous_handler = object()
+        with patch.object(launcher, 'native_children', return_value=[]), \
+             patch.object(launcher.subprocess, 'Popen', return_value=Mock(poll=Mock(return_value=0))), \
+             patch.object(launcher, 'monitor', side_effect=finish), \
+             patch.object(launcher, 'archive_file', side_effect=fail_cleanup), \
+             patch.object(launcher.signal, 'signal', return_value=previous_handler) as handlers:
+            expected = type(monitor_error) if monitor_error is not None else OSError
+            with self.assertRaises(expected) as caught:
+                launcher.launch(qa, 'continue', self.compatibility, report or self.report)
+        self.assertEqual(qa.pending.read_bytes(), data)
+        self.assertEqual(qa.current.read_bytes(), qa_current)
+        self.assertEqual(qa.init.read_bytes(), original_init)
+        self.assertEqual(handlers.call_count, 4)
+        self.assertEqual([call.args for call in handlers.call_args_list[-2:]],
+                         [(launcher.signal.SIGINT, previous_handler),
+                          (launcher.signal.SIGTERM, previous_handler)])
+        return caught.exception
+
+    def test_pending_cleanup_failure_is_reported_and_restores_init_and_signals(self):
+        failure = self.check_pending_cleanup_failure()
+        self.assertIn('cleanup archive failed', str(failure))
+        self.assertTrue(any(failed and 'Pending checkpoint cleanup failed' in message
+                            for message, failed in self.messages))
+
+    def test_pending_cleanup_failure_does_not_mask_monitor_error_or_fail_reporting(self):
+        original_error = RuntimeError('original monitor error')
+        failure = self.check_pending_cleanup_failure(original_error,
+                    Mock(side_effect=BrokenPipeError('closed report sink')))
+        self.assertIs(failure, original_error)
+        if hasattr(failure, '__notes__'):
+            self.assertTrue(any('cleanup archive failed' in note for note in failure.__notes__))
+
+    def test_pending_cleanup_failure_is_not_hidden_by_callers_handled_exception(self):
+        try:
+            raise LookupError('unrelated caller exception')
+        except LookupError:
+            failure = self.check_pending_cleanup_failure()
+        self.assertIsInstance(failure, OSError)
+
     def test_invalid_continue_does_not_mutate_profile_or_init(self):
         self.commit();self.paths.current.write_text('{bad json')
         original = self.paths.init.read_bytes();pointer = self.paths.current.read_bytes()
