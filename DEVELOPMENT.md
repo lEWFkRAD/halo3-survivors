@@ -301,6 +301,16 @@ see [ROADMAP.md](ROADMAP.md).
 
 ## Source archive
 
+The isolated [Armory HUD probe](ARMORY_NATIVE_PROBE.md) documents the tested
+private CHUD route, string routing, rendering limits and graph budget tools.
+Its [native evidence](native-validation-ls05-ui-probe.json) records four
+concurrent cinematic title slots and complete rendering of short training
+messages. Long messages clipped; the exact limit is unresolved. These probe
+tools retain the compiled baseline and do not implement or promote a live tree.
+The combined source suite passed 359 tests with seven skipped entries; all 18
+owned-input probe tests also passed separately. Native purchases, a fresh
+compile/cache, retail and full-run validation were not performed for this probe.
+
 `python -B bundle_source.py` creates an archive from an explicit source
 allowlist, with a per-file hash manifest. An existing archive is preserved
 unless `--force` is explicitly supplied. This archive is a source snapshot,

@@ -119,6 +119,15 @@ host, fleet, inference or service settings to work on this game.
 
 ## Verification and handoff
 
+For the next live Armory implementation, read [ARMORY_NATIVE_PROBE.md](ARMORY_NATIVE_PROBE.md)
+and [its evidence](native-validation-ls05-ui-probe.json). The SDK permits four
+concurrent cinematic titles in the observed experiment; 128 definitions do not
+permit one simultaneous title per skill. Private training text works through a
+scenario player override and custom global HUD strings. Twelve short lines and
+a 75-character state sample rendered completely; long graphs clipped, with no
+exact character limit established. The probe is separate from the supported
+production authoring allowlist and must not be promoted. LS-05 remains open.
+
 Run the appropriate source checks, normally
 `python -B -m unittest discover -s tests -v`. The LS-01 source suite passes
 331 tests with six skipped entries in the owner checkout, and 326 tests with
