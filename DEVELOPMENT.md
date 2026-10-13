@@ -77,6 +77,20 @@ or a replacement for engine play testing. Native test evidence is recorded in
 `native-validation-v04.json`, including which checks preceded the final narrow
 victory fix.
 
+## Native QA evidence reader
+
+See [NATIVE_QA.md](NATIVE_QA.md) for the read-only `native_qa.py` API and native
+operator workflow. A deliberately false engine result is a failure; console
+echoes, screenshots, missing output and ambiguous logs cannot count as passes.
+The reader records a bounded log window and candidate metadata. Operators must
+independently verify the emitting process, profile and build, and preserve log
+snapshots before restarting the engine.
+
+The LS-03 reader adds 28 synthetic evidence regressions. The combined owner
+suite passes 245 tests; the preceding 217-test count above describes the LS-05
+source baseline. Native SDK checks are separate from these source tests and
+do not establish retail support or complete ordinary-run recovery coverage.
+
 ## Current LS-05 Armory candidate
 
 `armory_presentation.py` derives seven reference pages from stable catalog IDs
