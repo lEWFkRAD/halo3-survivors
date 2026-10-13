@@ -19,6 +19,8 @@
 
 # Captured media and diagnostic output.
 *.png
+# Original project hero artwork, requested for the public README.
+!/docs/images/last-stand-hero.png
 *.jpg
 *.mp4
 *.log

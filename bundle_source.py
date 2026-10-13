@@ -96,6 +96,8 @@ build-result-v04.json
 victory-fix.diff
 victory-cleanup-v04.diff
 README.md
+docs/images/last-stand-hero.png
+docs/images/README.md
 README-v0.3.md
 README-v0.4.md
 MODLOG.md
