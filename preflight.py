@@ -21,10 +21,23 @@ from workspace_config import ConfigError, ProjectConfig, load_config
 AUTHORING_SOURCES = (
     'prepare_progression.py', 'progression_tags.py', 'generate_progression.py',
     'progression_catalog.py', 'progression_hsc.py', 'author_progression_ui.py',
-    'armory_presentation.py',
+    'armory_presentation.py', 'armory_graph_budget.py', 'armory_live.py', 'author_armory_hud.py',
 )
 WEAPONS = ('needler', 'assault_rifle', 'shotgun', 'plasma_rifle',
            'rocket_launcher', 'energy_sword')
+ARMORY_INPUTS = (
+    'private-inputs/armory/masterchief.biped',
+    'private-inputs/armory/spartan.chud_definition',
+    'private-inputs/armory/globals.chud_globals_definition',
+    'private-inputs/armory/hud_messages.multilingual_unicode_string_list',
+    'private-inputs/armory/globals.globals',
+)
+ARMORY_OUTPUTS = (
+    'native-tags/objects/survivors/armory.biped',
+    'native-tags/ui/survivors/armory.chud_definition',
+    'native-tags/ui/survivors/armory_messages.multilingual_unicode_string_list',
+    'native-tags/ui/chud/globals.chud_globals_definition',
+)
 AUTHORING_INPUTS = (
     'native-tags/levels/survivors/last_stand/outdoor-compiled.scenario',
     'native-tags/ui/survivors/last_stand.multilingual_unicode_string_list',
@@ -32,7 +45,7 @@ AUTHORING_INPUTS = (
     'private-inputs/v3/floodcarrier.biped',
     'private-inputs/v3/watchtower_base.device_machine',
     'private-inputs/v3/watchtower_gravlift.light',
-) + tuple(f'private-inputs/v3/{weapon}.{kind}'
+) + ARMORY_INPUTS + tuple(f'private-inputs/v3/{weapon}.{kind}'
           for weapon in WEAPONS for kind in ('damage_effect', 'effect'))
 AUTHORING_OUTPUTS = (
     'native-tags/levels/survivors/last_stand/progression.scenario',
@@ -41,7 +54,7 @@ AUTHORING_OUTPUTS = (
     'native-tags/ui/survivors/progression.multilingual_unicode_string_list',
     'progression-layout.json', 'progression-contract.json',
     'source/progression.hsc', 'v3-native.tar', 'progression-build.json',
-)
+) + ARMORY_OUTPUTS
 NATIVE_REQUIREMENTS = (
     ('tool.exe', 'file'), ('sapien.exe', 'file'),
     ('halo3_tag_test.exe', 'file'), ('tags', 'directory'), ('data', 'directory'),
@@ -52,7 +65,7 @@ NATIVE_REQUIREMENTS = (
     ('tags/levels/survivors/last_stand/last_stand.scenario', 'file'),
     ('data/levels/survivors/last_stand/scripts/last_stand.hsc', 'file'),
     ('tags/ui/survivors/progression.multilingual_unicode_string_list', 'file'),
-) + tuple(
+) + tuple(('tags/' + name.removeprefix('native-tags/'), 'file') for name in ARMORY_OUTPUTS) + tuple(
     (f'tags/objects/survivors/v3/impact_{weapon}.effect', 'file')
     for weapon in WEAPONS)
 LIMITATIONS = (
@@ -146,7 +159,8 @@ def inspect_workspace(config: ProjectConfig, stage: str,
         checks.append({'path': 'blam_tags', 'expected': 'python_module',
                        'status': 'ok' if probe() else 'missing',
                        'hint': 'Install the native binding described in DEVELOPMENT.md.'})
-        checks.extend(output_safety(root, name) for name in AUTHORING_OUTPUTS)
+        checks.extend(output_safety(root, name, create_parents=name in ARMORY_OUTPUTS)
+                      for name in AUTHORING_OUTPUTS)
     elif stage == 'native':
         if config.editing_kit is None:
             checks.append({'path': 'editing_kit', 'expected': 'configuration',

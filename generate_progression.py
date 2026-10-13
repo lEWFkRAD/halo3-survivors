@@ -2,13 +2,13 @@
 from pathlib import Path
 import json
 import re
-from armory_presentation import native_page_titles
+from armory_live import emit_runtime, page_layout
 from progression_hsc import HSC, expr, dispatch, cameras, enemies, combat
 ROOT=Path(__file__).resolve().parent
 
-# Native title budget: 50 nodes + 51 points + 4 ranks + 16 notices + 7 tree pages.
+# Native title budget: 50 nodes + 51 points + 4 ranks + 16 notices + 6 next-cost labels.
 TITLES={
- 'sv_controls':'ARMORY | Space: next / Q: back / Left click: buy / Space+Q: category / 1: resume / Autosaves here',
+ 'sv_controls':'ARMORY | Space next / Q back / Click buy / Space+Q page / 1 resume\nRank: + buy / - locked / o owned / * max | Autosaves',
  'sv_purchased':'UPGRADE PURCHASED | Your ranks carry into the next stage.',
  'sv_need_points':'NOT ENOUGH POINTS | Defeat enemies to earn more.',
  'sv_prerequisite':'PREREQUISITE REQUIRED | Buy the earlier skill in this branch.',
@@ -105,7 +105,10 @@ def build(data,layout):
     titles=dict(TITLES)
     for i,n in enumerate(nodes):
         titles[f'sv_node_{i}']=compact_node_title(n,byid)
-    titles.update(native_page_titles(data))
+    prices=sorted({price for n in nodes for price in n['costs']})
+    titles['sv_cost_max']='SELECTED SKILL | MAX RANK'
+    for price in prices:
+        titles[f'sv_cost_{price}']=f'SELECTED SKILL | Next rank: {price} points'
     assert len(titles)<=128,len(titles)
     h=HSC()
     initial={'sv_running':('boolean','false'),'sv_finished':('boolean','false'),'sv_menu_open':('boolean','false'),
@@ -158,7 +161,14 @@ def build(data,layout):
     dispatch(h,'sv_show_points','sv_tokens',[(i,f'(cinematic_set_title sv_points_{i})') for i in range(51)])
     dispatch(h,'sv_show_rank','sv_selected_rank',[(i,f'(cinematic_set_title sv_rank_{i})') for i in range(4)])
     dispatch(h,'sv_show_stage','sv_stage',[(i,f'(cinematic_set_title sv_stage_{i})') for i in range(1,5)])
-    dispatch(h,'sv_show_node','sv_selection',[(i,f"(begin (set sv_selected_rank {n['native_global']}) (cinematic_set_chud_objective sv_node_{i}))") for i,n in enumerate(nodes)])
+    selections=[]
+    for i,n in enumerate(nodes):
+        rank=n['native_global']
+        body=[f'(set sv_selected_rank {rank})','(set sv_cost -1)']
+        body.extend(f'(if (= {rank} {r}) (set sv_cost {cost}))' for r,cost in enumerate(n['costs']))
+        body.append(f'(cinematic_set_chud_objective sv_node_{i})')
+        selections.append((i,'(begin '+' '.join(body)+')'))
+    dispatch(h,'sv_show_node','sv_selection',selections)
     purchases=[]
     for i,n in enumerate(nodes):
         rank=n['native_global'];body=['(set sv_cost 0)']
@@ -183,16 +193,14 @@ def build(data,layout):
 (if (>= sv_selection {len(nodes)}) (set sv_selection 0)) (sv_show_node) (sv_show_rank)''')
     h.script('sv_menu_previous',f'''(set sv_selection (- sv_selection 1))
 (if (< sv_selection 0) (set sv_selection {len(nodes)-1})) (sv_show_node) (sv_show_rank)''')
-    categories=[]
-    for i,n in enumerate(nodes):
-        cat=n['weapon'] or 'support'
-        if not categories or categories[-1][0]!=cat:categories.append((cat,i))
+    indices={n['id']:i for i,n in enumerate(nodes)}
+    categories=[(name,indices[ids[0]]) for name,ids in page_layout(data)]
     catcases=[]
     for ci,(cat,start) in enumerate(categories):
         end=categories[ci+1][1] if ci+1<len(categories) else len(nodes)
         next_=categories[(ci+1)%len(categories)][1]
         catcases.append(f'((and (>= sv_selection {start}) (< sv_selection {end})) (set sv_selection {next_}))')
-    h.script('sv_menu_category','(cond\n'+'\n'.join(catcases)+')\n(sv_show_node) (sv_show_points)')
+    h.script('sv_menu_category','(cond\n'+'\n'.join(catcases)+')\n(sv_show_node)')
     h.script('sv_checkpoint','''(if (and sv_save_dirty sv_menu_open sv_running (not sv_finished))
     (begin (set sv_save_dirty false)
         (core_save_name "laststand_v04_pending")))''')
@@ -205,7 +213,7 @@ def build(data,layout):
     (begin (set sv_restore_clock 0)
         (camera_control true) (player_camera_control false)
         (set sv_view_refresh true)
-        (hud_enable_training false)
+        (hud_enable_training sv_menu_open)
         (chud_show_weapon_stats false) (chud_show_grenades false)
         (chud_show_crosshair false) (player_disable_weapon_pickup true)
         (if sv_menu_open (ai_enable false))
@@ -220,6 +228,7 @@ def build(data,layout):
 (sv_reset_actions)
 (sv_show_node) (cinematic_set_title sv_controls)''')
     h.script('sv_close_menu','''(set sv_menu_open false)
+(hud_enable_training false)
 (set sv_menu_any false) (set sv_menu_latched false)
 (player_disable_movement false)
 (object_can_take_damage (players))
@@ -248,8 +257,8 @@ def build(data,layout):
 (if sv_menu_open
     (begin
         (set sv_menu_clock (+ sv_menu_clock 3))
-        (if (= sv_menu_clock 90) (sv_show_points))
-        (if (= sv_menu_clock 180) (begin (sv_show_node) (sv_show_rank)))
+        (if (= sv_menu_clock 90) (sv_show_node))
+        (if (= sv_menu_clock 180) (sv_show_node))
         (if (>= sv_menu_clock 270)
             (begin (set sv_menu_clock 0) (cinematic_set_title sv_controls)))))''')
     # Reopen without spending a point: two different actions together avoid taking over movement.
@@ -309,6 +318,7 @@ def build(data,layout):
             (object_set_shield (sv_player)
                 (min 1.0 (+ (/ (unit_get_shield (sv_player)) (* 70 sv_shield_scale)) sv_pulse_fraction))))))''')
     h.script('sv_lose','''(set sv_running false) (set sv_finished true)
+(hud_enable_training false)
 (cinematic_set_chud_objective sv_loss) (game_lost true)''')
     h.script('sv_step','''(if (and sv_running (not sv_finished) (not sv_menu_open))
     (if (or (!= (list_count (players)) 1) (<= (unit_get_health (sv_player)) 0))
@@ -346,16 +356,13 @@ def build(data,layout):
             (begin (sv_reopen_test) (if (not sv_menu_open) (sv_autofire))))))
 (sv_tree_tick)''',kind='continuous')
     serialize_status_titles(h,titles)
-    # Append these direct title calls after status serialization. A tree page
-    # occupies its own screen region and one-second lifetime; status notices
-    # retain their independent 90-tick queue. Never enqueue a category snapshot:
-    # dispatch the latest selection only when the next refresh becomes due.
+    # The live tree uses training text; its wallet uses one short-lived title.
+    # Keep both outside the serialized status queue, and update after input so
+    # a Resume action suppresses a render due on that same frame.
     h.global_('short','sv_tree_clock',0)
-    treecases=[]
-    for ci,(_,start) in enumerate(categories):
-        end=categories[ci+1][1] if ci+1<len(categories) else len(nodes)
-        treecases.append(f'((and (>= sv_selection {start}) (< sv_selection {end})) (cinematic_set_title sv_tree_{ci}))')
-    h.script('sv_tree_display','(cond\n'+'\n'.join(treecases)+')')
+    emit_runtime(h,data)
+    dispatch(h,'sv_wallet_display','sv_tokens',[(i,f'(cinematic_set_title sv_points_{i})') for i in range(51)])
+    dispatch(h,'sv_price_display','sv_cost',[(-1,'(cinematic_set_title sv_cost_max)')]+[(i,f'(cinematic_set_title sv_cost_{i})') for i in prices])
     # Keep the refresh limit through a rapid close/reopen. A saved clock is
     # always 0..30, so Continue repairs the page within one second without
     # touching ranks or run state. Input is handled before this scheduler, so a
@@ -364,7 +371,10 @@ def build(data,layout):
     (begin
         (if (> sv_tree_clock 0) (set sv_tree_clock (max 0 (- sv_tree_clock 3))))
         (if (and sv_menu_open (= sv_tree_clock 0))
-            (begin (set sv_tree_clock 30) (sv_tree_display)))))''')
+            (begin (set sv_tree_clock 30)
+                (hud_enable_training true) (sv_tree_display)
+                (hud_show_training_text true) (sv_wallet_display) (sv_show_node) (sv_price_display))))
+    (hud_enable_training false))''')
     assert len(h.globals)<512 and len(h.scripts)<1024
     source=h.render()
     for name,code in [('assault_rifle','ar'),('rocket_launcher','rl'),('energy_sword','es'),('plasma_rifle','pr'),('shotgun','sg'),('needler','nl')]:

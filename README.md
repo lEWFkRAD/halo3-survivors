@@ -36,16 +36,23 @@ checkpoint process restart passed; see [the bounded test record](native-validati
 for evidence and limits. This candidate has not been promoted as a release.
 The previous game and checkpoint are restored, and broader LS-04 work remains open.
 
-The current LS-05 candidate adds seven native Armory reference pages: one per
-weapon and one for support. They show all 50 nodes, branch choices, prerequisite
-ranks and stage gates. All seven pages fit in the native SDK test; contrast on
-bright terrain still needs polish. These are static maps; selected-skill details
-and rotating rank/points notices continue to provide current purchase information.
-Live graphical states across every node remain unfinished. See
-[the bounded LS-05 record](native-validation-ls05.json), including native purchase,
-category, Resume and checkpoint-restart checks. The installed release
-remains v0.4.0. That LS-05 validation did not build a fresh cache or promote a
-package; the later LS-01 rebuild has separate evidence below.
+The current LS-05 development candidate adds nine live Armory pages covering
+all 50 skills: six weapon pages and three support pages. Each node shows its
+current rank and a marker for available (`+`), locked (`-`), owned (`o`) or
+maximum rank (`*`). Separate wallet and next-price notices accompany the
+selected skill's effects, prerequisite ranks and stage requirement. The authored
+HUD uses an opaque black panel and white wallet text. Bounded SDK checks cover
+readability, Resume/reopen and Continue; refresh gaps and broader UI acceptance
+remain open. See [the live Armory guide](ARMORY_LIVE.md) and
+[its bounded validation record](native-validation-ls05-live.json).
+
+LS-05 remains open, and the installed release remains v0.4.0. The earlier
+[seven-page static prototype](native-validation-ls05.json) and
+[HUD feasibility probe](native-validation-ls05-ui-probe.json) are historical
+steps, with their own evidence and limits. They do not validate this live
+candidate. The live candidate compiled and produced a fresh cache with native
+exit 0 and a success marker; 25 stock-asset error diagnostic lines remain.
+Retail verification, a full ordinary run and package promotion remain open.
 
 Native QA now has an import-safe [evidence reader](NATIVE_QA.md) that separates
 emitted pass/fail results from echoed commands. Missing or ambiguous output
@@ -87,10 +94,13 @@ clock pause in the Armory; movement remains available and the player is
 protected. Help, points and current rank rotate on screen. Each selected skill
 shows its effects, price, prerequisite and stage requirement.
 
-The LS-05 candidate uses these same controls. Its reference page follows the
-selected weapon/support category within one second. Numbers beside prerequisite
-names mean required ranks. Resuming stops page refresh immediately; the last
-page expires within one second.
+The live LS-05 candidate uses these same controls. Its page follows the selected
+skill within one second. Node numbers are current ranks; `+` means available,
+`-` locked, `o` owned and `*` maximum rank. An owned node can still need more
+points for its next rank; the selected detail and next-price notice explain
+the purchase. Resume disables the graph; wallet and price notices have a
+one-second expiry. Native captures show them gone by two seconds. These changes are in the development
+candidate; the installed baseline retains its rotating notices.
 
 ## Save your run
 
@@ -135,7 +145,7 @@ stopped. Close and relaunch, then choose New Run to start again.
 
 Attacks currently apply immediate automatic damage with distinct effects,
 range, cadence and target counts. Travelling projectiles, physical XP pickups,
-vehicles, live graphical tree states and exhaustive full-run balancing remain future work.
+vehicles, remaining Armory polish and exhaustive full-run balancing remain future work.
 The prototype is solo. Retail MCC mod-menu loading remains unverified pending
 owner Xbox/Microsoft sign-in and testing.
 

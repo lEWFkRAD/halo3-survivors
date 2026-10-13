@@ -20,8 +20,12 @@ and follow the coordination rules in [AGENTS.md](AGENTS.md).
 - [ ] Improve bright terrain, player/enemy contrast and HUD readability.
   Check camera movement, occlusion, terrain edges and arena returns throughout
   every stage.
-- [ ] Replace the rotating text Armory with a readable graphical tree showing
-  branches, prerequisites, prices, available points and purchased ranks.
+- [ ] Finish and validate the live Armory's readability, interaction and recovery.
+  The current [nine-page candidate](ARMORY_LIVE.md) covers all 50 nodes with live
+  ranks/states, separate wallet/price notices and selected prerequisite details.
+  Its opaque black panel and white wallet styling passed bounded SDK checks;
+  [candidate evidence](native-validation-ls05-live.json) records the tested scope.
+  LS-05 stays open, and the installed v0.4 interface is unchanged.
 - [x] Make a fresh checkout reproducible on another owned installation:
   document and configure external tools, paths, tag inputs and build steps.
   The supported [stock bootstrap route](BOOTSTRAP.md) was exercised against an

@@ -20,7 +20,7 @@ class TitleStyleTests(unittest.TestCase):
             spec.loader.exec_module(cls.author)
 
     def test_status_categories_have_explicit_contrast_without_layout_changes(self):
-        for name in ('sv_controls', 'sv_points_3', 'sv_rank_1', 'sv_purchased',
+        for name in ('sv_controls', 'sv_rank_1', 'sv_purchased',
                      'sv_need_points', 'sv_stage_2', 'sv_boundary', 'sv_win'):
             with self.subTest(name=name):
                 style = self.author.title_style(name)
@@ -64,6 +64,16 @@ class TitleStyleTests(unittest.TestCase):
     def test_native_line_breaks_leave_other_text_unchanged(self):
         self.assertEqual(self.author.native_title_text('A\nB\r\nC | S2'), 'A|nB|nC | S2')
         self.assertEqual(self.author.native_title_text('Cost1/2/3 |nS4'), 'Cost1/2/3 |nS4')
+
+    def test_wallet_and_cost_are_readable_over_panel_and_expire_before_refresh(self):
+        for name in ('sv_points_3', 'sv_cost_2', 'sv_cost_max'):
+            with self.subTest(name=name):
+                style=self.author.title_style(name)
+                self.assertEqual(style['text color'],0xFFFFFFFF)
+                self.assertEqual(style['shadow color'],0xFF000000)
+                self.assertGreaterEqual(style['text bounds (on screen)'][0],116)
+                self.assertLess(sum(style[k] for k in ('fade in time [seconds]',
+                    'up time [seconds]','fade out time [seconds]')),1)
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ from unittest.mock import patch
 import bootstrap_tags
 import native_workspace as native
 from preflight import AUTHORING_INPUTS
-from prepare_progression import FIXED_OUTPUTS, UI_OUTPUT
+from prepare_progression import FIXED_OUTPUTS, ARCHIVE_FIXED_OUTPUTS
 from workspace_config import ProjectConfig
 
 
@@ -82,7 +82,7 @@ class NativeWorkspaceTests(unittest.TestCase):
                   'sources': {'prepare_progression.py': self.write('prepare_progression.py', b'authored source')},
                   'outputs': {name: self.write(name, name.encode()) for name in sorted(outputs)}}
         members = {name.removeprefix('native-tags/'): (self.root / name).read_bytes()
-                   for name in outputs if '/objects/' in name or name == UI_OUTPUT}
+                   for name in outputs if '/objects/' in name or name in ARCHIVE_FIXED_OUTPUTS}
         result['archive'] = {'path': 'v3-native.tar', 'members': sorted(members),
                              **self.write('v3-native.tar', self.archive(members))}
         self.write('progression-build.json', json.dumps(result).encode())
@@ -192,6 +192,9 @@ import native_workspace
         report = self.stage('progression')
         self.assertEqual(set(report['files']), {native.SCENARIO, native.HSC} | {'tags/' + n for n in members})
         self.assertFalse((self.kit / 'tags/objects/survivors/v3/stale.effect').exists())
+        for name in ARCHIVE_FIXED_OUTPUTS:
+            self.assertEqual((self.kit / ('tags/' + name.removeprefix('native-tags/'))).read_bytes(),
+                             (self.root / name).read_bytes())
         self.assertEqual((self.kit / native.SCENARIO).read_bytes(),
                          (self.root / 'native-tags/levels/survivors/last_stand/progression-ui.scenario').read_bytes())
 

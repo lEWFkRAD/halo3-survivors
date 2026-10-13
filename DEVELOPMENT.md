@@ -55,7 +55,7 @@ operation passed; 2 means blocked/error. None establishes a playable build.
 Fetch defaults to a configured local kit. `fetch_progression_inputs.py --remote`
 explicitly selects the remote kit, using trusted, noninteractive SSH and Python
 stdin requests for literal paths. `--remote --check` is stat-only. Actual fetch
-stages all 21 stock tags, validates headers/hashes, and publishes only declared
+stages all 26 stock tags, validates headers/hashes, and publishes only declared
 files plus provenance metadata. Missing or failed inputs preserve the previous
 set; ordinary publication failures roll back. `tools.scp` remains unused by this
 path. Changing configuration alone does not alter the installed game.
@@ -110,51 +110,78 @@ snapshots before restarting the engine.
 
 The LS-03 reader added 28 synthetic evidence regressions; launcher shutdown added
 five profile-cleanup regressions. That historical owner suite passed 250 tests;
-the current LS-01 suite counts are recorded above.
+the historical LS-01 suite counts are recorded above.
 Native SDK checks are separate from these source tests and
 do not establish retail support or complete ordinary-run recovery coverage.
 
 ## Current LS-05 Armory candidate
 
-`armory_presentation.py` derives seven reference pages from stable catalog IDs
-and actual prerequisite edges: six weapon pages with seven nodes each, and an
-eight-node support page. They show stage gates, exclusive specializations and
-the matching capstone requirements. The native pages are static reference maps;
-they do not display current ranks or purchased/affordable/locked styling for
-every node. Selected CHUD details and rotating points/rank notices retain that
-existing purchase information. The read-only Python model also exposes live
-snapshot facts for future presentation work; it does not replace native guards.
+Read [ARMORY_LIVE.md](ARMORY_LIVE.md) for the live candidate and
+[native-validation-ls05-live.json](native-validation-ls05-live.json) for its
+bounded evidence. `armory_live.py` derives nine pages from the catalog: six
+seven-node weapon pages, three vitality/armor nodes, two recovery nodes and
+three range/XP nodes. All 50 nodes and their prerequisite/exclusive groups stay
+on the appropriate page. The generator emits 601 reachable graph snapshots plus
+an explicit fallback, with no message longer than 104 ASCII characters including
+CRLF breaks. The independent presentation model and emitted HSC VM tests check
+current ranks, stage gates, prerequisites, exclusivity and affordability.
 
-The controls are unchanged: Space/Q select skills, Space+Q changes category,
-left click buys one rank, and 1 resumes. `sv_tree_tick` draws the latest selected
-category at most once per 30 logical ticks, after input handling. Rapid changes
-coalesce; Resume stops refresh on that same frame. A page expires within one
-second, and a restored Armory clock redraws within one second without resetting
-progression. The existing status notice queue retains its separate 90-tick
-throttle. Source VM checks cover these scheduling rules and compare display
-availability with generated purchase guards; they do not prove native timing.
+Each node displays its rank with `+` available, `-` locked, `o` owned or `*`
+maximum rank. Ownership does not imply that its next rank is affordable. The
+selected CHUD objective retains effects, prerequisite ranks and stage gates;
+separate wallet and next-price titles supply current purchase information.
+The authored HUD has an opaque black backing and white wallet text. Native
+checks of the final presentation revision cover readable wallet/graph text,
+Resume/reopen and Continue. Brief refresh gaps remain; these checks do not
+establish readability at every resolution.
 
-Native compilation/readback produced 402 scripts, 178 globals, 43,180 syntax
-datums and 128 titles. All seven static pages fit using the large body text font
-and native `|n` line breaks. Text contrast against bright terrain still needs
-polish. This reaches the current 128-title authoring guard; further UI work must
-account for that budget. See [the LS-05 evidence](native-validation-ls05.json)
-for the bounded native observations and remaining checks. Fit alone does not
-complete LS-05, establish dynamic graphical states or validate retail MCC.
+Controls remain Space/Q for selection, Space+Q for the next page, left click
+for one rank and 1 to resume. `sv_tree_tick` renders the latest selection at
+most once per 30 logical ticks after input handling. Resume disables training
+text immediately; wallet/price titles expire within one second. Periodic repair
+reasserts the Armory HUD after Continue without changing ranks, actors or
+cooldowns. The separate status queue retains its 90-tick throttle. The graph uses training
+text; wallet and price use cinematic titles. The observed four concurrent title
+slots are not interchangeable with the 128-definition authoring guard.
 
-The native checks also passed held navigation/purchase, prerequisite/stage/
-exclusive-path/points guards, category switching, Resume/page expiry, reopening,
-and a 25-second refresh soak. A full process restart retained the stage-two
-checkpoint, ranks, points, timer and 17 enemies, restored the page and overhead
-camera, and resumed auto-fire. The original staged build and checkpoint were
-restored afterward; all 14 original profile files are byte-identical. Initial
-QA-driver failures were excluded and rerun as documented in the evidence.
+The compiled live candidate's recorded readback is 495 scripts, 180 globals,
+51,074 syntax datums and 127 title definitions. Final presentation edits require
+fresh readback and gameplay evidence. `progression_hsc.py` also enforces a
+conservative limit of 9,500 authored script/global references. This budget is
+separate from definition and syntax counts: earlier candidates overran the SDK
+compiler's reference bookkeeping buffer. Source reference counts omit injected
+native material and do not certify a successful native compile. Preserve the
+shared bounded actor-consideration helper and inline graph key calculations
+that reduced reference pressure without dropping skills or target slots.
 
-The installed v0.4 package remains unchanged. The historical LS-05 validation
-did not include a fresh cache or promotion receipt; the later LS-01 candidate
-has its own fresh-kit cache evidence below. Changed scripts, titles and the added tree-clock global
-produce a new exact-build fingerprint; native testing must use its own QA core,
-and existing production checkpoints are not migrated to it.
+The supported fetch now includes five owned HUD templates under
+`private-inputs/armory`: `masterchief.biped`, `spartan.chud_definition`,
+`globals.chud_globals_definition`, `hud_messages.multilingual_unicode_string_list`
+and `globals.globals`. Their canonical source locations are declared in
+`fetch_progression_inputs.py`. `author_armory_hud.py` runs after scenario/UI
+authoring inside preparation's isolated workspace. It preserves stock messages,
+appends the live graph strings, authors a private biped/CHUD and sets the scenario
+player-representation override. Its four additional outputs are explicitly
+manifested, including the canonical `ui/chud/globals.chud_globals_definition`
+replacement. Stage it only through the exact manifest with backups and native
+ownership; never copy it over an active production session.
+
+For live-HUD builds, the development launcher's private-asset fingerprint also
+binds that canonical CHUD globals file. A changed, missing or linked dependency
+cannot reuse a live candidate checkpoint. Legacy fingerprints remain unchanged
+when the private live-HUD marker is absent. Scripts, scenario and private HUD
+changes still require a matching QA core; production checkpoints are not migrated.
+
+The earlier [static-page evidence](native-validation-ls05.json) records the
+402-script/178-global/43,180-datum/128-title prototype, held input and purchase
+checks, and its prepared checkpoint restart. Its seven pages and original-profile
+restoration are historical results. The [HUD probe](ARMORY_NATIVE_PROBE.md) and
+[probe receipt](native-validation-ls05-ui-probe.json) established the private
+training-text route; they did not implement the live tree. Neither record
+validates this changed candidate. LS-05 remains open; the installed v0.4 package
+and launcher remain unchanged. A fresh cache has native exit 0 and its success
+marker, with 25 retained stock-asset error diagnostic lines. Full ordinary runs,
+cache gameplay, retail compatibility and release promotion remain unverified.
 
 ## LS-04 camera and status candidate
 

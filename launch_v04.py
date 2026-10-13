@@ -88,6 +88,22 @@ def fingerprint(paths):
                 raise SaveError(f'Linked private asset: {path}')
             if path.is_file():
                 assets.append([path.relative_to(paths.kit / 'tags').as_posix(), digest(regular(path))])
+    # Live Armory routing also replaces this canonical tag, outside the private
+    # directories above. Gate the extra dependency on the new private HUD so
+    # historical builds retain their exact fingerprint and Continue support.
+    tags = paths.kit / 'tags'
+    armory = tags / 'ui/survivors/armory.chud_definition'
+    if armory.exists() or armory.is_symlink() or getattr(armory, 'is_junction', lambda: False)():
+        chud_globals = tags / 'ui/chud/globals.chud_globals_definition'
+        for dependency in (armory, chud_globals):
+            for part in (dependency, *dependency.parents):
+                if part == tags:
+                    break
+                if part.is_symlink() or getattr(part, 'is_junction', lambda: False)():
+                    raise SaveError(f'Linked live Armory dependency: {part}')
+            data = regular(dependency)
+            if dependency == chud_globals:
+                assets.append([dependency.relative_to(tags).as_posix(), digest(data)])
     result['private_assets'] = digest(json.dumps(assets, separators=(',', ':')).encode())
     return result
 

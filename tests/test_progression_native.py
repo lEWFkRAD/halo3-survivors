@@ -16,6 +16,7 @@ class ProgressionVM(VM):
         self.globals={};self.scripts={};self.input=set();self.held_input=set();self.ai_enabled=True;self.teleports=[]
         self.movement_disabled=False;self.player_protected=False
         self.logical_ticks=0;self.notice_events=[];self.page_events=[]
+        self.price_events=[];self.wallet_events=[];self.training_enabled=False;self.training_text=None;self.training_shown=False
         self.queried_since_reset=set()
         self.living={s['name']:0 for st in self.layout['stages'] for s in st['squads']}
         for form in parse(source):
@@ -65,9 +66,23 @@ class ProgressionVM(VM):
             self.actor_health[target]-=int(path.rsplit('_d',1)[1]);self.calls.append((op,[path,target]));return None
         if op=='cinematic_set_title':
             values=[self.eval(a) for a in args]
-            events=self.page_events if str(values[0]).startswith('sv_tree_') else self.notice_events
+            events=(self.wallet_events if str(values[0]).startswith('sv_points_') else
+                    self.price_events if str(values[0]).startswith('sv_cost_') else self.notice_events)
             events.append((self.logical_ticks,str(values[0])))
             self.calls.append((op,values));return None
+        if op=='cinematic_set_chud_objective':
+            value=str(self.eval(args[0]))
+            assert value in self.contract['cutscene_titles'],value
+            self.calls.append((op,[value]));return None
+        if op=='hud_enable_training':
+            self.training_enabled=self.eval(args[0]);return None
+        if op=='hud_show_training_text':
+            self.training_shown=self.eval(args[0]);return None
+        if op=='hud_set_training_text':
+            self.training_text=str(self.eval(args[0]))
+            if self.training_text!='sv_tree_unavailable':
+                self.page_events.append((self.logical_ticks,self.training_text))
+            self.calls.append((op,[self.training_text]));return None
         if op in ('log_print','player_disable_weapon_pickup','core_save_name'):
             self.calls.append((op,[self.eval(a) for a in args]));return None
         if op=='ai_set_objective':
@@ -251,13 +266,14 @@ class NativeProgressionTests(unittest.TestCase):
         for held in [(),('jump',),(),('primary_trigger',),(),('rotate_weapons',),()]:
             v.menu_sample(*held)
             self.assertEqual(v.queried_since_reset,watched)
-    def test_help_points_and_rank_repeat_without_input(self):
+    def test_help_and_live_wallet_repeat_without_input(self):
         v=self.v;v.calls.clear()
         for _ in range(180):v.menu_sample()
-        titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title' and not str(args[0]).startswith('sv_tree_')]
-        # The initial stage announcement occupies the first display slot; help,
-        # points and rank then repeat without overlapping that announcement.
-        self.assertEqual(titles,['sv_controls','sv_points_3','sv_rank_1']*2)
+        titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title' and not str(args[0]).startswith(('sv_points_','sv_cost_'))]
+        self.assertTrue(titles and set(titles)=={'sv_controls'})
+        self.assertEqual(len(v.wallet_events),18)
+        self.assertTrue(all(name=='sv_points_3' for _,name in v.wallet_events))
+        self.assertTrue(all(b[0]-a[0]==30 for a,b in zip(v.wallet_events,v.wallet_events[1:])))
         self.assertTrue(all(b[0]-a[0]>=90 for a,b in zip(v.notice_events,v.notice_events[1:])))
         self.assertEqual(v.globals['sv_seconds'],0)
     def test_rapid_statuses_show_only_latest_when_previous_notice_expires(self):
@@ -293,7 +309,7 @@ class NativeProgressionTests(unittest.TestCase):
         self.assertTrue(all(name.startswith('sv_rank_') for _,name in events[1:]))
     def test_node_hud_preserves_information_within_line_budget(self):
         v=self.v;titles=v.contract['cutscene_titles']
-        self.assertEqual(len(titles),128)
+        self.assertEqual(len(titles),127)
         for i,n in enumerate(v.data['nodes']):
             text=titles[f'sv_node_{i}']
             self.assertLessEqual(len(text),100,n['id'])

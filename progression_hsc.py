@@ -1,5 +1,136 @@
 """Native HSC emission helpers. Data is normalized by generate_progression.py."""
 from itertools import product
+import re
+
+# The inspected H3EK Sapien compiler allocates 10,240 script/global-reference
+# records separately from its syntax datums. Keep authored source below that
+# table's capacity to leave space for injected scripts and compiler differences.
+# This is a conservative source guard, not an exact native reference count.
+MAX_AUTHORED_REFERENCES = 9500
+_REFERENCE_TOKENS = re.compile(
+    r'\s+|;\*.*?\*;|;[^\r\n]*|"(?:\\.|[^"\\])*"|[()]|[^\s();"]+', re.DOTALL)
+
+
+class _ReferenceSymbol(str):
+    pass
+
+
+def _reference_forms(source):
+    """Parse declarations without treating comments or quoted text as symbols."""
+    stack = [[]]
+    end = 0
+    for match in _REFERENCE_TOKENS.finditer(source):
+        if match.start() != end:
+            raise ValueError(f'Invalid HSC token at offset {end}')
+        end = match.end()
+        token = match.group()
+        if token.isspace():
+            continue
+        if token.startswith(';'):
+            if token.startswith(';*') and (
+                    not token.endswith('*;') or ';*' in token[2:-2]):
+                raise ValueError('Unclosed or nested HSC block comment')
+            continue
+        if token == '(':
+            child = []
+            stack[-1].append(child)
+            stack.append(child)
+        elif token == ')':
+            if len(stack) == 1:
+                raise ValueError('Unexpected HSC closing parenthesis')
+            stack.pop()
+        else:
+            stack[-1].append(token if token.startswith('"') else _ReferenceSymbol(token))
+    if end != len(source) or len(stack) != 1:
+        raise ValueError('Unclosed HSC string or parenthesis')
+    return stack[0]
+
+
+def analyze_reference_budget(source):
+    """Count declared-global/script symbols in authored bodies and initializers.
+
+    Declaration headers, comments, string literals and script-local parameters
+    are excluded. Calls and bare script references (for example ``wake``) count.
+    Every occurrence counts, including repeated references and ``set`` targets.
+    Forward references are resolved across the whole supplied source. Only the
+    project's global/script declaration forms are supported; this is not a Halo
+    type checker and does not measure injected/native compiler records.
+    """
+    declarations = []
+    globals_ = set()
+    scripts = set()
+    for form in _reference_forms(source):
+        if not isinstance(form, list) or not form:
+            raise ValueError('Expected an HSC global or script declaration')
+        parameters = set()
+        if form[0] == 'global' and len(form) == 4:
+            name, body, names = form[2], form[3:], globals_
+        elif form[0] == 'script' and len(form) >= 4:
+            kind = form[1]
+            if kind in ('static', 'stub'):
+                if len(form) < 5:
+                    raise ValueError('HSC static/stub script requires a body')
+                header, body = form[3], form[4:]
+            elif kind in ('startup', 'dormant', 'continuous', 'command_script'):
+                header, body = form[2], form[3:]
+            else:
+                raise ValueError(f'Unsupported HSC script kind: {kind}')
+            name = header
+            if isinstance(header, list):
+                if not header or kind not in ('static', 'stub'):
+                    raise ValueError('Invalid HSC parameter declaration')
+                name = header[0]
+                for parameter in header[1:]:
+                    if (not isinstance(parameter, list) or len(parameter) != 2
+                            or not all(isinstance(item, _ReferenceSymbol) for item in parameter)
+                            or parameter[1] in parameters):
+                        raise ValueError('Invalid or duplicate HSC parameter')
+                    parameters.add(parameter[1])
+            names = scripts
+        else:
+            raise ValueError('Unsupported or malformed HSC declaration')
+        if not isinstance(name, _ReferenceSymbol) or name in globals_ or name in scripts:
+            raise ValueError(f'Invalid or duplicate HSC declaration name: {name}')
+        names.add(name)
+        declarations.append((name, body, parameters))
+
+    global_count = script_count = 0
+    per_declaration = {}
+    for name, body, parameters in declarations:
+        pending = list(body)
+        counts = [0, 0]
+        while pending:
+            value = pending.pop()
+            if isinstance(value, list):
+                pending.extend(value)
+            elif isinstance(value, _ReferenceSymbol) and value not in parameters:
+                counts[0] += value in globals_
+                counts[1] += value in scripts
+        global_count += counts[0]
+        script_count += counts[1]
+        per_declaration[str(name)] = sum(counts)
+    return {
+        'global_declarations': len(globals_), 'script_declarations': len(scripts),
+        'global_references': global_count, 'script_references': script_count,
+        'total_references': global_count + script_count,
+        'per_declaration': per_declaration,
+        'native_count_exact': False,
+    }
+
+
+def validate_reference_budget(source, *, maximum=MAX_AUTHORED_REFERENCES):
+    """Reject authored reference pressure above the conservative project guard."""
+    if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum < 0:
+        raise ValueError('Reference maximum must be a nonnegative integer')
+    report = analyze_reference_budget(source)
+    if report['total_references'] > maximum:
+        raise ValueError(
+            f"HSC authored reference estimate {report['total_references']} exceeds "
+            f"guard {maximum} ({report['global_references']} global, "
+            f"{report['script_references']} script references); reduce repeated "
+            'references before native compilation. This excludes engine-injected '
+            'source and is not an exact native count.')
+    return report
 
 # Native map units: a new anchor must be this much nearer before a pan changes.
 CAMERA_SWITCH_MARGIN = 0.35
@@ -10,7 +141,9 @@ class HSC:
     def script(self, name, body, kind='static void'):
         self.scripts.append(f'(script {kind} {name}\n{body}\n)')
     def render(self):
-        return '; LAST STAND v0.4. Generated native progression. Do not hand edit.\n'+'\n'.join(self.globals+self.scripts)+'\n'
+        source = '; LAST STAND v0.4. Generated native progression. Do not hand edit.\n'+'\n'.join(self.globals+self.scripts)+'\n'
+        validate_reference_budget(source)
+        return source
 
 def expr(base, terms):
     out=str(base)
@@ -119,16 +252,20 @@ def combat(h, weapons, nodes):
     max_targets=max(int(w['base']['targets']+sum(max(0,e['per_rank'])*n['max_rank'] for n in nodes if n['weapon']==key for e in n['effects'] if e['stat']=='targets')) for key,w in weapons.items())
     assert max_targets<=12
     for i in range(max_targets):h.global_('object',f'sv_hit{i}','none')
+    exclude=' '.join(f'(!= sv_candidate sv_hit{j})' for j in range(max_targets))
+    # Each slot delegates only the repeated predicate/update. Keep the scan
+    # order, strict range comparison and hit exclusions identical while avoiding
+    # 64 copies in the compiler's bounded global/script reference table.
+    h.script('sv_target_consider',f'''(if (and (> (object_get_health sv_candidate) 0) {exclude})
+    (begin (set sv_distance (objects_distance_to_object sv_players sv_candidate))
+        (if (and (>= sv_distance 0) (< sv_distance sv_nearest))
+            (begin (set sv_target sv_candidate) (set sv_nearest sv_distance)))))''')
     scan=[]
     for ci,indices in enumerate(chunks(list(range(64)),6)):
         body=[]
         for i in indices:
-            exclude=' '.join(f'(!= sv_candidate sv_hit{j})' for j in range(max_targets))
             body.append(f'''(set sv_candidate (list_get sv_actor_list {i}))
-(if (and (> (object_get_health sv_candidate) 0) {exclude})
-    (begin (set sv_distance (objects_distance_to_object sv_players sv_candidate))
-        (if (and (>= sv_distance 0) (< sv_distance sv_nearest))
-            (begin (set sv_target sv_candidate) (set sv_nearest sv_distance)))))''')
+(sv_target_consider)''')
         h.script(f'sv_target_scan_{ci}','\n'.join(body));scan.append(f'(sv_target_scan_{ci})')
     h.script('sv_find_target','(set sv_target none)\n(set sv_nearest sv_range)\n'+'\n'.join(scan))
     h.script('sv_clear_hits','\n'.join(f'(set sv_hit{i} none)' for i in range(max_targets)))
