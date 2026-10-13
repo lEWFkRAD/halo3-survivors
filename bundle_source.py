@@ -33,6 +33,8 @@ author_effects.py
 author_hangar.py
 author_progression_ui.py
 armory_presentation.py
+armory_native_probe.py
+armory_graph_budget.py
 birds_eye.py
 bootstrap_tags.py
 bundle_source.py
@@ -66,6 +68,8 @@ qa_v04_gallery.py
 remote_build.py
 tests/hsc_vm.py
 tests/test_armory_presentation.py
+tests/test_armory_native_probe.py
+tests/test_armory_graph_budget.py
 tests/test_armory_scheduler.py
 tests/test_autofire.py
 tests/test_camera.py
