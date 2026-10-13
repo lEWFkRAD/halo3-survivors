@@ -1,6 +1,8 @@
 # Owned game assets, native tools, build products and saves stay local.
 /private-inputs/
 /native-tags/
+/progression-build.json
+/native-workspace/
 /dist/
 /mods/
 /backups/

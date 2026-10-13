@@ -61,11 +61,13 @@ def select_spawn_points(points,center,areas,family,count,phase):
   chosen.append(min(available,key=lambda p:(distance2(p.position,target),p.index)))
  return chosen
 
-def main():
- source=b.TagFile.read(P/'outdoor-compiled.scenario');src=source.root()
- tag=b.TagFile.read(P/'outdoor-compiled.scenario');r=tag.root()
- assert source.write_to_bytes()==(P/'outdoor-compiled.scenario').read_bytes()
- author_watchtower(r)
+def main(root=None):
+ root=Path(root) if root is not None else ROOT
+ scenario_dir=root/'native-tags/levels/survivors/last_stand'
+ source=b.TagFile.read(scenario_dir/'outdoor-compiled.scenario');src=source.root()
+ tag=b.TagFile.read(scenario_dir/'outdoor-compiled.scenario');r=tag.root()
+ assert source.write_to_bytes()==(scenario_dir/'outdoor-compiled.scenario').read_bytes()
+ written=list(author_watchtower(r,root))
  disabled_occluders=disable_arena_occluders(r)
  for n in ['scripts','globals','source files','hs syntax datums','references','cutscene camera points','cutscene flags','trigger volumes','squads','ai objectives','squad groups']:B(r,n).clear()
  names=B(r,'object names');remove=[]
@@ -81,9 +83,10 @@ def main():
  group=B(r,'squad groups');i=group.add()
  for k,v in {'name':'sv_hostiles','parent':-1,'initial objective':-1}.items():put(group[i],k,v)
  paths={'infection':r'objects\characters\flood_infection\ai\flood_infection','carrier':r'objects\characters\flood_carrier\ai\flood_carrier'}
- manifest=ROOT/'private-inputs/v3/character-paths.json'
+ manifest=root/'private-inputs/v3/character-paths.json'
  if manifest.exists():paths.update(json.loads(manifest.read_text()))
- paths['carrier']=author_carrier()
+ written.extend(author_carrier(root))
+ paths['carrier']=r'objects\survivors\v3\carrier'
  chars={'grunts':3,'jackals':4,'brutes':2,'captains':9,'snipers':13,'floodcombat':21,'hunters':19,'chieftain':11}
  for key in ['infection','carrier']:
   pal=B(r,'character palette');i=pal.add();put(pal[i],'reference',(0x63686172,paths[key]));chars[key]=i
@@ -149,19 +152,21 @@ def main():
  start=stages[0]['center'];pl=B(r,'player starting locations')[0]
  put(pl,'position',b.RealPoint3d(start[0],start[1],start[2]+.2));put(pl,'bsp index',0);put(pl,'facing',0.0);put(pl,'pitch',0.0)
  flag('sv_heading',b.RealPoint3d(start[0]+1000,start[1],start[2]))
- tag.recompute_checksum();target=P/'progression.scenario';tag.write(target)
+ tag.recompute_checksum();target=scenario_dir/'progression.scenario';tag.write(target)
  assert b.TagFile.read(target).write_to_bytes()==target.read_bytes()
  layout={'version':'0.3.0','base':'070_waste','bsp':0,'hostiles_group':'sv_hostiles','camera_height':12,'disabled_occluders':disabled_occluders,'stages':stages}
- (ROOT/'progression-layout.json').write_text(json.dumps(layout,indent=2)+'\n')
+ (root/'progression-layout.json').write_text(json.dumps(layout,indent=2)+'\n')
  check=b.TagFile.read(target).root()
  assert len(B(check,'squads'))==26
  assert all(B(check,'squads')[i].field('parent').value==0 for i in range(26))
  assert all(len(s['cameras'])<=72 for s in stages)
  print('Authored',target.name,[(s['number'],len(s['cameras']),len(s['squads'])) for s in stages])
+ return tuple(written+[target,root/'progression-layout.json'])
 
-def author_carrier():
+def author_carrier(root=None):
  """Keep carrier explosions but prevent unbudgeted native infection children."""
- inputs=ROOT/'private-inputs/v3';out=ROOT/'native-tags/objects/survivors/v3'
+ root=Path(root) if root is not None else ROOT
+ inputs=root/'private-inputs/v3';out=root/'native-tags/objects/survivors/v3'
  character=b.TagFile.read(inputs/'carrier.character')
  body=b.TagFile.read(inputs/'floodcarrier.biped')
  put(body.root(),'death spawn character',None)
@@ -173,7 +178,7 @@ def author_carrier():
   dest=out/name;tag.recompute_checksum();tag.write(dest)
   assert b.TagFile.read(dest).write_to_bytes()==dest.read_bytes()
  print('Authored carrier without automatic death children; normal explosion retained.')
- return path
+ return (out/'carrier.biped',out/'carrier.character')
 
 def disable_arena_occluders(scenario):
  """Omit the campaign AA-gun stand that covers the stage 3/4 overhead view."""
@@ -193,9 +198,10 @@ def disable_arena_occluders(scenario):
  print('Disabled automatic campaign occluder:',changed)
  return changed
 
-def author_watchtower(scenario):
+def author_watchtower(scenario,root=None):
  """Fix the private watchtower light without changing stock tags or collision."""
- inputs=ROOT/'private-inputs/v3';out=ROOT/'native-tags/objects/survivors/v3'
+ root=Path(root) if root is not None else ROOT
+ inputs=root/'private-inputs/v3';out=root/'native-tags/objects/survivors/v3'
  light=b.TagFile.read(inputs/'watchtower_gravlift.light')
  machine=b.TagFile.read(inputs/'watchtower_base.device_machine')
  obj=machine.root().field('device').as_struct().field('object').as_struct()
@@ -221,6 +227,7 @@ def author_watchtower(scenario):
   path=out/name;tag.recompute_checksum();tag.write(path)
   assert b.TagFile.read(path).write_to_bytes()==path.read_bytes()
  print('Authored private watchtower gravlift light; collision and placements retained.')
+ return (out/'watchtower_gravlift.light',out/'watchtower_base.device_machine')
 
 def cosmetic_impact(tag):
  """Attach impacts at the target root; retain only visual/audio effect parts.
@@ -247,9 +254,10 @@ def cosmetic_impact(tag):
   assert all(not parts[i].field('type').value or parts[i].field('type').value[0] in allowed for i in range(len(parts)))
  return removed
 
-def author_damage():
- contract=json.loads((ROOT/'progression-contract.json').read_text());values=contract['damage_values']
- inputs=ROOT/'private-inputs/v3';out=ROOT/'native-tags/objects/survivors/v3'
+def author_damage(root=None):
+ root=Path(root) if root is not None else ROOT
+ contract=json.loads((root/'progression-contract.json').read_text());values=contract['damage_values']
+ inputs=root/'private-inputs/v3';out=root/'native-tags/objects/survivors/v3'
  missing=[str(inputs/(key+'.damage_effect')) for key in values if not (inputs/(key+'.damage_effect')).exists()]
  if missing:raise FileNotFoundError('Missing owned native damage inputs: '+', '.join(missing))
  out.mkdir(parents=True,exist_ok=True);written=[]
@@ -260,13 +268,13 @@ def author_damage():
    put(r,'damage lower bound',float(amount));put(r,'damage upper bound',b.RealBounds(float(amount),float(amount)))
    put(r,'radius',b.RealBounds(0.0,0.0));put(r,'AOE core radius',0.0)
    dest=out/f'{key}_d{int(amount)}.damage_effect';tag.recompute_checksum();tag.write(dest)
-   assert b.TagFile.read(dest).write_to_bytes()==dest.read_bytes();written.append(dest.name)
+   assert b.TagFile.read(dest).write_to_bytes()==dest.read_bytes();written.append(dest)
   ep=inputs/(key+'.effect')
   if ep.exists():
    tag=b.TagFile.read(ep);removed=cosmetic_impact(tag)
    if removed:print('Removed gameplay effect parts from',key,removed)
    dest=out/f'impact_{key}.effect';tag.recompute_checksum();tag.write(dest)
-   assert b.TagFile.read(dest).write_to_bytes()==dest.read_bytes();written.append(dest.name)
+   assert b.TagFile.read(dest).write_to_bytes()==dest.read_bytes();written.append(dest)
  print('Authored private native v3 damage/effects:',len(written))
- return written
+ return tuple(written)
 if __name__=='__main__':main()

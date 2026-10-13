@@ -371,12 +371,14 @@ def build(data,layout):
         source=source.replace('sv_w_'+name,'sv_w_'+code)
     return source,titles,damage_values
 
-def main():
-    data=normalized_catalog(); layout=json.loads((ROOT/'progression-layout.json').read_text())
+def main(root=None):
+    root=Path(root) if root is not None else ROOT
+    data=normalized_catalog(); layout=json.loads((root/'progression-layout.json').read_text())
     source,titles,damages=build(data,layout)
-    (ROOT/'source/progression.hsc').write_text(source,encoding='utf-8')
+    (root/'source/progression.hsc').write_text(source,encoding='utf-8')
     contract={'catalog':data,'layout':layout,'titles':titles,'damage_values':damages,'version':'0.4.0',
               'persistence':'Armory checkpoints resume the complete native run through the SDK launcher; saves require the exact same build. Permanent unlocks are not integrated.'}
-    (ROOT/'progression-contract.json').write_text(json.dumps(contract,indent=2)+'\n')
+    (root/'progression-contract.json').write_text(json.dumps(contract,indent=2)+'\n')
     print(f'Generated {len(source)} bytes of HSC; {len(titles)} native titles.')
+    return (root/'source/progression.hsc',root/'progression-contract.json')
 if __name__=='__main__':main()

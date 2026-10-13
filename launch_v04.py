@@ -33,6 +33,7 @@ class Paths:
     root: Path
     kit: Path
     profile: Path | None = None
+    steam: Path | None = None
 
     def __post_init__(self):
         self.root = self.root.resolve()
@@ -48,7 +49,8 @@ class Paths:
         self.resume = self.kit / 'core/laststand_v04_resume.bin'
         self.init = self.kit / 'init.txt'
         self.prefix = self.root / 'tool-prefix/pfx'
-        self.steam = self.kit.parents[2]
+        self.steam = (Path(self.steam).expanduser().resolve() if self.steam is not None
+                      else self.kit.parents[2])
 
 
 def now():
@@ -323,8 +325,19 @@ def temporary_init(paths, mode, session):
                 atomic_bytes(paths.init, original)
 
 
+def wine_path(paths):
+    return paths.steam / 'steamapps/common/Proton - Experimental/files/bin/wine'
+
+
+def validate_runtime(paths):
+    wine = wine_path(paths)
+    if not wine.is_file() or not os.access(wine, os.X_OK):
+        raise SaveError(f'Missing or non-executable Proton Wine: {wine}. '
+                        'Pass --steam with the Steam installation root.')
+
+
 def game_command(paths):
-    wine = paths.steam / 'steamapps/common/Proton - Experimental/files/bin/wine'
+    wine = wine_path(paths)
     args = ['env', 'WINEPREFIX=' + str(paths.prefix), 'DISPLAY=:0',
             'XAUTHORITY=/run/user/1000/gdm/Xauthority', 'WINEDEBUG=-all',
             'WINEDLLOVERRIDES=d3dcompiler_47=n,b', str(wine), str(paths.kit / 'halo3_tag_test.exe'),
@@ -373,6 +386,7 @@ def safe_poll(watcher, moment, report):
 
 
 def launch(paths, mode, compatibility, report):
+    validate_runtime(paths)
     if native_children(paths):
         raise SaveError('Close private Halo/Sapien/tool processes before launching')
     if fingerprint(paths) != compatibility:
@@ -442,16 +456,17 @@ def launch(paths, mode, compatibility, report):
                         signal.signal(number, handler)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parent)
     parser.add_argument('--kit', type=Path, default=Path.home() / 'snap/steam/common/.local/share/Steam/steamapps/common/H3EK')
     parser.add_argument('--qa-profile', type=Path, help='Isolated profile strictly inside ROOT/qa-saves')
+    parser.add_argument('--steam', type=Path, help='Steam installation root containing steamapps (default: derive from --kit)')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--new', action='store_true')
     group.add_argument('--continue', dest='continue_run', action='store_true')
     parser.add_argument('--validate', action='store_true', help='Print checkpoint validation without modifying anything')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     notices = set()
     def report(message, failure=False):
         print(message, file=sys.stderr, flush=True)
@@ -463,11 +478,12 @@ def main():
             except OSError:
                 pass
     try:
-        paths = Paths(args.root, args.kit, args.qa_profile)
+        paths = Paths(args.root, args.kit, args.qa_profile, steam=args.steam)
         compatibility = fingerprint(paths)
         if args.validate:
             print(json.dumps(validate_save(paths, compatibility), default=str, indent=2))
             return 0
+        validate_runtime(paths)
         with launcher_lock(paths):
             status = validate_save(paths, compatibility)
             mode = 'new' if args.new else 'continue' if args.continue_run else choose_run(status)

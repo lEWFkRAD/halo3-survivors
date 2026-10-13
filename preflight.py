@@ -21,6 +21,7 @@ from workspace_config import ConfigError, ProjectConfig, load_config
 AUTHORING_SOURCES = (
     'prepare_progression.py', 'progression_tags.py', 'generate_progression.py',
     'progression_catalog.py', 'progression_hsc.py', 'author_progression_ui.py',
+    'armory_presentation.py',
 )
 WEAPONS = ('needler', 'assault_rifle', 'shotgun', 'plasma_rifle',
            'rocket_launcher', 'energy_sword')
@@ -39,23 +40,26 @@ AUTHORING_OUTPUTS = (
     'native-tags/objects/survivors/v3',
     'native-tags/ui/survivors/progression.multilingual_unicode_string_list',
     'progression-layout.json', 'progression-contract.json',
-    'source/progression.hsc', 'v3-native.tar',
+    'source/progression.hsc', 'v3-native.tar', 'progression-build.json',
 )
 NATIVE_REQUIREMENTS = (
     ('tool.exe', 'file'), ('sapien.exe', 'file'),
     ('halo3_tag_test.exe', 'file'), ('tags', 'directory'), ('data', 'directory'),
+    ('bin/x64/xaudio2_9redist.dll', 'file'),
+    ('bin/x64/steam_api64.dll', 'file'),
+    ('fmod/pc/sfx.fsb', 'file'), ('fmod/pc/english.fsb', 'file'),
+    ('maps/fonts', 'directory'),
     ('tags/levels/survivors/last_stand/last_stand.scenario', 'file'),
     ('data/levels/survivors/last_stand/scripts/last_stand.hsc', 'file'),
     ('tags/ui/survivors/progression.multilingual_unicode_string_list', 'file'),
-) + tuple((f'tags/objects/survivors/needler_{i}.weapon', 'file')
-          for i in range(1, 4)) + tuple(
+) + tuple(
     (f'tags/objects/survivors/v3/impact_{weapon}.effect', 'file')
     for weapon in WEAPONS)
 LIMITATIONS = (
     'Prerequisites only: file presence does not verify contents, tag dependency '
     'closure, native compilation, retail compatibility or gameplay.',
-    'The prepared outdoor scenario is an owned local baseline. Fresh H3EK '
-    'bootstrap is not yet reproducible; see BOOTSTRAP.md.',
+    'Direct bootstrap requires an operator-verified native save/readback before '
+    'progression authoring; these file checks do not validate it. See BOOTSTRAP.md.',
 )
 
 
@@ -70,7 +74,7 @@ def path_check(path: Path, *, expected: str, hint: str) -> dict:
             'hint': hint}
 
 
-def output_safety(root: Path, relative: str) -> dict:
+def output_safety(root: Path, relative: str, *, create_parents: bool = False) -> dict:
     """Reject authoring destinations redirected outside this workspace."""
     path = root / relative
     def linked_path(part):
@@ -83,7 +87,7 @@ def output_safety(root: Path, relative: str) -> dict:
     directory = relative == 'native-tags/objects/survivors/v3'
     # Only the private-tag author creates its output directory. File authors
     # (notably the HSC generator) require their parent directory to exist.
-    if not directory:
+    if not directory and not create_parents:
         parents_ok = parents_ok and path.parent.is_dir()
     kind_ok = not path.exists() or (path.is_dir() if directory else path.is_file())
     # The authored tag directory is flat. Check children too: an old linked tag
@@ -117,6 +121,20 @@ def inspect_workspace(config: ProjectConfig, stage: str,
         for name in SOURCE_FILES:
             checks.append(path_check(root / name, expected='file',
                                      hint='Restore the authored file from Git.'))
+    elif stage == 'bootstrap':
+        from bootstrap_tags import BOOTSTRAP_INPUTS, BOOTSTRAP_OUTPUTS, MANIFEST_PATH
+        for name in ('bootstrap_tags.py', 'workspace_config.py') + BOOTSTRAP_INPUTS:
+            item = path_check(root / name, expected='file',
+                              hint='Fetch canonical owned inputs; see BOOTSTRAP.md.')
+            if item['status'] == 'ok' and output_safety(root, name)['status'] != 'ok':
+                item['status'] = 'unsafe'
+            checks.append(item)
+        probe = binding_probe or binding_available
+        checks.append({'path': 'blam_tags', 'expected': 'python_module',
+                       'status': 'ok' if probe() else 'missing',
+                       'hint': 'Install the native binding described in DEVELOPMENT.md.'})
+        checks.extend(output_safety(root, name, create_parents=True)
+                      for name in BOOTSTRAP_OUTPUTS + (MANIFEST_PATH,))
     elif stage == 'authoring':
         for name in AUTHORING_SOURCES:
             checks.append(path_check(root / name, expected='file',
@@ -231,7 +249,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path)
     parser.add_argument('--root', type=Path, help='Source workspace (default: this checkout).')
-    parser.add_argument('--stage', choices=('source', 'authoring', 'native'))
+    parser.add_argument('--stage', choices=('source', 'bootstrap', 'authoring', 'native'))
     parser.add_argument('--tools', type=Path, help='Override local editing_kit; defaults stage to native.')
     parser.add_argument('--remote', action='store_true', help='Check native files over read-only SSH.')
     parser.add_argument('--json', action='store_true', help='Emit a structured report.')

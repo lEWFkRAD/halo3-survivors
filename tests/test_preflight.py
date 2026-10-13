@@ -43,6 +43,49 @@ class LocalPreflightTests(unittest.TestCase):
     def authoring(self):
         return preflight.inspect_workspace(self.config, 'authoring', binding_probe=lambda: True)
 
+    def test_bootstrap_reports_all_stock_inputs_without_loading_binding(self):
+        from bootstrap_tags import BOOTSTRAP_INPUTS
+        before = snapshot(self.root)
+        with patch.dict(sys.modules, {'blam_tags': None}):
+            report = preflight.inspect_workspace(self.config, 'bootstrap', binding_probe=lambda: False)
+        missing = {item['path'] for item in report['checks'] if item['status'] == 'missing'}
+        self.assertTrue({str(self.root / name) for name in BOOTSTRAP_INPUTS} <= missing)
+        self.assertIn('blam_tags', missing)
+        self.assertFalse(report['ready'])
+        self.assertEqual(snapshot(self.root), before)
+
+    def test_bootstrap_allows_uncreated_output_parents_but_rejects_redirects(self):
+        from bootstrap_tags import BOOTSTRAP_INPUTS
+        write_fixture(self.root, ('bootstrap_tags.py', 'workspace_config.py') + BOOTSTRAP_INPUTS)
+        before = snapshot(self.root)
+        report = preflight.inspect_workspace(self.config, 'bootstrap', binding_probe=lambda: True)
+        self.assertTrue(report['ready'], report)
+        self.assertEqual(snapshot(self.root), before)
+        outside = self.root / 'outside'
+        outside.mkdir()
+        self.symlink(self.root / 'native-tags', outside, directory=True)
+        report = preflight.inspect_workspace(self.config, 'bootstrap', binding_probe=lambda: True)
+        self.assertFalse(report['ready'])
+        self.assertTrue(any(item['status'] == 'unsafe' for item in report['checks']))
+        self.assertEqual(list(outside.iterdir()), [])
+
+    def test_bootstrap_rejects_linked_stock_input_before_content_validation(self):
+        from bootstrap_tags import BOOTSTRAP_INPUTS
+        write_fixture(self.root, ('bootstrap_tags.py', 'workspace_config.py') + BOOTSTRAP_INPUTS)
+        target = self.root / BOOTSTRAP_INPUTS[0]
+        target.unlink()
+        real = self.root / 'stock.scenario'
+        real.write_bytes(b'owned')
+        self.symlink(target, real)
+        report = preflight.inspect_workspace(self.config, 'bootstrap', binding_probe=lambda: True)
+        self.assertFalse(report['ready'])
+        self.assertEqual(next(item['status'] for item in report['checks'] if item['path'] == str(target)), 'unsafe')
+
+    def test_current_native_inventory_uses_runtime_dependencies_without_legacy_needlers(self):
+        requirements = dict(preflight.NATIVE_REQUIREMENTS)
+        self.assertEqual(requirements['bin/x64/xaudio2_9redist.dll'], 'file')
+        self.assertFalse(any('/survivors/needler_' in name for name in requirements))
+
     def prepare_inputs(self):
         write_fixture(self.root, preflight.AUTHORING_SOURCES + preflight.AUTHORING_INPUTS)
         (self.root / 'source').mkdir()
