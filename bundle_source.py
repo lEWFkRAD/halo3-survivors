@@ -70,6 +70,7 @@ qa_v04.py
 qa_v04_gallery.py
 remote_build.py
 tests/hsc_vm.py
+tests/test_hsc_reference_budget.py
 tests/test_armory_presentation.py
 tests/test_armory_live.py
 tests/test_author_armory_hud.py
@@ -77,6 +78,7 @@ tests/test_armory_native_probe.py
 tests/test_armory_graph_budget.py
 tests/test_armory_scheduler.py
 tests/test_autofire.py
+tests/test_target_scanning.py
 tests/test_camera.py
 tests/test_progression_camera.py
 tests/test_title_style.py

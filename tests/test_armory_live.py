@@ -206,14 +206,29 @@ import armory_live
         live.emit_runtime(h1)
         live.emit_runtime(h2, deepcopy(CATALOG))
         self.assertEqual(h1.render(), h2.render())
-        self.assertEqual(len(h1.globals), 3)
+        self.assertEqual(len(h1.globals), 2)
         self.assertIn('(global long sv_tree_key 0)', h1.render())
+        self.assertNotIn('sv_tree_digit', h1.render())
         self.assertEqual(len(h1.scripts), 84)
         for form in parse(h1.render()):
             if form[0] == 'script' and '_leaf' in form[3]:
                 self.assertLessEqual(len(form[4:]), 10)
             if form[0] == 'script' and '_route' in form[3]:
                 self.assertLessEqual(len(form[4][1:]), 10)
+
+    def test_inline_key_expressions_remain_bounded_per_node(self):
+        h = HSC()
+        live.emit_runtime(h)
+        def depth(expression):
+            return 1 + max((depth(item) for item in expression), default=0) if isinstance(expression, list) else 0
+        keys = [form for form in parse(h.render())
+                if form[0] == 'script' and form[3].startswith('sv_g') and form[3].endswith('_key')]
+        self.assertEqual(len(keys), 9)
+        for form, page in zip(keys, self.pages):
+            updates = [expression for expression in form[4:]
+                       if expression[0] == 'set' and expression[1] == 'sv_tree_key']
+            self.assertEqual(len(updates), 1 + len(page.nodes))
+            self.assertLessEqual(max(map(depth, updates)), 7)
 
     def test_cross_page_prerequisite_and_overlong_labels_fail_visibly(self):
         altered = deepcopy(CATALOG)

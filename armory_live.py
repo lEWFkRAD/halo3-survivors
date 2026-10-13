@@ -194,7 +194,6 @@ def emit_runtime(h, catalog=None):
     """
     pages = _model(catalog)
     h.global_('long', 'sv_tree_key', 0)
-    h.global_('short', 'sv_tree_digit', 0)
     h.global_('boolean', 'sv_tree_valid', 'false')
     select = []
     for page_index, page in enumerate(pages):
@@ -231,12 +230,13 @@ def emit_runtime(h, catalog=None):
             checks.extend(f'(= {other["native_global"]} 0)' for other in page.nodes
                           if other['id'] != node['id'] and node['exclusive_group']
                           and other['exclusive_group'] == node['exclusive_group'])
+            # Keep one bounded expression per node. A temporary digit global
+            # would add four compiler references per node to the engine's
+            # limited script/global-reference bookkeeping table.
+            digit = f'(if (> {rank} 0) (+ {rank} 1) (if {_and(checks)} 1 0))'
             body.extend([
                 f'(if (or (< {rank} {node["initial_rank"]}) (> {rank} {node["max_rank"]})) (set sv_tree_valid false))',
-                '(set sv_tree_digit 0)',
-                f'(if (> {rank} 0) (set sv_tree_digit (+ {rank} 1))',
-                f'    (if {_and(checks)} (set sv_tree_digit 1)))',
-                f'(set sv_tree_key (+ sv_tree_key (* sv_tree_digit {multiplier})))',
+                f'(set sv_tree_key (+ sv_tree_key (* {digit} {multiplier})))',
             ])
             multiplier *= radix
         body.append(f'(if sv_tree_valid ({routes[0][2]}))')
