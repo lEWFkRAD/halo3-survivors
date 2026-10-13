@@ -1,5 +1,9 @@
 # Last Stand: Halo 3 Survivors
 
+![Last Stand: Halo 3 Survivors — an overhead Spartan surrounded by Covenant and Flood on the Ark](docs/images/last-stand-hero.png)
+
+*Promotional concept art. [Artwork provenance](docs/images/README.md).*
+
 **Installed gameplay baseline: v0.4.0 on Onyx-Linux** (2026-10-12).
 This native Halo 3 mod combines a bird's-eye camera, automatic attacks, a
 50-node skill tree and four outdoor stages on the Ark.
