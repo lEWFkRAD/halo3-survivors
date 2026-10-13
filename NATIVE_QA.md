@@ -70,3 +70,17 @@ Run them with `python -B -m unittest discover -s tests -p test_native_qa.py -v`.
 Synthetic coverage does not validate game recovery, retail compatibility or
 ordinary-run balance. Native experiments and remaining work are recorded in
 the LS-03 issue and its bounded evidence record.
+
+## Session cleanup
+
+The launcher source archives the final shared pending core into the session's
+own profile after both the wrapper and native child have exited. This includes
+partial bytes, which remain diagnostic archives and never become `CURRENT`.
+The next profile therefore cannot inherit that file during an ordinary managed
+shutdown. Signal handlers and `init.txt` are restored even if archival fails;
+the error is reported and a preceding monitor exception remains primary.
+
+This does not add crash-owner metadata or change legacy orphan handling at
+startup. Forced termination of the launcher or an archival failure can still
+leave a pending file; operators must inspect ownership before switching profiles.
+The source change does not replace the installed launcher by itself.

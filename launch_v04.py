@@ -397,6 +397,7 @@ def launch(paths, mode, compatibility, report):
             # Signals request native shutdown; never restore init beneath a live child.
             process = None
             previous = {}
+            original_error = None
             def stop(signum, frame):
                 safe_report(report, 'Launcher stopping: requesting the private game to close.', False)
                 for pid in native_children(paths):
@@ -412,13 +413,33 @@ def launch(paths, mode, compatibility, report):
                 process = subprocess.Popen(game_command(paths), stdout=stream, stderr=subprocess.STDOUT)
                 safe_report(report, 'Game log: ' + str(folder / 'play.log'), False)
                 return monitor(process, lambda: native_children(paths), watcher, report)
+            except BaseException as exc:
+                original_error = exc
+                raise
             finally:
-                # Unexpected monitor failures also wait for the exact-prefix child.
-                while process is not None and (process.poll() is None or native_children(paths)):
-                    safe_poll(watcher, time.monotonic(), report)
-                    time.sleep(.5)
-                for number, handler in previous.items():
-                    signal.signal(number, handler)
+                try:
+                    # Unexpected monitor failures also wait for the exact-prefix child.
+                    while process is not None and (process.poll() is None or native_children(paths)):
+                        safe_poll(watcher, time.monotonic(), report)
+                        time.sleep(.5)
+                    if process is not None:
+                        try:
+                            # The kit's pending path is shared between profiles. Once
+                            # native writers are gone, preserve even partial bytes in
+                            # this session's profile so the next launch cannot adopt
+                            # them as its own stale checkpoint. Never update CURRENT.
+                            archive_file(paths, paths.pending, 'session-pending.bin')
+                        except Exception as exc:
+                            message = ('Pending checkpoint cleanup failed for profile '
+                                       + str(paths.profile) + ': ' + str(exc))
+                            safe_report(report, message, True)
+                            if original_error is None:
+                                raise
+                            if hasattr(original_error, 'add_note'):
+                                original_error.add_note(message)
+                finally:
+                    for number, handler in previous.items():
+                        signal.signal(number, handler)
 
 
 def main():

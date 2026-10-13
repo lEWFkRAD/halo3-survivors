@@ -142,8 +142,9 @@ Temporary QA mutations/cheats belong only to the isolated QA session/profile.
 Use [NATIVE_QA.md](NATIVE_QA.md) for fresh assertion nonces, pre-dispatch log
 cursors and explicit passed/failed/unresolved observations. Verify process,
 profile and candidate fingerprints independently of the supplied report labels.
-The LS-03 evidence reader adds 28 source regressions; the combined owner suite
-passes 245 tests. Existing native receipts retain their original test counts.
+The LS-03 evidence reader adds 28 source regressions, and launcher shutdown
+adds five profile-cleanup regressions; the combined owner suite passes 250
+tests. Existing native receipts retain their original test counts.
 
 Historical release receipts remain historical. New gameplay candidates need new
 evidence and cache receipts. Inspect observed assertions; a screenshot created

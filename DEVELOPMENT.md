@@ -86,9 +86,10 @@ The reader records a bounded log window and candidate metadata. Operators must
 independently verify the emitting process, profile and build, and preserve log
 snapshots before restarting the engine.
 
-The LS-03 reader adds 28 synthetic evidence regressions. The combined owner
-suite passes 245 tests; the preceding 217-test count above describes the LS-05
-source baseline. Native SDK checks are separate from these source tests and
+The LS-03 reader adds 28 synthetic evidence regressions; launcher shutdown adds
+five profile-cleanup regressions. The combined owner suite passes 250 tests;
+the preceding 217-test count above describes the LS-05 source baseline.
+Native SDK checks are separate from these source tests and
 do not establish retail support or complete ordinary-run recovery coverage.
 
 ## Current LS-05 Armory candidate
