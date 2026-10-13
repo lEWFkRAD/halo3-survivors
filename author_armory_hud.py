@@ -37,6 +37,7 @@ DESTINATIONS = {
 ADDITIONAL_OUTPUTS = tuple(path for role, path in DESTINATIONS.items() if role != 'scenario')
 BACKGROUND_ARGB = 0xFF000000
 TEXT_ARGB = 0xFFFAFCFF
+PANEL_SCALE = (85.0, 8.0)
 
 
 class ArmoryAuthorError(ValueError):
@@ -148,7 +149,7 @@ def build_payloads(originals, b, messages):
     bitmap_base = bitmap.field('base').as_struct()
     bitmap_placements = bitmap_base.field('placement data').as_block()
     _require(len(bitmap_placements) == 1, 'Expected one bitmap placement')
-    bitmap_placements[0].field('widget scale').set(b.RealPoint2d(85.0, 8.0))
+    bitmap_placements[0].field('widget scale').set(b.RealPoint2d(*PANEL_SCALE))
     bitmap.field('flags').set_flag('scale alpha by col. out A', True)
     renders = bitmap_base.field('render data').as_block()
     _require(len(renders) == 1 and renders[0].field('shader type').value == 'simple',
@@ -252,7 +253,7 @@ def build_payloads(originals, b, messages):
         'stock_message_utf8_bytes_preserved': len(old_data),
         'language_policy': 'New English payloads shared by twelve languages; existing offsets unchanged',
         'panel': {'background_argb': f'{BACKGROUND_ARGB:08X}', 'text_argb': f'{TEXT_ARGB:08X}',
-                  'bitmap_scale': [55.0, 8.0], 'anchor': 'top center', 'offset': [0.0, 280.0]},
+                  'bitmap_scale': list(PANEL_SCALE), 'anchor': 'top center', 'offset': [0.0, 280.0]},
         'scenario_inverse_audit': True, 'biped_normalized_inverse_audit': True,
         'override_globals': True,
         'visibility': 'Unchanged player training available; generated HSC owns training lifetime',

@@ -86,13 +86,18 @@ host, fleet, inference or service settings to work on this game.
 
 - Chunk native dispatch and scans; the interpreter has a shallow expression
   stack. Do not introduce giant expressions or unbounded recursive scans.
-- Current generation guards are fewer than 1,024 scripts, fewer than 512 globals
-  and at most 128 titles. Historical v0.4 native readback contained 400 scripts,
-  175 globals and 121 titles. The LS-05 prototype has 402 scripts, 178 globals
-  and 128 titles, leaving no spare title rows. Native counts include
-  engine-injected definitions; do not compare them directly with source
-  declaration counts.
-  These are current authoring guards, not universal engine-limit claims.
+- Current generation guards are fewer than 1,024 scripts, fewer than 512 globals,
+  at most 128 title definitions and at most 9,500 authored script/global
+  references. Keep the reference guard: the SDK compiler has a separate bounded
+  reference bookkeeping table, and definition/syntax counts did not prevent
+  earlier live-Armory compiler crashes. Source counts omit engine-injected
+  material; do not equate them with native counts or compilation success.
+  The compiled live Armory candidate recorded 495 scripts, 180 globals, 51,074
+  syntax datums and 127 titles, including the final black-panel presentation.
+  Recheck these after subsequent source or tag changes.
+  Historical v0.4 contained 400 scripts, 175 globals and 121 titles; the static
+  LS-05 prototype had 402 scripts, 178 globals and 128 titles. These authoring
+  guards are not universal engine-limit claims.
 - The enemy cap is 36, the actor scan covers 64 slots, and selected targets are
   bounded at 12. Audit related budgets before changing any one of these.
 - Spawn positions use valid navigation/BSP bindings. Guard every cohort slot
@@ -103,10 +108,13 @@ host, fleet, inference or service settings to work on this game.
   after a simulation update.
 - Input action priming and release latches are intentional. A held click buys
   one rank; navigation/category chords must not cause accidental purchases.
-- Armory branch pages are static catalog references; current selected-skill
-  details and purchase feedback remain separate. Keep the one-second page
-  refresh limit through rapid navigation and close/reopen. Process Resume
-  before a due refresh, and let expired pages disappear outside the Armory.
+- The live Armory has nine pages covering all 50 nodes, with current ranks and
+  available/locked/owned/maxed markers. Selected details, wallet, next-price and
+  purchase feedback remain separate. Keep the one-second refresh limit through
+  rapid navigation and close/reopen. Process Resume before a due refresh and
+  disable training text outside the Armory; wallet/price titles expire within
+  one second. Preserve release latches, the shared actor-consideration helper
+  and bounded inline graph keys that keep compiler reference pressure low.
 - Current impacts are cosmetic and HSC applies direct damage. Projectile/melee
   work must prevent damage from being applied through both paths.
 - Native cores are opaque and exact-build-bound. Camera/controller state needs
@@ -119,14 +127,16 @@ host, fleet, inference or service settings to work on this game.
 
 ## Verification and handoff
 
-For the next live Armory implementation, read [ARMORY_NATIVE_PROBE.md](ARMORY_NATIVE_PROBE.md)
-and [its evidence](native-validation-ls05-ui-probe.json). The SDK permits four
-concurrent cinematic titles in the observed experiment; 128 definitions do not
-permit one simultaneous title per skill. Private training text works through a
-scenario player override and custom global HUD strings. Twelve short lines and
-a 75-character state sample rendered completely; long graphs clipped, with no
-exact character limit established. The probe is separate from the supported
-production authoring allowlist and must not be promoted. LS-05 remains open.
+For current Armory work, read [ARMORY_LIVE.md](ARMORY_LIVE.md) and
+[its evidence](native-validation-ls05-live.json). The authored final presentation
+uses an opaque black panel and white wallet text. Bounded native checks cover
+readability, Resume/reopen and Continue; refresh gaps and wider acceptance remain.
+The [earlier HUD probe](ARMORY_NATIVE_PROBE.md) and
+[probe evidence](native-validation-ls05-ui-probe.json) established four concurrent
+title slots and the private training-string route. They remain historical:
+128 definitions do not permit one simultaneous title per skill. Production
+preparation now explicitly includes the live HUD outputs; the separate probe
+outputs remain outside that allowlist and must not be promoted. LS-05 stays open.
 
 Run the appropriate source checks, normally
 `python -B -m unittest discover -s tests -v`. The LS-01 source suite passes
@@ -149,17 +159,24 @@ retail support and LS-11 release evidence remain unfinished. All 20 prior
 production profile files are unchanged, two normal session files were added,
 and the original Continue/Armory was restored. The installed package is unchanged.
 
-The LS-05 prototype adds seven static branch-reference pages, covering all 50
-nodes alongside the existing selected-skill CHUD detail. All seven pages fit
-in the inspected native captures. Bounded native evidence and limits belong in
-[native-validation-ls05.json](native-validation-ls05.json); native readback is
-402 scripts, 178 globals, 43,180 syntax datums and 128 titles. Dynamic graphical
-states for every node and stronger contrast remain unfinished. This is an
-interim presentation, not completion of LS-05 or an installed-package promotion.
-Its additional scheduler global and changed script/scenario fingerprints make
-older-build cores incompatible. Use an isolated LS-05 QA profile and preserve
-the production build and checkpoint; never load a production core into this
-candidate or promote the QA profile.
+The current live Armory candidate uses 601 graph snapshots plus a fallback over
+nine pages. The selected objective supplies effects, prerequisite ranks and stage
+gates, while separate notices show wallet and next price. Source model/VM checks
+do not establish native readability, input behavior or recovery. Keep the final
+candidate's checks and limits in [native-validation-ls05-live.json](native-validation-ls05-live.json).
+The [seven-page static prototype](native-validation-ls05.json) retains its own
+historical input/purchase/restart evidence and 402-script/178-global/128-title
+readback; those results do not validate the live HUD.
+
+The live candidate changes script, scenario and private-asset fingerprints,
+including the canonical CHUD globals dependency. Use its isolated QA profile,
+preserve the production build/checkpoint, and never load a production core into
+this candidate or promote the QA profile. Missing or changed live HUD dependencies
+must reject Continue. The installed v0.4 package and launcher remain unchanged;
+no full ordinary run, retail validation or release promotion is claimed.
+A fresh cache has native exit 0 and a success marker, with 25 retained stock-asset
+error diagnostic lines; its gameplay has not been tested. The bounded final
+presentation checks pass; LS-05 is not complete.
 
 Historical LS-04 validation passed 188 owner tests and 183 source-export tests,
 with one skipped module containing five native geometry tests. That slice

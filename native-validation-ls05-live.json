@@ -1,0 +1,1030 @@
+{
+  "schema_version": 1,
+  "task": "LS-05",
+  "kind": "bounded_native_live_armory_validation",
+  "date": "2026-10-13",
+  "status": "partial",
+  "roadmap_task_complete": false,
+  "implementation_commit": "a1b8933c19fd34b5ff60e5de26d6577a1f746869",
+  "baseline_commit": "628b9ca486f313117981ec118505f4526492eb13",
+  "environment": "Halo 3 SDK tag test on Onyx-Linux using an isolated extracted editing kit; not retail MCC",
+  "qa_profile": "qa-saves/ls05-dynamic",
+  "scope": "Nine compact live pages for all 50 skills, rank/state markers, selected-skill detail, separate wallet and next price, and bounded menu/recovery checks. This is a development candidate, not a promoted release.",
+  "model": {
+    "pages": 9,
+    "nodes": 50,
+    "reachable_graph_snapshots": 601,
+    "fallback_messages": 1,
+    "total_authored_hud_messages": 602,
+    "max_authored_message_characters_including_crlf": 110,
+    "markers": {
+      "-": "Rank zero and currently blocked",
+      "+": "Rank zero and currently purchasable",
+      "o": "Purchased with more ranks remaining; does not promise affordability",
+      "*": "Maximum rank reached"
+    },
+    "refresh": "At most once per 30 simulation ticks while the Armory is open; purchase/input processing precedes refresh.",
+    "max_actual_message_characters_including_crlf": 104
+  },
+  "candidate": {
+    "source_commit": "a1b8933c19fd34b5ff60e5de26d6577a1f746869",
+    "fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "74a90adc462a05b07e752082fe7b1f48a188b9428da911649506a9c3bf62054e",
+      "hsc": "9dd22643a203e296c72d62395acb11d63bef708c6c77fefbd27e2e5fffb7a2f5",
+      "private_assets": "fbf04911fd59efea905df267ee1cdb7f7609f90352a2c4620ce2d01b19158409"
+    },
+    "compiled_scenario_bytes": 10425725,
+    "native_counts": {
+      "scripts": 495,
+      "globals": 180,
+      "syntax_datums": 51074,
+      "cutscene_titles": 127
+    }
+  },
+  "preparation_and_compilation": {
+    "staging": {
+      "status": "copied-unverified",
+      "operation_id": "73f29c1f5c52436f9dfe1f9b22b6f0f0",
+      "files": 144,
+      "manifest": {
+        "path": "progression-build.json",
+        "size": 41949,
+        "sha256": "6239507a520188672cbaf1d4bfcd7305049bdae29f3a57d86709433e8f49b121"
+      },
+      "selected_authored_outputs_before_native_save": {
+        "tags/objects/survivors/armory.biped": {
+          "size": 35306,
+          "sha256": "50e14685aab21d1a0df6e12f6b0294f237f6faa446bc063ba490b0b7854f8e4d"
+        },
+        "tags/ui/chud/globals.chud_globals_definition": {
+          "size": 40072,
+          "sha256": "bfb54ba090254618482c725ff9bf785a40580c37f310c5818c868c4b5b43f05c"
+        },
+        "tags/ui/survivors/armory.chud_definition": {
+          "size": 106581,
+          "sha256": "05e0f98faa91868acddd8b0403b7c09b58af79a73d448fbbdc887a9f8f35abb0"
+        },
+        "tags/ui/survivors/armory_messages.multilingual_unicode_string_list": {
+          "size": 333674,
+          "sha256": "193b348a21e751f528c6c5ce40b7cf8844c78dbeb67589adfc3094438171ac14"
+        },
+        "tags/ui/survivors/progression.multilingual_unicode_string_list": {
+          "size": 19817,
+          "sha256": "e0c4a4bdb7d8eeda7a22314b73009b2c2b2586403aa99fc289d8447823475eb0"
+        },
+        "tags/levels/survivors/last_stand/last_stand.scenario": {
+          "size": 8763634,
+          "sha256": "3ecbafcff351ca9cea39a0efebdd22bc1ca82f7573d15e9f37d0aed9800ba782"
+        },
+        "data/levels/survivors/last_stand/scripts/last_stand.hsc": {
+          "size": 320480,
+          "sha256": "9dd22643a203e296c72d62395acb11d63bef708c6c77fefbd27e2e5fffb7a2f5"
+        }
+      },
+      "native_compilation_verified_by_transfer_tool": false,
+      "receipt": {
+        "evidence_id": "ls05-live-final-stage",
+        "bytes": 77014,
+        "sha256": "ab4fa480fbb8c5aee20427ebb1d0eddd72cf662a2ed335a9b936d32131a2e46b"
+      }
+    },
+    "compile": {
+      "status": "passed",
+      "basis": "Native operator reports successful compilation and save; parsed saved-scenario readback contains 495 scripts, 180 globals, 51,074 syntax datums and 127 titles. The final candidate also executed the seven fresh assertions in the final phase.",
+      "compiled_scenario_sha256": "74a90adc462a05b07e752082fe7b1f48a188b9428da911649506a9c3bf62054e",
+      "readback_counts_receipt": {
+        "evidence_id": "ls05-live-final-readback",
+        "bytes": 179,
+        "sha256": "73576690b688c450d03a0da3341bae872250bd7b663b2b5790eef5f8365e4bf8"
+      },
+      "private_compile_log": {
+        "evidence_id": "live-final-compile-debug",
+        "bytes": 371469,
+        "sha256": "985106afcd9d17115c4201a3fce5c56d0c9096575de7956bc637f91b0d544259"
+      },
+      "log_limit": "The retained compile log is cumulative. Its hash does not establish a warning-free build, and no compiler process exit code is claimed."
+    },
+    "readback_transfer": {
+      "status": "copied-unverified",
+      "operation_id": "bc491543841e418499072733ebd13688",
+      "scenario": {
+        "path": "tags/levels/survivors/last_stand/last_stand.scenario",
+        "size": 10425725,
+        "sha256": "74a90adc462a05b07e752082fe7b1f48a188b9428da911649506a9c3bf62054e"
+      },
+      "native_compilation_verified_by_transfer_tool": false,
+      "receipt": {
+        "evidence_id": "live-final-public-readback",
+        "bytes": 1447,
+        "sha256": "ea76236acf22a18c130e102c59f7349b8db0b1e610532341bfd36fbf0a072652"
+      },
+      "limit": "The public transfer helper only verifies copied bytes and an idle process snapshot; compilation is supported separately by the native operator, parsed saved tag and subsequent SDK execution."
+    },
+    "prepare_log": {
+      "evidence_id": "ls05-live-final-prepare",
+      "bytes": 1247,
+      "sha256": "0e3ed53cdf9e0d0faf2dc65b7b4cce05c99239e7a73dcfe0f8952618601ecc2f"
+    }
+  },
+  "compiler_budget": {
+    "initial_failure": "The larger live graph candidate crashed during native script compilation with an overrun of the 245,760-byte allocation at hs_compile.cpp:473. Script/global definition counts alone did not prevent this failure.",
+    "inspected_binary_finding": "Static inspection of the owned January 3, 2024 x64 Sapien binary identified a script/global-reference bookkeeping table with 24-byte records and capacity 10,240. Its append routine lacks a pre-append capacity check. This is specific to that binary, not a universal engine limit.",
+    "authored_reference_estimates": {
+      "working_baseline": 9215,
+      "failed_full_candidate": 11182,
+      "reduced_candidate": 9471,
+      "conservative_guard": 9500
+    },
+    "reduction": "A shared bounded target-consideration helper removes repeated combat predicates, and inline graph digits remove redundant global writes. The nine-page graph retains all 50 nodes.",
+    "limit": "The authored estimate excludes engine-injected material and is not an exact native allocation count. Native compilation remains required.",
+    "documentation": "ARMORY_LIVE.md"
+  },
+  "evidence_method": {
+    "transport": "halo_sdk_hs_log",
+    "environment": "sdk",
+    "evidence_kind": "native",
+    "assertion_receipts": 22,
+    "unique_nonces": 22,
+    "reverification": "Each private archived log was independently read. Its entire SHA256, pre-dispatch prefix SHA256, end offset and receipt command were checked. Exactly one complete SDK warning-envelope marker for the assertion nonce was decoded within the fresh bounded window; echoed console commands were not accepted as evidence.",
+    "context_binding_limit": "Receipt candidate/profile labels are supplied by the native operator. Hash/marker verification does not independently establish process identity or loaded-candidate provenance; the operator associates each phase with its build and isolated QA session.",
+    "publication": "Only sanitized summaries, commands, outcomes and hashes are published. Private absolute paths, raw logs, owned tags, saves and captured game images are excluded."
+  },
+  "phases": [
+    {
+      "id": "behavioral_candidate_before_final_style",
+      "source_commit": "306c772601c85522eeb1e4c2a362d5984b2c532c",
+      "fingerprint": {
+        "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+        "scenario": "4336e302d15c386119ca16e19e362cbfa7284dd9337277d5665af02109de99a2",
+        "hsc": "9dd22643a203e296c72d62395acb11d63bef708c6c77fefbd27e2e5fffb7a2f5",
+        "private_assets": "a747547c536f94fbb29c3b956d04962f07d61c2b9ac6342f416b093c9c1e5a18"
+      },
+      "status": "bounded_checks_recorded_with_failed_test_expectations",
+      "summary": {
+        "assertions": 15,
+        "passed": 13,
+        "failed": 2,
+        "ordinary_passed": 9,
+        "seeded_passed": 4,
+        "seeded_failed": 2,
+        "transport_controls_included_in_ordinary_passed": 1
+      },
+      "setup_and_observations": [
+        "The native operator inspected all nine pages using real category navigation. This was the earlier presentation; it does not prove every final-style page or all 601 snapshots.",
+        "Real purchase input reached Needler Power rank two with one point remaining. The 1.5-second held click did not buy an additional rank.",
+        "Short ordinary stage-one combat advanced time and shots, earned a level, and returned to the Armory with rank two and two points.",
+        "After process restart through Continue, bounded assertions observed the same rank/tokens, positive progress and live actors at or below the cap. These checks did not compare every timer, actor identity or cooldown exactly.",
+        "Branch tests explicitly seeded stage 3, 50 points and Needler Rate rank two. Subsequent stage-four testing explicitly changed the stage; these are not ordinary progression or balance evidence."
+      ],
+      "incorrect_expectations": {
+        "assertions": [
+          "live-branch-capstone",
+          "live-branch-wallet"
+        ],
+        "explanation": "The test expected a stage-four capstone purchase and its wallet deduction while the game was still seeded at stage three. Both FAIL observations are retained. The corrected stage-three gate, exclusive-branch rejection, then stage-four purchase and 43-point wallet assertions passed; they do not rewrite the original failures."
+      },
+      "pre_continue_checkpoint": {
+        "found": true,
+        "valid": true,
+        "reason": "Verified Armory checkpoint",
+        "metadata": {
+          "schema_version": 1,
+          "format": "laststand.native-core",
+          "mod_version": "0.4.0",
+          "generation": "dc9c3818ea5f4872adb9eedb3dbcd4e9",
+          "session_id": "fcbd81decfb64df9b343aa05e3d105b9",
+          "created_at": "2026-10-13T16:02:28.970224+00:00",
+          "origin": "qa",
+          "name": "Armory checkpoint",
+          "fingerprint": {
+            "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+            "scenario": "4336e302d15c386119ca16e19e362cbfa7284dd9337277d5665af02109de99a2",
+            "hsc": "9dd22643a203e296c72d62395acb11d63bef708c6c77fefbd27e2e5fffb7a2f5",
+            "private_assets": "a747547c536f94fbb29c3b956d04962f07d61c2b9ac6342f416b093c9c1e5a18"
+          },
+          "bytes": 9895936,
+          "sha256": "0be17e7b7f75202c8b3e39f290357d4774f6f8574f3c01bb20ad2c2427e84470"
+        },
+        "receipt": {
+          "evidence_id": "live-before-continue-save",
+          "bytes": 1020,
+          "sha256": "8ec7100b3101e070f7cd668e765efaf94781e27c01b07c5f955cbdf6e356267c"
+        }
+      },
+      "assertions": [
+        {
+          "id": "live-transport",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "true",
+            "nonce": "7a7b1cb9f64648a189514d4a5afcd9ab",
+            "command": "(if true (log_print \"LSQA:7a7b1cb9f64648a189514d4a5afcd9ab:PASS\") (log_print \"LSQA:7a7b1cb9f64648a189514d4a5afcd9ab:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T15:59:58.830969+00:00",
+            "observed_at": "2026-10-13T16:00:01.026081+00:00",
+            "start_offset": 1042,
+            "end_offset": 1359,
+            "prefix_sha256": "8d32bfeb2221bd5bc5b86a99ae0f56c0c1247bc86eca3f665794c0b466396e09",
+            "log_sha256": "8100c30f626d392b3bd0121a09af7e05f3df264c1b84c950c6b83875c2c6fa63"
+          },
+          "archive_verification": {
+            "bytes": 1359,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "e6067e33305af1e3f3b86e620be286c63aa4af7b698b7b167981564622e3d1fb"
+          }
+        },
+        {
+          "id": "live-purchase-held-latch",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (= sv_nl_d 2) (= sv_tokens 1))",
+            "nonce": "e982ab5d3dba4186bd222f5801fccf78",
+            "command": "(if (and (= sv_nl_d 2) (= sv_tokens 1)) (log_print \"LSQA:e982ab5d3dba4186bd222f5801fccf78:PASS\") (log_print \"LSQA:e982ab5d3dba4186bd222f5801fccf78:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:00:01.026379+00:00",
+            "observed_at": "2026-10-13T16:00:03.522723+00:00",
+            "start_offset": 1359,
+            "end_offset": 1707,
+            "prefix_sha256": "8100c30f626d392b3bd0121a09af7e05f3df264c1b84c950c6b83875c2c6fa63",
+            "log_sha256": "c02710419c1af0631261e61c31957aaa09fff018971c58222ce076fdf85683c5"
+          },
+          "archive_verification": {
+            "bytes": 1707,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "2b144393654492540f3fd5fba7f0f05079ec61d2b0fbbc32ab913cb97f9fe445"
+          }
+        },
+        {
+          "id": "live-armory-paused",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and sv_menu_open (= sv_stage_seconds 0) (= sv_shots 0))",
+            "nonce": "21e731c309b1445dbd139189afb86762",
+            "command": "(if (and sv_menu_open (= sv_stage_seconds 0) (= sv_shots 0)) (log_print \"LSQA:21e731c309b1445dbd139189afb86762:PASS\") (log_print \"LSQA:21e731c309b1445dbd139189afb86762:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:00:03.523005+00:00",
+            "observed_at": "2026-10-13T16:00:06.263274+00:00",
+            "start_offset": 1707,
+            "end_offset": 2076,
+            "prefix_sha256": "c02710419c1af0631261e61c31957aaa09fff018971c58222ce076fdf85683c5",
+            "log_sha256": "59cd2b658675dc4ac74bb9b258303ff14928a0b8cc5fc0bc501bfb27add8d815"
+          },
+          "archive_verification": {
+            "bytes": 2076,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "c1be51536ea470981df38c825d4541811fa9ba732f5c75d5525c562070ca55be"
+          }
+        },
+        {
+          "id": "live-combat-active",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> sv_stage_seconds 0) (> sv_shots 0) (> sv_level 1))",
+            "nonce": "728cbea11e8e4119a959e7f7e36d05bc",
+            "command": "(if (and (> sv_stage_seconds 0) (> sv_shots 0) (> sv_level 1)) (log_print \"LSQA:728cbea11e8e4119a959e7f7e36d05bc:PASS\") (log_print \"LSQA:728cbea11e8e4119a959e7f7e36d05bc:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:03:46.240791+00:00",
+            "observed_at": "2026-10-13T16:03:48.979300+00:00",
+            "start_offset": 2298,
+            "end_offset": 2669,
+            "prefix_sha256": "b5a15a093c9379af8f1d89955b65c9ca7a42e482c1555ddf62efc2dc3909a79f",
+            "log_sha256": "195095585acdf0ca69d15af4f0f21a5fb6ad6ef7a52711313ce4b39f73345319"
+          },
+          "archive_verification": {
+            "bytes": 2669,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "dad086c226b082814ec42bdb409a0480c5b78c6c40b16cf831d9ddeb09b924be"
+          }
+        },
+        {
+          "id": "live-combat-checkpoint",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and sv_menu_open (= sv_nl_d 2) (= sv_tokens 2))",
+            "nonce": "a18118df21f345729b7cf41f3535fec9",
+            "command": "(if (and sv_menu_open (= sv_nl_d 2) (= sv_tokens 2)) (log_print \"LSQA:a18118df21f345729b7cf41f3535fec9:PASS\") (log_print \"LSQA:a18118df21f345729b7cf41f3535fec9:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:03:48.979621+00:00",
+            "observed_at": "2026-10-13T16:03:51.615654+00:00",
+            "start_offset": 2669,
+            "end_offset": 3030,
+            "prefix_sha256": "195095585acdf0ca69d15af4f0f21a5fb6ad6ef7a52711313ce4b39f73345319",
+            "log_sha256": "b7fe08dbb50a24cdcd80e973624b149e96b4e1f33a1f25ffe5a3ea6b0aede715"
+          },
+          "archive_verification": {
+            "bytes": 3030,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "555005b574981a2353a933e07814aedeca1467f2b79aa5562fb1823889e7edea"
+          }
+        },
+        {
+          "id": "live-combat-cap",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36))",
+            "nonce": "0a5661291ac640bd83163b1c97dd7d4b",
+            "command": "(if (and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36)) (log_print \"LSQA:0a5661291ac640bd83163b1c97dd7d4b:PASS\") (log_print \"LSQA:0a5661291ac640bd83163b1c97dd7d4b:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:03:51.615940+00:00",
+            "observed_at": "2026-10-13T16:03:54.584510+00:00",
+            "start_offset": 3030,
+            "end_offset": 3422,
+            "prefix_sha256": "b7fe08dbb50a24cdcd80e973624b149e96b4e1f33a1f25ffe5a3ea6b0aede715",
+            "log_sha256": "28f903c11baa1d8fe4710e49b0fcac9edb997d417cb243c0e6e3e1dd74865be6"
+          },
+          "archive_verification": {
+            "bytes": 3422,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "5e885d8a624a65caaf2704a5ef39e2f97f8c7eaba4a0f612333ed1ffb85285d2"
+          }
+        },
+        {
+          "id": "live-continue-ranks-points",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and sv_menu_open (= sv_nl_d 2) (= sv_tokens 2))",
+            "nonce": "a158c0a97408402a88bd5bacfda56028",
+            "command": "(if (and sv_menu_open (= sv_nl_d 2) (= sv_tokens 2)) (log_print \"LSQA:a158c0a97408402a88bd5bacfda56028:PASS\") (log_print \"LSQA:a158c0a97408402a88bd5bacfda56028:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:07:33.660258+00:00",
+            "observed_at": "2026-10-13T16:07:36.322396+00:00",
+            "start_offset": 845,
+            "end_offset": 1206,
+            "prefix_sha256": "29cb7dad19246db231573e56615dde0b717942c4273aae4aaf10a329ee962557",
+            "log_sha256": "9dafc31f7297a59c50749a1043f1c585ebb59fb358125b6026e9968df482fc28"
+          },
+          "archive_verification": {
+            "bytes": 1206,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "adff094ca26614e2224c30508f2f786c94a2329b47ca44021db85268f97ea7ab"
+          }
+        },
+        {
+          "id": "live-continue-combat-progress",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> sv_stage_seconds 0) (> sv_shots 0) (> sv_level 1))",
+            "nonce": "73c9e701c3424ad1b98cb2aab2c1508f",
+            "command": "(if (and (> sv_stage_seconds 0) (> sv_shots 0) (> sv_level 1)) (log_print \"LSQA:73c9e701c3424ad1b98cb2aab2c1508f:PASS\") (log_print \"LSQA:73c9e701c3424ad1b98cb2aab2c1508f:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:07:36.322704+00:00",
+            "observed_at": "2026-10-13T16:07:39.098458+00:00",
+            "start_offset": 1206,
+            "end_offset": 1577,
+            "prefix_sha256": "9dafc31f7297a59c50749a1043f1c585ebb59fb358125b6026e9968df482fc28",
+            "log_sha256": "c834f12ac0a50f68c488e37af3c27269eb6797b086b469abb99e1e99a8304fc7"
+          },
+          "archive_verification": {
+            "bytes": 1577,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "ffc3d52cf2df11f1318aa827ae23b63da98e5bd45f3b4cda8ef9cf8da18b31ab"
+          }
+        },
+        {
+          "id": "live-continue-actors",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36))",
+            "nonce": "a4e59df761a240a2a4cce45e9f3392e7",
+            "command": "(if (and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36)) (log_print \"LSQA:a4e59df761a240a2a4cce45e9f3392e7:PASS\") (log_print \"LSQA:a4e59df761a240a2a4cce45e9f3392e7:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:07:39.098738+00:00",
+            "observed_at": "2026-10-13T16:07:42.107482+00:00",
+            "start_offset": 1577,
+            "end_offset": 1969,
+            "prefix_sha256": "c834f12ac0a50f68c488e37af3c27269eb6797b086b469abb99e1e99a8304fc7",
+            "log_sha256": "e0ca063fdc7668fe1d93af86ccb15c2df017b3676b48519625559eb7788b3a47"
+          },
+          "archive_verification": {
+            "bytes": 1969,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "2949d914be78e9307c81156a9a466c15a831c7b4d0d82663e018d3ec30f91355"
+          }
+        },
+        {
+          "id": "live-branch-capstone",
+          "outcome": "failed",
+          "reason": "observed_marker",
+          "run_kind": "seeded",
+          "assertion": {
+            "condition": "(and (= sv_nl_a 2) (= sv_nl_ac 1) (= sv_nl_b 0))",
+            "nonce": "eecd54eaba764aa7a19421dbfe5845d2",
+            "command": "(if (and (= sv_nl_a 2) (= sv_nl_ac 1) (= sv_nl_b 0)) (log_print \"LSQA:eecd54eaba764aa7a19421dbfe5845d2:PASS\") (log_print \"LSQA:eecd54eaba764aa7a19421dbfe5845d2:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:10:10.657066+00:00",
+            "observed_at": "2026-10-13T16:10:13.308136+00:00",
+            "start_offset": 2911,
+            "end_offset": 3272,
+            "prefix_sha256": "fee4cfc46aef36981bb5f2496064d088256283fba93a4178ffdb84fa276fb98f",
+            "log_sha256": "9e168e5bac356b3b4f371828595d5c7321041ae5bdbeb011f1a1bda2832f822b"
+          },
+          "archive_verification": {
+            "bytes": 3272,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "FAIL",
+            "receipt_sha256": "fd857db42f038a545fa05bfc6358688aee01c3673c8e7d5588c7306ae306a198"
+          }
+        },
+        {
+          "id": "live-branch-wallet",
+          "outcome": "failed",
+          "reason": "observed_marker",
+          "run_kind": "seeded",
+          "assertion": {
+            "condition": "(and (= sv_tokens 43) (= sv_nl_d 2) (= sv_nl_c 2))",
+            "nonce": "9c239ff805d1434eb824b4ddcf81b29d",
+            "command": "(if (and (= sv_tokens 43) (= sv_nl_d 2) (= sv_nl_c 2)) (log_print \"LSQA:9c239ff805d1434eb824b4ddcf81b29d:PASS\") (log_print \"LSQA:9c239ff805d1434eb824b4ddcf81b29d:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:10:13.308452+00:00",
+            "observed_at": "2026-10-13T16:10:15.976997+00:00",
+            "start_offset": 3272,
+            "end_offset": 3635,
+            "prefix_sha256": "9e168e5bac356b3b4f371828595d5c7321041ae5bdbeb011f1a1bda2832f822b",
+            "log_sha256": "3751f2fc5ead9536a980c6f9a1a496ea9f051da7f5c9fde9cba05cdd21a5937c"
+          },
+          "archive_verification": {
+            "bytes": 3635,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "FAIL",
+            "receipt_sha256": "2f52f8e0747179fd3ff4ae8b68bc922eceee3a78f76b6734e8169a5b41d68a32"
+          }
+        },
+        {
+          "id": "live-capstone-stage-gate",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "seeded",
+          "assertion": {
+            "condition": "(and (= sv_stage 3) (= sv_nl_a 2) (= sv_nl_ac 0) (= sv_tokens 46))",
+            "nonce": "03d84525d6484f7e9e0dee0dfbed1b20",
+            "command": "(if (and (= sv_stage 3) (= sv_nl_a 2) (= sv_nl_ac 0) (= sv_tokens 46)) (log_print \"LSQA:03d84525d6484f7e9e0dee0dfbed1b20:PASS\") (log_print \"LSQA:03d84525d6484f7e9e0dee0dfbed1b20:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:10:44.635248+00:00",
+            "observed_at": "2026-10-13T16:10:47.476078+00:00",
+            "start_offset": 3635,
+            "end_offset": 4014,
+            "prefix_sha256": "3751f2fc5ead9536a980c6f9a1a496ea9f051da7f5c9fde9cba05cdd21a5937c",
+            "log_sha256": "f273cd051590d66bfdda584f9546e8ae9789a1692ce566d93f22697abf5d1f7c"
+          },
+          "archive_verification": {
+            "bytes": 4014,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "ca6587115279df838a81f867bd6431edcffc9ff8108d1feb81210e9c767d283c"
+          }
+        },
+        {
+          "id": "live-exclusive-stage3",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "seeded",
+          "assertion": {
+            "condition": "(= sv_nl_b 0)",
+            "nonce": "68a35b0fdcf44d6195e066a2d0bb0ef9",
+            "command": "(if (= sv_nl_b 0) (log_print \"LSQA:68a35b0fdcf44d6195e066a2d0bb0ef9:PASS\") (log_print \"LSQA:68a35b0fdcf44d6195e066a2d0bb0ef9:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:10:47.476389+00:00",
+            "observed_at": "2026-10-13T16:10:49.746540+00:00",
+            "start_offset": 4014,
+            "end_offset": 4340,
+            "prefix_sha256": "f273cd051590d66bfdda584f9546e8ae9789a1692ce566d93f22697abf5d1f7c",
+            "log_sha256": "4627e32797d83caf1970a1a9915e0296b7aea62a8eafa49c4e7c1965a46159de"
+          },
+          "archive_verification": {
+            "bytes": 4340,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "1eb159709574258dd93aac78b1cc3db985b0bdf9891cfaa459c9778f913f1500"
+          }
+        },
+        {
+          "id": "live-capstone-stage4",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "seeded",
+          "assertion": {
+            "condition": "(and (= sv_stage 4) (= sv_nl_a 2) (= sv_nl_ac 1) (= sv_nl_b 0))",
+            "nonce": "7907300b4acd47cda013820eb5e6910f",
+            "command": "(if (and (= sv_stage 4) (= sv_nl_a 2) (= sv_nl_ac 1) (= sv_nl_b 0)) (log_print \"LSQA:7907300b4acd47cda013820eb5e6910f:PASS\") (log_print \"LSQA:7907300b4acd47cda013820eb5e6910f:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:11:47.649753+00:00",
+            "observed_at": "2026-10-13T16:11:50.456738+00:00",
+            "start_offset": 4881,
+            "end_offset": 5257,
+            "prefix_sha256": "a3c7792d24a5635da609a8f5221433b090c5ed07dcc7a3107b09c7995ca3a075",
+            "log_sha256": "d120aa3ac04da7045d9bc19097ca0127241d16d9a388eb5d2320546da7193c40"
+          },
+          "archive_verification": {
+            "bytes": 5257,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "69b7dad50f5ca0aa1e94e2a0b5a5eba71dac65ee89b1753638714dcce8d702d4"
+          }
+        },
+        {
+          "id": "live-capstone-wallet43",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "seeded",
+          "assertion": {
+            "condition": "(= sv_tokens 43)",
+            "nonce": "a9542d860c3546de858c8c7c74182300",
+            "command": "(if (= sv_tokens 43) (log_print \"LSQA:a9542d860c3546de858c8c7c74182300:PASS\") (log_print \"LSQA:a9542d860c3546de858c8c7c74182300:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:11:50.457073+00:00",
+            "observed_at": "2026-10-13T16:11:52.760681+00:00",
+            "start_offset": 5257,
+            "end_offset": 5586,
+            "prefix_sha256": "d120aa3ac04da7045d9bc19097ca0127241d16d9a388eb5d2320546da7193c40",
+            "log_sha256": "cccbdeedef09a5f6472021f031e5dd953731988a6d80046cef5248b172fe67fe"
+          },
+          "archive_verification": {
+            "bytes": 5586,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "bdec6b16bd093470b6c8529869e5a8e1c51d4897f02ff0154f7cd78c284b1043"
+          }
+        }
+      ]
+    },
+    {
+      "id": "final_opaque_panel_and_wallet",
+      "source_commit": "a1b8933c19fd34b5ff60e5de26d6577a1f746869",
+      "fingerprint": {
+        "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+        "scenario": "74a90adc462a05b07e752082fe7b1f48a188b9428da911649506a9c3bf62054e",
+        "hsc": "9dd22643a203e296c72d62395acb11d63bef708c6c77fefbd27e2e5fffb7a2f5",
+        "private_assets": "fbf04911fd59efea905df267ee1cdb7f7609f90352a2c4620ce2d01b19158409"
+      },
+      "status": "bounded_checks_passed_broader_validation_open",
+      "summary": {
+        "assertions": 7,
+        "passed": 7,
+        "failed": 0,
+        "ordinary_passed": 7
+      },
+      "observations": [
+        {
+          "id": "purchase_rank_wallet_price",
+          "status": "observed",
+          "summary": "A complete Needler graph visibly shows Power1o on the opaque black panel, with white wallet text showing 2 points and next-rank price 1. The selected objective supplies skill effects and prerequisites.",
+          "evidence": {
+            "evidence_id": "final-purchased",
+            "bytes": 609848,
+            "sha256": "ba5cab95e6658fa67cd303d6eb311348c0716806f3e61ec9bbce3af168b12732"
+          }
+        },
+        {
+          "id": "resume_cleanup",
+          "status": "observed",
+          "summary": "The capture approximately two seconds after Resume shows outdoor overhead combat with the black panel, graph, wallet and price absent. It does not establish exact sub-second disappearance timing.",
+          "evidence": {
+            "evidence_id": "final-resumed",
+            "bytes": 3127969,
+            "sha256": "868f76ace49ac82a9bef16713a44a468dedf49a59bd592846e73e654d226ef4e"
+          }
+        },
+        {
+          "id": "reopen_graph_and_price",
+          "status": "observed",
+          "summary": "The actual Space+Q reopen capture shows the complete AR page, wallet 3 and next price 2 on the black panel. The menu-open assertion separately passed.",
+          "evidence": {
+            "evidence_id": "final-reopen-chord",
+            "bytes": 605830,
+            "sha256": "0e644a1b36e017ad0ecd0b1fb2d13f6c446c3382e1a13a147ffba950cc81a57d"
+          }
+        },
+        {
+          "id": "continue_state",
+          "status": "observed_by_assertions",
+          "summary": "After process restart and Continue, fresh assertions observed an open Armory, Needler Power rank one, 3 points, positive time/shots, level above one, and live actors at or below 36. This is bounded state retention, not exact equality of every field.",
+          "assertion_ids": [
+            "final-continue-purchase",
+            "final-continue-progress",
+            "final-continue-actors"
+          ]
+        },
+        {
+          "id": "refresh_gap",
+          "status": "known_limitation",
+          "summary": "Some captures fall during a refresh gap and show an incomplete or absent graph, wallet or next-price text. Readable complete frames exist, but zero flicker and continuous visibility have not been established.",
+          "evidence": [
+            {
+              "evidence_id": "final-wallet",
+              "bytes": 603707,
+              "sha256": "9cc64ab86265e82d54cae16de7302379167044c01b2c67defc20dd9578a4376f"
+            },
+            {
+              "evidence_id": "final-continue-console2",
+              "bytes": 610196,
+              "sha256": "45edc63587e8b7ea697f1596991dfa5b7ad29c7fc28e7d1fe62f143daeab15cb"
+            }
+          ]
+        }
+      ],
+      "assertions": [
+        {
+          "id": "final-purchase-held",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(= sv_nl_d 1)",
+            "nonce": "87e7749a363f4de9b92c54c220be2df1",
+            "command": "(if (= sv_nl_d 1) (log_print \"LSQA:87e7749a363f4de9b92c54c220be2df1:PASS\") (log_print \"LSQA:87e7749a363f4de9b92c54c220be2df1:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:31:15.142435+00:00",
+            "observed_at": "2026-10-13T16:31:17.438221+00:00",
+            "start_offset": 946,
+            "end_offset": 1272,
+            "prefix_sha256": "027f52e6acfe210e75d7a151f3900857bedfd5b0a3aa0faea18260617f342f10",
+            "log_sha256": "4f022ac1001b78d3211cd4cd74921106aae83b2f25619be713a15fa5b81985ce"
+          },
+          "archive_verification": {
+            "bytes": 1272,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "2180ff08025c27431a8d3f55ace58f0ff966a675bb7c910631cdad41cc251f3b"
+          }
+        },
+        {
+          "id": "final-combat-progress",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> sv_stage_seconds 0) (> sv_shots 0))",
+            "nonce": "be2fd7592a5e4d98a4fd60529c2719b4",
+            "command": "(if (and (> sv_stage_seconds 0) (> sv_shots 0)) (log_print \"LSQA:be2fd7592a5e4d98a4fd60529c2719b4:PASS\") (log_print \"LSQA:be2fd7592a5e4d98a4fd60529c2719b4:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:31:17.438552+00:00",
+            "observed_at": "2026-10-13T16:31:20.028536+00:00",
+            "start_offset": 1272,
+            "end_offset": 1628,
+            "prefix_sha256": "4f022ac1001b78d3211cd4cd74921106aae83b2f25619be713a15fa5b81985ce",
+            "log_sha256": "e83ca8485738d424b384f4f86195dd5afebf3912809c059f136ed1346c9087c6"
+          },
+          "archive_verification": {
+            "bytes": 1628,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "330f7ecf30322050fae0a01ace6b2bc377ce9aff7633e244a93d3aaa747aab38"
+          }
+        },
+        {
+          "id": "final-menu-reopen",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "sv_menu_open",
+            "nonce": "70588536d3824bf5bcebe701c1909de9",
+            "command": "(if sv_menu_open (log_print \"LSQA:70588536d3824bf5bcebe701c1909de9:PASS\") (log_print \"LSQA:70588536d3824bf5bcebe701c1909de9:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:31:20.028838+00:00",
+            "observed_at": "2026-10-13T16:31:22.296632+00:00",
+            "start_offset": 1628,
+            "end_offset": 1953,
+            "prefix_sha256": "e83ca8485738d424b384f4f86195dd5afebf3912809c059f136ed1346c9087c6",
+            "log_sha256": "5f40c1b622e47937120f6b9a06c977c14ea3b976d78b662e4e7b335c89a3207a"
+          },
+          "archive_verification": {
+            "bytes": 1953,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "78d017a237fff809c0e8ccf2ea5c24a3ed08ec05bf438bee2d5d59bc0a53a9d0"
+          }
+        },
+        {
+          "id": "final-actor-cap",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(<= (ai_living_count sv_hostiles) 36)",
+            "nonce": "ecf457a765fe403787fcdc31ff731e0e",
+            "command": "(if (<= (ai_living_count sv_hostiles) 36) (log_print \"LSQA:ecf457a765fe403787fcdc31ff731e0e:PASS\") (log_print \"LSQA:ecf457a765fe403787fcdc31ff731e0e:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:31:22.296899+00:00",
+            "observed_at": "2026-10-13T16:31:24.811202+00:00",
+            "start_offset": 1953,
+            "end_offset": 2303,
+            "prefix_sha256": "5f40c1b622e47937120f6b9a06c977c14ea3b976d78b662e4e7b335c89a3207a",
+            "log_sha256": "be7dda2de23d813b881e670f43aa35b1d06451cac5a2ceb9adf1b22380d07484"
+          },
+          "archive_verification": {
+            "bytes": 2303,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "b74e3b2f9a879f9f758e2726e02a5930f4a45d9c95c406b991fa98677cedce82"
+          }
+        },
+        {
+          "id": "final-continue-purchase",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and sv_menu_open (= sv_nl_d 1) (= sv_tokens 3))",
+            "nonce": "22487937f8b9478cbc7f7bfdd4b253fa",
+            "command": "(if (and sv_menu_open (= sv_nl_d 1) (= sv_tokens 3)) (log_print \"LSQA:22487937f8b9478cbc7f7bfdd4b253fa:PASS\") (log_print \"LSQA:22487937f8b9478cbc7f7bfdd4b253fa:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:33:07.730675+00:00",
+            "observed_at": "2026-10-13T16:33:10.373056+00:00",
+            "start_offset": 845,
+            "end_offset": 1206,
+            "prefix_sha256": "53e4548832a1c149e403750cea3af5a76f44e133ac6c40ccf7af81535fcd81a8",
+            "log_sha256": "1b83faf580c7eebfd3b1383af006e5b538fe62179ed1aa630ee7c102469ae605"
+          },
+          "archive_verification": {
+            "bytes": 1206,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "a48bc34616873c93c72a9af476d11101de5d45922a963ef739e77d141710c648"
+          }
+        },
+        {
+          "id": "final-continue-progress",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> sv_stage_seconds 0) (> sv_shots 0) (> sv_level 1))",
+            "nonce": "4290e1ae2bee485f899c4c4dadc45f39",
+            "command": "(if (and (> sv_stage_seconds 0) (> sv_shots 0) (> sv_level 1)) (log_print \"LSQA:4290e1ae2bee485f899c4c4dadc45f39:PASS\") (log_print \"LSQA:4290e1ae2bee485f899c4c4dadc45f39:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:33:10.373687+00:00",
+            "observed_at": "2026-10-13T16:33:13.125134+00:00",
+            "start_offset": 1206,
+            "end_offset": 1577,
+            "prefix_sha256": "1b83faf580c7eebfd3b1383af006e5b538fe62179ed1aa630ee7c102469ae605",
+            "log_sha256": "4a4244f3232730e1b45dca8a657256e10ef1c2014680c59efdd5d655da8750fe"
+          },
+          "archive_verification": {
+            "bytes": 1577,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "11a15907caa7e6b9241ff52af2ac9369cc5bb795b8029384b154a45bf829af6e"
+          }
+        },
+        {
+          "id": "final-continue-actors",
+          "outcome": "passed",
+          "reason": "observed_marker",
+          "run_kind": "ordinary",
+          "assertion": {
+            "condition": "(and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36))",
+            "nonce": "1c4e8184fdb742f5b816dd1915d2a4a1",
+            "command": "(if (and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36)) (log_print \"LSQA:1c4e8184fdb742f5b816dd1915d2a4a1:PASS\") (log_print \"LSQA:1c4e8184fdb742f5b816dd1915d2a4a1:FAIL\"))"
+          },
+          "evidence": {
+            "cursor_at": "2026-10-13T16:33:13.125483+00:00",
+            "observed_at": "2026-10-13T16:33:16.096521+00:00",
+            "start_offset": 1577,
+            "end_offset": 1969,
+            "prefix_sha256": "4a4244f3232730e1b45dca8a657256e10ef1c2014680c59efdd5d655da8750fe",
+            "log_sha256": "cd628f9669a6d58ec129d957faae0f566430d78f77bbafc3307618b5768390bc"
+          },
+          "archive_verification": {
+            "bytes": 1969,
+            "full_sha256_matches": true,
+            "prefix_sha256_matches": true,
+            "end_offset_matches": true,
+            "fresh_complete_marker_count": 1,
+            "decoded_outcome": "PASS",
+            "receipt_sha256": "364bc7492b39a271f06287811cbef05255fa8a7c0ff90edd7c63e6bf949f74fb"
+          }
+        }
+      ]
+    }
+  ],
+  "source_checks": {
+    "full_suite": {
+      "tests_run": 414,
+      "passed": 405,
+      "skipped": 9,
+      "seconds": 80.833,
+      "log": {
+        "evidence_id": "ls05-dynamic-references-suite",
+        "bytes": 67765,
+        "sha256": "0e27f197939a9d565c58191e9c7a81eac95bc1a4e31494f50b681143677b0f3b"
+      },
+      "scope": "Integrated behavior/reference-budget sources before final panel and title color changes."
+    },
+    "final_targeted_checks": {
+      "title_style_tests": 6,
+      "scheduler_tests": 12,
+      "owned_hud_tests": 10,
+      "preflight_tests_including_source_export": 28,
+      "outcome": "passed"
+    },
+    "audit_metadata_correction": {
+      "change": "Panel bitmap scale now reports 85 by 8, matching actual authored placement; one constant supplies both.",
+      "owned_payloads_compared": 5,
+      "all_payloads_byte_identical_to_a1b8933": true
+    },
+    "generated_source_review": "HSC and contract regenerated from authoring sources match tracked outputs; 454 authored scripts, 173 globals, 9471 estimated references.",
+    "bundle_verification": "Explicit allowlist includes new source, tests, guide and receipt. Source export/preflight test passed; final archive is generated after this receipt."
+  },
+  "cache_build": {
+    "status": "built_with_asset_diagnostics",
+    "command": [
+      "tool.exe",
+      "build-cache-file",
+      "levels\\survivors\\last_stand\\last_stand",
+      "pc",
+      "none",
+      "english"
+    ],
+    "native_tool_exit": 0,
+    "snap_wrapper_exit": 1,
+    "wrapper_limit": "Snap returned 1 after native exit 0 and success marker; trailing cleanup says steam-runtime-launcher-service: no process found.",
+    "success_marker": "successfully built cache file.",
+    "scenario_sha256": "74a90adc462a05b07e752082fe7b1f48a188b9428da911649506a9c3bf62054e",
+    "output": {
+      "sha256": "ba2ec6b1992246afe7cb4b515964d3358fcd58748c391887ec59110f50f05762",
+      "bytes": 701202432,
+      "mtime_ns": 1791909370689349964,
+      "fresh": true
+    },
+    "error_diagnostic_line_count": 25,
+    "error_diagnostics": [
+      "-ERROR- (group_postprocessing 'objects\\weapons\\melee\\gravity_hammer\\gravity_hammer.model') objects: model 'objects\\weapons\\melee\\gravity_hammer\\gravity_hammer' animation graph 'objects\\weapons\\melee\\gravity_hammer\\gravity_hammer' node counts don't match (will not animate)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 10 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 11 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 3 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 4 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 5 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 6 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 7 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 8 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 9 has INVALID LOCATION (61.947483, 362.737488, 21.024141)"
+    ],
+    "log": {
+      "evidence_id": "live-final-cache",
+      "bytes": 235525,
+      "sha256": "9a16b5a500a0a774f8d333048e696560448441b2b1efa7aaac610e1b7f2439bf"
+    },
+    "release_quality_cache_claim": false,
+    "limit": "Fresh cache built from the tested tags, but cache gameplay/retail loading and release promotion were not performed."
+  },
+  "production_restoration": {
+    "status": "passed",
+    "prior_profile_file_count": 24,
+    "prior_profile_files_sha256_unchanged": true,
+    "new_session_files": 2,
+    "checkpoint_generation": "c4b9f383fa004dceab77a9639fc74a03",
+    "checkpoint_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430",
+    "original_fingerprint_unchanged": true,
+    "original_fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+      "hsc": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500",
+      "private_assets": "2dd6294723a9e527753678545a780563319a523b49ac7a9865ad606ee61404f2"
+    },
+    "managed_continue_launcher_pid": 1405733,
+    "native_pid": 1405878,
+    "visual_check": "Original v0.4 Armory resumed over the outdoor stage; two points displayed. New candidate panel absent.",
+    "capture": {
+      "evidence_id": "live-production-restored",
+      "bytes": 5629429,
+      "sha256": "722f2d641d1d1ad3ff35aeadd6ebf07c2c57d942d24eebfce03d21d388898cb0"
+    },
+    "inspection": {
+      "evidence_id": "live-production-inspect",
+      "bytes": 4990,
+      "sha256": "d1905352c1873d7503d40fe35f63b4356e587f12ca2914f895f0c7afeb02eb60"
+    },
+    "installed_package_or_launcher_replaced": false,
+    "qa_promoted": false
+  },
+  "release": {
+    "installed_version": "v0.4 prototype",
+    "promotion": "not_performed",
+    "installed_package_or_launcher_changed": false,
+    "roadmap_task_complete": false
+  },
+  "remaining_limits": [
+    "LS-05 remains open for presentation refinement and broader native acceptance checks; this receipt is partial.",
+    "All 601 reachable graph snapshots are covered by the source model, not individually verified in the native runtime.",
+    "The final style has bounded Needler and AR captures; the prior nine-page pass is a separate candidate phase.",
+    "Brief UI refresh gaps remain. A zero-flicker or fully persistent display is not claimed.",
+    "No complete ordinary four-stage run, balance result, performance soak or exhaustive navigation/path reachability is established.",
+    "No retail MCC validation, installed release promotion or save migration is established.",
+    "Native cores are exact-build-bound. The live HUD dependencies, including canonical CHUD globals, participate in save fingerprinting; the production checkpoint must remain separate.",
+    "Cache was built with retained stock-asset diagnostics; runtime observations use SDK tag test rather than the cache or retail MCC."
+  ]
+}

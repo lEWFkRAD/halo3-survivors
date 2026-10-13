@@ -98,7 +98,8 @@ Explicitly add `--remote` to both commands to read the configured remote kit.
 Omitting `editing_kit` does not implicitly contact Onyx. Remote fetching needs
 only Python's standard library and SSH; fetching never imports `blam_tags`.
 
-The exact 21-tag inventory is declared in `fetch_progression_inputs.py`. Its
+The current 26-tag inventory is declared in `fetch_progression_inputs.py`: three
+baseline inputs, 18 progression templates and five live Armory templates. The
 three baseline inputs are:
 
 | Canonical path under the kit's `tags/` | Fetched workspace path |
@@ -107,12 +108,26 @@ three baseline inputs are:
 | `levels/solo/070_waste/070_waste.scenario` | `private-inputs/bootstrap/070_waste.scenario` |
 | `ui/chapter_titles/020_base.multilingual_unicode_string_list` | `private-inputs/bootstrap/020_base.multilingual_unicode_string_list` |
 
-The other 18 tags go to `private-inputs/v3/`: six damage templates, six effect
-templates, the energy-blade weapon, infection/carrier characters, carrier biped,
+The 18 progression templates go to `private-inputs/v3/`: six damage templates,
+six effect templates, the energy-blade weapon, infection/carrier characters, carrier biped,
 watchtower machine and gravlift light. The sword damage source is the canonical
 `objects/weapons/damage_effects/dash_melee.damage_effect`; the weapon is retained
 as supporting provenance. Source mappings are explicit, including the stock
 Battle Rifle impact used for the Assault Rifle's cosmetic effect.
+
+The five live Armory templates use these paths:
+
+| Canonical path under the kit's `tags/` | Fetched workspace path |
+| --- | --- |
+| `objects/characters/masterchief/masterchief.biped` | `private-inputs/armory/masterchief.biped` |
+| `ui/chud/spartan.chud_definition` | `private-inputs/armory/spartan.chud_definition` |
+| `ui/chud/globals.chud_globals_definition` | `private-inputs/armory/globals.chud_globals_definition` |
+| `ui/hud/hud_messages.multilingual_unicode_string_list` | `private-inputs/armory/hud_messages.multilingual_unicode_string_list` |
+| `globals/globals.globals` | `private-inputs/armory/globals.globals` |
+
+Fetch these from stock tags before staging the live Armory, which replaces the
+isolated kit's canonical CHUD globals tag. An already modified CHUD globals tag
+is not a stock input for the author.
 
 Fetching checks all required inputs and output paths before staging. It validates
 tag kinds/headers and SHA-256 hashes before publishing only declared outputs.
@@ -121,9 +136,9 @@ data. Ordinary publication errors roll back; a rollback failure retains recovery
 files at the path reported in the error. Publication is not crash-atomic across
 the whole set. Unrelated files remain untouched.
 
-`private-inputs/bootstrap/sources.json` and `private-inputs/v3/sources.json`
-record source paths, origin, byte sizes and hashes. The v3 manifest also retains
-its legacy `damage`, `effects`, `characters` and `support` mappings.
+`private-inputs/bootstrap/sources.json`, `private-inputs/armory/sources.json` and
+`private-inputs/v3/sources.json` record source paths, origin, byte sizes and
+hashes. The v3 manifest also retains its legacy `damage`, `effects`, `characters` and `support` mappings.
 `private-inputs/v3/character-paths.json` retains the character-ID to native-tag-path
 mapping consumed by progression authoring. These owned files stay local.
 
@@ -212,7 +227,7 @@ a package. Existing readback files also require explicit `--replace`.
 
 ## Prepare the progression candidate
 
-These 18 direct files are required before preparation starts:
+These 23 direct files are required before preparation starts:
 
 | Input | Use |
 | --- | --- |
@@ -224,6 +239,11 @@ These 18 direct files are required before preparation starts:
 | `private-inputs/v3/watchtower_gravlift.light` | Gravlift light template |
 | `private-inputs/v3/<weapon>.damage_effect` (six) | Damage templates |
 | `private-inputs/v3/<weapon>.effect` (six) | Cosmetic impact templates |
+| `private-inputs/armory/masterchief.biped` | Private player biped template |
+| `private-inputs/armory/spartan.chud_definition` | Private Armory HUD template |
+| `private-inputs/armory/globals.chud_globals_definition` | HUD string routing for all three skins |
+| `private-inputs/armory/hud_messages.multilingual_unicode_string_list` | Stock messages preserved before appending live graph strings |
+| `private-inputs/armory/globals.globals` | Campaign player-representation template |
 
 Weapon IDs are `needler`, `assault_rifle`, `shotgun`, `plasma_rifle`,
 `rocket_launcher` and `energy_sword`. `source/` must exist. Optional
@@ -238,8 +258,9 @@ python -B prepare_progression.py --config last-stand.local.json
 
 Preparation imports the authors before writing, copies exact owned inputs to a
 temporary workspace, and runs scenario, HSC, damage/effect and UI authors there.
-It checks the exact returned outputs and rejects undeclared files or changes to
-the input snapshot. Authoring/archive failures leave previous outputs untouched.
+The live Armory author then updates the authored UI scenario and emits its four
+HUD/player tags. Preparation checks the exact returned outputs and rejects
+undeclared files or changes to the input snapshot. Authoring/archive failures leave previous outputs untouched.
 Publication uses individual atomic replacements, not an atomic batch; the build
 manifest is published last. Consumers must validate its hashes before staging.
 
@@ -249,6 +270,17 @@ under `native-tags/objects/survivors/v3/`, the progression UI string list,
 `v3-native.tar` and `progression-build.json`. The manifest records exact input,
 loaded-source and output hashes, plus the archive hash and member list. Existing
 stale private tags stay on disk but cannot enter this archive or receipt.
+The four live Armory outputs are also declared explicitly:
+
+- `native-tags/objects/survivors/armory.biped`
+- `native-tags/ui/survivors/armory.chud_definition`
+- `native-tags/ui/survivors/armory_messages.multilingual_unicode_string_list`
+- `native-tags/ui/chud/globals.chud_globals_definition`
+
+These enter the exact archive and stage to their matching paths under the kit's
+`tags/`. The canonical CHUD globals replacement requires the same isolated kit,
+backups and native ownership as the scenario. The development launcher includes
+that dependency in live Armory save fingerprints.
 
 Stage this candidate with `native_workspace.py --replace stage-progression`
 (run the same command with `--check` first). It validates the authored manifest,
