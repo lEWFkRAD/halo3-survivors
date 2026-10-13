@@ -70,9 +70,10 @@ native-pending source work clearly identified; source tests do not validate
 retail MCC, game performance, balance or save compatibility.
 
 Add new authored deliverables to the explicit allowlist in `bundle_source.py`.
-Fresh-kit native rebuilding is still incomplete; [BOOTSTRAP.md](BOOTSTRAP.md)
-lists current prerequisites and gaps. Do not claim a clean native rebuild unless
-you performed it and retained the commands/results.
+The supported fresh-kit build sequence is documented in [BOOTSTRAP.md](BOOTSTRAP.md)
+and has bounded SDK evidence in [native-validation-ls01.json](native-validation-ls01.json).
+New candidates still need their own native validation. Do not claim a clean
+native rebuild unless you performed it and retained the commands/results.
 
 ## What must stay out of submissions
 

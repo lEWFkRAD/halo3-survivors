@@ -3,14 +3,48 @@
 The supported authoring path now starts from three canonical stock scenario/UI
 tags and the owned progression templates. Configured helpers fetch those inputs,
 author a direct outdoor baseline, prepare progression in isolation, and transfer
-exact manifests to a local editing kit. They do not automate native compilation
-or establish a playable release. The complete fresh-kit native sequence remains
-pending operator evidence in [LS-01](https://github.com/lEWFkRAD/halo3-survivors/issues/2).
+exact manifests to a local editing kit. The LS-01 candidate completed a fresh
+owned-kit rebuild through native compilation, cache creation and bounded SDK
+gameplay checks. See [the native milestone record](native-validation-ls01.json)
+and [LS-01](https://github.com/lEWFkRAD/halo3-survivors/issues/2) for evidence and
+the task handoff. This milestone is not a retail release or promotion.
 
 Read [AGENTS.md](AGENTS.md) before staging or compiling. Reserve the native slot,
 identify the current game/session owner, and preserve its build and checkpoint.
-Use an isolated kit and QA profile. The helpers never stop an existing session,
-launch SDK tools, change saves or `init.txt`, or promote an installed package.
+Use an isolated kit and QA profile. The fetch, authoring and transfer helpers
+never stop an existing session, launch SDK tools, change saves or `init.txt`, or
+promote an installed package.
+
+## Verified LS-01 native milestone
+
+The tested source is commit `dc4d80e58111ad026b0a722899130ce4e5caa2b2`.
+The operator extracted 57,706 files from the owned `H3EK.7z` into an isolated kit,
+fetched all 21 declared stock tags, authored the baseline, performed native
+save/readback, prepared progression from that fresh baseline and staged the
+exact final output set. The final native readback contains 402 scripts,
+178 globals, 43,180 syntax datums and 128 titles. It does not depend on the three
+legacy private Needler weapons.
+
+The experiment used the coordinator's private byte-copy helper for baseline
+staging and scenario readback. Final progression staging exercised the public
+`native_workspace.py` API with 140 exact files. The public bootstrap/readback
+commands below are transfer interfaces; their receipts never evaluate or certify
+the native compiler result.
+
+The cache log contains `successfully built cache file.` and the fresh map is
+702,328,832 bytes. The record retains 25 error diagnostics involving stock model,
+decorator and watchtower data. The asynchronous launcher did not capture the
+tool exit code; the evidence is the success marker, fresh cache and recorded
+hashes, not a claimed zero exit status or error-free compiler log.
+
+SDK testing includes brief ordinary stage-one play, then seeded, deathless
+checks of stages two through four for overhead camera, auto-fire, actor bounds
+and movement. Nineteen native assertion observations were retained. Five
+additional geometry tests passed against the fresh compiled baseline, including
+navigation selection and safe cohort rings across all four arenas. These checks
+do not establish complete native path reachability, exhaustive geometry coverage,
+an ordinary 20-minute run or retail MCC behavior. The original production build
+and valid checkpoint were restored; this candidate was not installed or promoted.
 
 ## Configuration and check semantics
 
@@ -126,8 +160,9 @@ Stock navigation differs from the historical `outdoor-compiled.scenario` at some
 firing positions and bindings. Source preservation does not explain that delta.
 The fresh baseline native save/readback also changed firing-position bindings
 and still differed from the historical prepared navigation. Do not label the two
-baselines equivalent. Navigation/spawn validation on the final progression
-candidate remains mandatory.
+baselines equivalent. The final LS-01 candidate passed fresh geometry checks and
+bounded movement/actor tests in all four arenas; complete native reachability
+and exhaustive geometry coverage remain unverified.
 
 ## Stage, compile and read back
 
@@ -150,8 +185,12 @@ UI/private tags to their kit paths. It rejects existing destinations by default.
 `--replace` explicitly permits replacement after backing up the previous set
 under workspace `backups/native-workspace-<operation-id>/`.
 
-The operator must compile and save with the owned native tools, inspect fresh
-diagnostics, and close the tools before readback:
+Open the staged
+`tags/levels/survivors/last_stand/last_stand.scenario` in Sapien, using the complete
+owned runtime. Press **Ctrl+Shift+C** to compile scripts, inspect the fresh
+compiler diagnostics, then press **Ctrl+S** to save. Verify the save completed
+and close Sapien before readback. An operator must review native errors; a saved
+file or successful copy does not establish that compilation passed:
 
 ```sh
 python -B native_workspace.py --config last-stand.local.json --check readback --kind bootstrap
@@ -214,15 +253,53 @@ stale private tags stay on disk but cannot enter this archive or receipt.
 Stage this candidate with `native_workspace.py --replace stage-progression`
 (run the same command with `--check` first). It validates the authored manifest,
 source hashes and exact archive contents. After the operator's final native
-compile/save and tool shutdown, `native_workspace.py readback --kind progression`
+compile/save in Sapien (**Ctrl+Shift+C**, review diagnostics, **Ctrl+S**) and tool
+shutdown, `native_workspace.py readback --kind progression`
 copies the result to `native-tags/levels/survivors/last_stand/compiled-progression.scenario`.
 Use the same `--config`/`--root` settings and explicit `--replace` for an existing
 destination. Readback still reports compilation as unverified.
 
-Fresh compiler diagnostics, script/global/title readback, dependency-resolving
-cache creation, isolated gameplay/launcher checks and a cache receipt remain
-separate native gates. A source archive or transfer receipt cannot substitute
-for those observations. Retail installation/update/rollback is also unfinished.
+Build the cache from the kit working directory with the owned `tool.exe` and
+these arguments:
+
+```text
+tool.exe build-cache-file "levels\survivors\last_stand\last_stand" pc none english
+```
+
+On Onyx, invoke that executable and those arguments inside the established
+Steam Snap/Proton environment with the private Wine prefix; do not run a legacy
+helper merely to obtain its tool launch command. Preserve the fresh cache log,
+map, hashes and tool exit status when available. Review diagnostics even when
+the success marker appears. The LS-01 experiment retained its stock errors and
+explicitly reports that its asynchronous launcher did not capture the exit code.
+
+Fresh compiler diagnostics, script/global/title readback, cache creation,
+isolated gameplay/launcher checks and a cache receipt remain separate native
+gates for every changed candidate. The milestone above records those observations
+for the tested LS-01 candidate within its stated limits. A source archive or
+transfer receipt cannot substitute for them. Retail installation/update/rollback
+is still unfinished.
+
+## Launch an isolated SDK candidate
+
+The Linux SDK launcher accepts a separate Steam installation root. An isolated
+kit outside Steam's `steamapps/common/` tree must supply `--steam` explicitly;
+the default derives that path from `--kit` and is unsuitable for such a layout.
+Use the Steam root containing `steamapps`, not the Steam executable or the kit:
+
+```sh
+python3 launch_v04.py --root /path/to/LastStand \
+  --kit /path/to/isolated/H3EK --steam /path/to/Steam \
+  --qa-profile /path/to/LastStand/qa-saves/ls01 --new
+```
+
+This is an explicit game launch, unlike the read-only checks and transfer
+helpers. It requires the existing Linux/Steam Snap/Proton runtime and a prepared
+private Wine prefix. The QA profile must stay strictly inside `ROOT/qa-saves`;
+never select a production profile for candidate tests. Checkpoints are bound to
+the exact engine/scenario/HSC/private-asset fingerprints. `--steam` supplies a
+runtime location; it does not make the launcher platform-independent or migrate
+existing checkpoints.
 
 ## Historical helpers
 
@@ -235,7 +312,7 @@ execute work on import or select stale backups by existence.
 Legacy remote build, launch, promotion and QA scripts are operator-specific
 historical tools. Do not run them as a portable installer or infer that they
 consume the new configuration. The supported configured fetch/bootstrap/prepare/
-transfer path above replaces the old authoring chain; native compilation and
-release evidence must still be collected for its exact candidate. LS-01 remains
-open until that fresh-kit sequence and the remaining configuration scope are
-verified.
+transfer path above replaces the old authoring chain. The tested candidate has
+fresh native evidence; future changes need their own evidence. Retail support,
+complete playthroughs and a player installation/update path remain separate
+roadmap tasks.

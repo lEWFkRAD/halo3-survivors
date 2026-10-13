@@ -44,7 +44,8 @@ and rotating rank/points notices continue to provide current purchase informatio
 Live graphical states across every node remain unfinished. See
 [the bounded LS-05 record](native-validation-ls05.json), including native purchase,
 category, Resume and checkpoint-restart checks. The installed release
-remains v0.4.0; this candidate has no new cache or package promotion.
+remains v0.4.0. That LS-05 validation did not build a fresh cache or promote a
+package; the later LS-01 rebuild has separate evidence below.
 
 Native QA now has an import-safe [evidence reader](NATIVE_QA.md) that separates
 emitted pass/fail results from echoed commands. Missing or ambiguous output
@@ -55,6 +56,12 @@ on the roadmap. The launcher source also keeps shutdown checkpoint archives in
 their originating profile. See [LS-03 native evidence](native-validation-ls03.json)
 for true/false transport checks, Continue/New Run, a natural level-up and the
 native cleanup test. The installed launcher remains the original v0.4 baseline.
+
+The supported build path now starts from extracted stock H3EK tags. It rebuilt
+an isolated SDK candidate without the historical private scenario templates;
+see the [bootstrap recipe](BOOTSTRAP.md) and [LS-01 evidence](native-validation-ls01.json).
+This tooling milestone leaves the installed v0.4 package and player saves intact.
+Retail verification, complete runs and the remaining gameplay work stay open.
 
 ## Play
 
@@ -168,23 +175,37 @@ Onyx workspace: `/home/jeffrey-watts/Documents/Games/Halo3Survivors`.
 The local MCC package is `mods/LastStand`. The private scenario and HSC live
 under the owned Steam Snap H3EK installation.
 
-Run `python -B -m unittest discover -s tests` locally. Native tag geometry tests
-require the external binding/assets described in [DEVELOPMENT.md](DEVELOPMENT.md).
-The current suite passes 217 tests in the owner workspace. Source-only checkouts
-skip the module containing five native geometry tests when its external inputs
-are unavailable. The v0.4 release evidence above retains its historical test counts.
-`prepare_progression.py`
-authors the tags/HSC after a prerequisite guard. First run
-`python -B prepare_progression.py --check` for a read-only input report.
-`python -B preflight.py --stage source` checks a checkout without game assets;
-local configuration and read-only remote checks are described in
-[DEVELOPMENT.md](DEVELOPMENT.md). The remaining fresh-kit rebuild gaps are
-tracked in [BOOTSTRAP.md](BOOTSTRAP.md).
-`onyx_progression.py stage` / `compile` use Sapien and still require manual
-path adaptation and the native operator slot.
+Run `python -B -m unittest discover -s tests` locally. The LS-01 source suite
+passes 331 tests with six skipped entries in the owner checkout; its clean
+export passes 326 tests with seven skipped entries. Owned bootstrap checks
+separately pass all 22 tests, including six asset-dependent tests, and all five
+geometry tests pass against the fresh compiled baseline. These are separate
+runs, not a full-suite run against every fresh input. The external binding and
+skip conditions are described in [DEVELOPMENT.md](DEVELOPMENT.md); earlier
+release evidence retains its original test counts.
+
+Follow [BOOTSTRAP.md](BOOTSTRAP.md) for the configured stock-input fetch,
+direct baseline authoring, native save/readback, isolated progression preparation,
+exact staging and manual SDK compile/cache sequence. Start with
+`python -B preflight.py --stage source` and the documented read-only checks.
+`native_workspace.py` copies only manifest-verified candidate files and records
+readback bytes; an idle-process check or readback receipt is not compilation proof.
+Historical Onyx scripts remain available for reference but are not the supported
+fresh-build route. Native work still requires the operator slot and session handoff.
+
+[LS-01 evidence](native-validation-ls01.json) records the isolated stock rebuild:
+402 scripts, 178 globals, 43,180 syntax datums and 128 titles. Cache output is
+702,328,832 bytes with a success marker; 25 stock-asset error diagnostic lines
+remain in the log, and the native tool exit code was not captured. Nineteen short
+SDK assertions cover all four stages; stage one used ordinary uncheated play,
+while stages two through four used seeded, deathless checks. This does not
+establish full-run balance, complete arena reachability, retail support or a
+release-ready cache receipt. All 20 pre-existing production profile files remain
+unchanged; two normal session files were added. The installed package was not promoted.
 `promote_v03.py` retains its historical filename but now targets v0.4.0 and
 requires matching native evidence and a fresh successful cache receipt.
-`launch_v04.py` is installed as the Onyx workspace's `launch.py`.
+The original v0.4 version of `launch_v04.py` is installed as the Onyx
+workspace's `launch.py`; current development changes have not been promoted.
 
 `bundle_source.py` produces `dist/last-stand-v0.4-source.zip` from an explicit
 allowlist with per-file hashes. It contains authored source, tests, contracts,

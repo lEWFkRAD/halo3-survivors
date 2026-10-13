@@ -54,8 +54,10 @@ The current development root is
 `C:\Users\Administrator\Projects\halo3-survivors` on the Windows coordinator.
 The current native workspace is
 `/home/jeffrey-watts/Documents/Games/Halo3Survivors` on Onyx-Linux. These are
-existing deployment details, not a portable setup guarantee. Do not change
-unrelated host, fleet, inference or service settings to work on this game.
+existing deployment details. The supported configurable build route is documented
+in [BOOTSTRAP.md](BOOTSTRAP.md), with isolated stock rebuild evidence in
+[native-validation-ls01.json](native-validation-ls01.json). Do not change unrelated
+host, fleet, inference or service settings to work on this game.
 
 ## Source and generated files
 
@@ -64,8 +66,17 @@ unrelated host, fleet, inference or service settings to work on this game.
   `source/progression.hsc` as the lasting implementation.
 - Coordinate shared generator/catalog/scenario changes. Regenerate outputs from
   the integrated sources, review the diff and record native compatibility changes.
-- Several remote/QA scripts perform work at top level. Read them before running
-  or importing them; use import-safe modules for new reusable helpers.
+- Use `fetch_progression_inputs.py`, `bootstrap_tags.py`, `prepare_progression.py`
+  and `native_workspace.py` for the supported configured build path. Preserve
+  their exact manifests and reject undeclared/stale tag outputs. Native save,
+  compilation and cache building remain explicit operator steps.
+- Several historical remote/QA scripts perform work at top level and retain
+  machine paths. They are not the supported fresh-build route. Read them before
+  running or importing them; use import-safe modules for new reusable helpers.
+- `native_workspace.py` never stops a session or launches a compiler. Its process
+  snapshots do not replace the native slot/session handoff, and its readback
+  receipts never establish successful compilation. Replacement requires backups;
+  inspect the resulting native evidence before consuming a readback as a baseline.
 - `.gitattributes` preserves exact bytes because native receipts bind content
   hashes. Avoid broad line-ending/formatting rewrites during gameplay changes.
 - Keep source bundling's explicit allowlist current for authored deliverables.
@@ -109,10 +120,25 @@ unrelated host, fleet, inference or service settings to work on this game.
 ## Verification and handoff
 
 Run the appropriate source checks, normally
-`python -B -m unittest discover -s tests -v`. The current LS-05 prototype passes
-217 tests in the owner workspace with the required binding/assets. Its clean
-source export passes 212 tests, with one skipped module containing five
-asset-dependent geometry tests (213 reported test entries, one skip).
+`python -B -m unittest discover -s tests -v`. The LS-01 source suite passes
+331 tests with six skipped entries in the owner checkout, and 326 tests with
+seven skipped entries in a clean export. Separately, all 22 bootstrap tests
+(including six owned-input checks) and all five geometry tests pass using the
+fresh owned inputs/compiled baseline. Do not describe those separate checks as
+a full fresh-owned-input suite run. Historical LS-05 counts were 217 owner tests
+and 212 clean-export passes, with one skipped five-test geometry module.
+
+The stock rebuild at implementation `dc4d80e58111ad026b0a722899130ce4e5caa2b2`
+uses an isolated extracted kit without historical private scenario templates.
+[native-validation-ls01.json](native-validation-ls01.json) records baseline
+save/readback, final 402-script/178-global/43,180-datum/128-title compilation,
+a 702,328,832-byte cache with a success marker, and 19 short SDK assertions.
+The cache log retains 25 stock-asset error diagnostic lines; native tool exit
+was not captured. Stage one was ordinary uncheated play; stages two through
+four were seeded/deathless checks. Complete runs, exhaustive reachability,
+retail support and LS-11 release evidence remain unfinished. All 20 prior
+production profile files are unchanged, two normal session files were added,
+and the original Continue/Armory was restored. The installed package is unchanged.
 
 The LS-05 prototype adds seven static branch-reference pages, covering all 50
 nodes alongside the existing selected-skill CHUD detail. All seven pages fit
@@ -143,8 +169,8 @@ Use [NATIVE_QA.md](NATIVE_QA.md) for fresh assertion nonces, pre-dispatch log
 cursors and explicit passed/failed/unresolved observations. Verify process,
 profile and candidate fingerprints independently of the supplied report labels.
 The LS-03 evidence reader adds 28 source regressions, and launcher shutdown
-adds five profile-cleanup regressions; the combined owner suite passes 250
-tests. Existing native receipts retain their original test counts.
+adds five profile-cleanup regressions; the LS-03 milestone's combined owner
+suite passed 250 tests. Existing native receipts retain their original test counts.
 
 Historical release receipts remain historical. New gameplay candidates need new
 evidence and cache receipts. Inspect observed assertions; a screenshot created

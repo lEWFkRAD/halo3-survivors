@@ -1,0 +1,797 @@
+{
+  "schema_version": 1,
+  "record_type": "fresh_owned_kit_build_and_bounded_sdk_experiment",
+  "task": "LS-01",
+  "recorded_at": "2026-10-13T03:20:57.260849+00:00",
+  "source_commit": "dc4d80e58111ad026b0a722899130ce4e5caa2b2",
+  "scope": "Supported stock-input bootstrap, exact preparation/staging, native baseline and progression compile, fresh cache creation, short SDK gameplay checks and production restoration. No release promotion or completion of the game roadmap.",
+  "source_checks": {
+    "owner_suite": {
+      "reported_entries": 337,
+      "passed": 331,
+      "skipped_entries": 6,
+      "failures": 0,
+      "errors": 0,
+      "skips": "Six canonical-owned-input bootstrap tests; the root workspace has historical geometry inputs but lacks the new canonical fetched paths."
+    },
+    "clean_export": {
+      "reported_entries": 333,
+      "passed": 326,
+      "skipped_entries": 7,
+      "failures": 0,
+      "errors": 0,
+      "skips": "Six owned bootstrap tests and one skipped module containing five geometry tests.",
+      "binding_imported": false,
+      "preflight_checks": 100,
+      "source_files": 99,
+      "archive_members": 100,
+      "sha256": "3a89072209170c8f011257af6dd0031329435a25abfe41cc40bcd3a458ddb92f",
+      "byte_identical_repeat": true,
+      "scope": "Implementation commit export, before this evidence file and final documentation updates."
+    },
+    "fresh_owned_workspace": {
+      "bootstrap_tests_passed": 22,
+      "geometry_tests_passed": 5,
+      "scope": "Canonical freshly fetched inputs and native baseline readback in a path containing spaces. The binding was supplied from a separate explicit directory; source imports came from the exported workspace."
+    },
+    "generated_public_hsc_layout_contract_unchanged": true
+  },
+  "fresh_kit": {
+    "host": "Onyx-Linux",
+    "environment": "sdk",
+    "kit_location": "qa-ls01/clean-kit",
+    "archive": {
+      "size": 7365584209,
+      "sha256": "8a97750e3def87f8232ba9b83194ae556fc859a07ff8287e8648be6b6cd301d4"
+    },
+    "extracted_files": 57706,
+    "extracted_folders": 108,
+    "extracted_bytes": 28771408815,
+    "private_survivors_tags_absent_before_bootstrap": true,
+    "owned_tool_hashes": {
+      "tool.exe": "1dcf51ec39bdf61b6a6ae40917908cf23a247bfedb7a4bff07124f508ee0f3b5",
+      "sapien.exe": "d1a233d039551520225dbe3a2d97fa3d676c52a4b706094a2a677577b26cd8d1",
+      "halo3_tag_test.exe": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "libfbxsdk.dll": "cb8652fd664f7056117370f1f438c7a3294c256dc298e0ef6d889b682b0d63e8",
+      "d3dcompiler_47.dll": "ad0ae3c6c59bd710716836b3ad560698d3377828c534a1dde0ea25a80c9fd140",
+      "steam_appid.txt": "dbc52a208236348a0310036e7db8aa6740d64e3db9aa796c2c23a894b1aa7566",
+      "build_tag.txt": "0000eca9605807408cb4a60732801efb530e7393d8618866f11f98fb908a637b"
+    },
+    "additional_owned_runtime_support_files": 71,
+    "runtime_record_sha256": "d0a322386c0f1c099e935f8f7da629eedf2889fc686d6a7eb743d0cb58c7c9fc",
+    "runtime_scope": "Owned bin, FMOD and maps/fonts support files copied when missing or hash-checked when present. No production cache_builder output, compiled map or private game tags copied into the clean kit.",
+    "extraction_command": "7z x -mmt=2 <owned-H3EK.7z> -o<fresh-kit>",
+    "fetch_command": "python -B fetch_progression_inputs.py --config <isolated-config.json> --remote",
+    "fetched_stock_tags": 21
+  },
+  "bootstrap": {
+    "command": "python -B bootstrap_tags.py --root <fresh-source-workspace>",
+    "stock_inputs": [
+      {
+        "path": "private-inputs/bootstrap/020_base.scenario",
+        "size": 9126657,
+        "sha256": "2d49a3c032a46f0028115a02e32c89ad1d3fb8be14cf3ae82442fa9eeba3b611"
+      },
+      {
+        "path": "private-inputs/bootstrap/070_waste.scenario",
+        "size": 11912330,
+        "sha256": "68ae18e7672e917fc7964fa90ba569d5a1323773b398dce7f7847bbb3de1a4f3"
+      },
+      {
+        "path": "private-inputs/bootstrap/020_base.multilingual_unicode_string_list",
+        "size": 6749,
+        "sha256": "4414debd79ccf6533d0cf6be0863ab2a55e7a35446d9d47df05f40133dc59c25"
+      }
+    ],
+    "authored_outputs": [
+      {
+        "path": "native-tags/levels/survivors/last_stand/bootstrap.scenario",
+        "size": 8676149,
+        "sha256": "e45112a6a03d434cd5ef78a8c6ab76437f8b526b2749dfa2257f8048059c58b4"
+      },
+      {
+        "path": "native-tags/levels/survivors/last_stand/bootstrap.hsc",
+        "size": 109,
+        "sha256": "df0f657bf6f173bdec7ad3575843b8821af6335405440e93ad1ca8e20e3d70c5"
+      },
+      {
+        "path": "native-tags/ui/survivors/last_stand.multilingual_unicode_string_list",
+        "size": 2481,
+        "sha256": "d0be40f67213166108a922f3d2f40ec6fe05715a43773dc7b86b9af3d7e40a2a"
+      }
+    ],
+    "selected_template": {
+      "source_zone_set_index": 14,
+      "pvs_index": 22,
+      "navigation_zone": 0,
+      "firing_position_index": 130,
+      "area_index": 7,
+      "sector_index": 2613,
+      "position": [
+        100.87646484375,
+        364.74456787109375,
+        18.55584144592285
+      ],
+      "character_count": 22,
+      "weapon_count": 20
+    },
+    "native_action": "Operator opened the directly authored scenario in Sapien, compiled scripts with Ctrl+Shift+C and saved with Ctrl+S, then closed the tool before readback.",
+    "transfer_scope": "Baseline staging/readback used the coordinator byte-copy helper with exact manifest hashes. Public native_workspace staging/readback semantics have source regressions; the final progression stage below exercised its real API.",
+    "native_readback": {
+      "sha256": "0aa49dc28f5dec979a1c9c6497287a7c475bb22ff39cbb9566218b23b7742a79",
+      "size": 8775671
+    },
+    "native_counts": {
+      "scripts": 42,
+      "globals": 7,
+      "hs syntax datums": 2744,
+      "player starting profile": 1,
+      "squads": 1,
+      "ai objectives": 1
+    },
+    "stock_navigation_preserved_before_native_save": true,
+    "navigation_after_native_save": {
+      "comparison_fields": [
+        "position (local)",
+        "sector index",
+        "structure bsp",
+        "reference frame"
+      ],
+      "changed_rows_per_zone_vs_stock": [
+        14,
+        72,
+        35,
+        13,
+        82,
+        67,
+        15,
+        58,
+        34,
+        59,
+        44,
+        152,
+        92,
+        92,
+        86,
+        22,
+        6,
+        100,
+        7,
+        71,
+        55,
+        27,
+        80,
+        81,
+        93,
+        67,
+        67,
+        149,
+        103,
+        75,
+        42,
+        0
+      ],
+      "changed_rows_per_zone_vs_historical_baseline": [
+        22,
+        72,
+        39,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "interpretation": "Native processing changes many stock firing-position bindings. The new readback still differs from the historical prepared baseline; equivalence is not claimed. Fresh geometry selection tests and bounded gameplay passed, not complete navigation reachability."
+    }
+  },
+  "progression": {
+    "command": "python -B prepare_progression.py --root <fresh-source-workspace>",
+    "authored_outputs": 143,
+    "archive_members": 138,
+    "archive_sha256": "b15c6f60e848684c0b0c36a4f1ed783bd37f06f9b298790d4646a62907a48cbf",
+    "authored_scenario": {
+      "sha256": "d099e899c8b9531d7a653b3cd278e27bc574be1e1d5c8ebede7569c670e1dc9f",
+      "size": 8763286
+    },
+    "hsc": {
+      "sha256": "2b936f94e63d5065cfef15bda63a70b86a9e2c5d3aa6c46ae98c2ca7817cbdb3",
+      "size": 283623
+    },
+    "manifest_sha256_at_native_staging": "e0a4210179a4dd5ce6945e553ef7f360217a4b9aed1edc372defec3b685b5ed4",
+    "manifest_sha256_after_commit_regeneration": "0e18ee5d87b3b4b7e8fbc0e17e7cf06a28cbf75e0adc1607360330eb1f0f548b",
+    "source_provenance": {
+      "changed_manifest_sources_before_commit": [
+        "preflight.py"
+      ],
+      "native_inputs_outputs_archive_identical_after_commit_regeneration": true,
+      "note": "Initial native staging preceded final non-gameplay source guard/preflight edits. Preparation was repeated from dc4d80e with the exact same fresh inputs: every authored output and archive byte matched the staged candidate. Manifest source hashes differ for the listed files; the original receipt is retained privately."
+    },
+    "stage_command": "python -B native_workspace.py --config <isolated-config.json> --replace stage-progression",
+    "actual_stage_api": "stage(config, kind=\"progression\", replace=True) on the kit host",
+    "exact_staged_files": 140,
+    "native_action": "Sapien script compile and save, followed by private byte readback and tag parsing.",
+    "native_readback": {
+      "sha256": "c1a3828caebd123702dabd4dda5fb7c445f4f6d48e8c8da45b1394c9a0eaf48a",
+      "bytes": 10184013,
+      "counts": {
+        "scripts": 402,
+        "globals": 178,
+        "hs syntax datums": 43180,
+        "cutscene titles": 128,
+        "player starting profile": 1,
+        "squads": 26,
+        "ai objectives": 4
+      },
+      "hsc_sha256": "2b936f94e63d5065cfef15bda63a70b86a9e2c5d3aa6c46ae98c2ca7817cbdb3",
+      "profiles": [
+        "sv_start"
+      ]
+    },
+    "legacy_needler_profiles_or_tags_required": false,
+    "final_required_script_identities_verified": [
+      "sv_boot",
+      "sv_clock",
+      "sv_follow",
+      "sv_tree_tick",
+      "sv_checkpoint",
+      "sv_autofire",
+      "sv_enter_stage"
+    ]
+  },
+  "cache": {
+    "command": "tool.exe build-cache-file levels\\survivors\\last_stand\\last_stand pc none english",
+    "cache": {
+      "size": 702328832,
+      "sha256": "cf48ccfb398b4e4ec75062ec1ed45e43c16de8bd457b03c945e1222335108363",
+      "header_hex": "646165680d00000000b0dc290202000000b08823000054060000ffff800000000246000000307923ec580e0000908723327d000000507023c4c8080000506e23"
+    },
+    "log": {
+      "sha256": "2aa9628e0b733e3b68e4cb676da9bfedf7e4e4473dc1bbf3c04368131270e663",
+      "size": 235664,
+      "success_line": "successfully built cache file.",
+      "tool_exit_code": "not captured by asynchronous launcher"
+    },
+    "scenario_sha256": "c1a3828caebd123702dabd4dda5fb7c445f4f6d48e8c8da45b1394c9a0eaf48a",
+    "hsc_sha256": "2b936f94e63d5065cfef15bda63a70b86a9e2c5d3aa6c46ae98c2ca7817cbdb3",
+    "legacy_needlers_present": false,
+    "stock_diagnostics": [
+      "-ERROR- (group_postprocessing 'objects\\weapons\\melee\\gravity_hammer\\gravity_hammer.model') objects: model 'objects\\weapons\\melee\\gravity_hammer\\gravity_hammer' animation graph 'objects\\weapons\\melee\\gravity_hammer\\gravity_hammer' node counts don't match (will not animate)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 3 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 4 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 5 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 6 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 7 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 10 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 8 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 11 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- design:ai: object b1_watchtower_pod on bsp 9 has INVALID LOCATION (61.947483, 362.737488, 21.024141)",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements",
+      "-ERROR- decorators: scenario cannot find decorator set 5 (levels\\shared\\decorators\\waste_salt_patch\\waste_salt_patch) - ignoring placements"
+    ],
+    "interpretation": "The fresh cache file and compiler success marker were observed. The asynchronous wrapper did not retain the process exit code. Stock error diagnostics and warnings remain; this is not a zero-diagnostic or complete asset-quality claim."
+  },
+  "gameplay": {
+    "qa_profile": "qa-saves/ls01",
+    "environment": "sdk",
+    "candidate_fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "c1a3828caebd123702dabd4dda5fb7c445f4f6d48e8c8da45b1394c9a0eaf48a",
+      "hsc": "2b936f94e63d5065cfef15bda63a70b86a9e2c5d3aa6c46ae98c2ca7817cbdb3",
+      "private_assets": "7ca5e2bc53083ff6510887b1790e7abdd03ccce93780882f78598240f95ae24e"
+    },
+    "launch_command": "python3 launch_v04.py --root <game-root> --kit <fresh-kit> --steam <Steam-root> --qa-profile <game-root>/qa-saves/ls01 --new",
+    "runtime_ownership": "Operator checked exact launcher arguments, isolated kit/profile, native child/window identity and candidate hashes before and after assertion batches.",
+    "observed_assertions": 19,
+    "ordinary_gameplay_observations": 6,
+    "seeded_gameplay_observations": 12,
+    "transport_controls": 1,
+    "passed": 19,
+    "failed": 0,
+    "unresolved": 0,
+    "transport": "Fresh nonces and pre-dispatch byte cursors; observed SDK WARNING hs markers, not console echoes. Raw logs retained privately.",
+    "stage_1": "Fresh uncheated Armory, real Resume input, active timer/autofire, actor bound, overhead camera and a two-second W movement interval. Only a short ordinary interval was observed.",
+    "stages_2_to_4": "Seeded sv_stage + sv_enter_stage, 180 stage seconds, zero shots, level threshold 30000 and deathless enabled. Real Resume input followed by seven seconds and a two-second W movement interval per arena. Camera, positive health, timer/autofire, nonzero actors bounded at 36 and displacement checks passed.",
+    "visual_inspection": "All four arena captures inspected for overhead rendering/enemies. Bright-terrain contrast and player occlusion remain presentation work. Original production Continue/Armory capture inspected after restoration.",
+    "assertions": [
+      {
+        "name": "transport-control",
+        "condition": "true",
+        "nonce": "a0c38d4149444c96a7454528a892c5ae",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "transport-control.log",
+        "log_sha256": "b1d157b8d119146c88641302b1217c6f1464fae2d2231561c928fd1691e8ccfc",
+        "prefix_sha256": "1442baf07977fb6a8ec23fbef649b310065e2a144981737ba290ebf208ea6d71",
+        "start_offset": 850,
+        "end_offset": 1167,
+        "cursor_at": "2026-10-13T03:03:22.337571+00:00",
+        "observed_at": "2026-10-13T03:03:24.512377+00:00",
+        "observations": [
+          {
+            "line": 14,
+            "text": "10.12.26 23:03:23.658 0000676 g007965 f0009215  WARNING hs: lsqa:a0c38d4149444c96a7454528a892c5ae:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "fresh-armory",
+        "condition": "(and sv_running sv_menu_open (= sv_stage 1) (= sv_seconds 0) (= sv_tokens 3) (> (unit_get_health (sv_player)) 0))",
+        "nonce": "ce0cd397f2874571a86da0ffe8e185b5",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "private_log": "fresh-armory.log",
+        "log_sha256": "a85a593d616483b5c0f663eb37a2dac1c8be6025c7e4a7fdcf72f5155471fc8c",
+        "prefix_sha256": "b1d157b8d119146c88641302b1217c6f1464fae2d2231561c928fd1691e8ccfc",
+        "start_offset": 1167,
+        "end_offset": 1593,
+        "cursor_at": "2026-10-13T03:03:24.512662+00:00",
+        "observed_at": "2026-10-13T03:03:27.862868+00:00",
+        "observations": [
+          {
+            "line": 16,
+            "text": "10.12.26 23:03:27.008 0000678 g007965 f0009416  WARNING hs: lsqa:ce0cd397f2874571a86da0ffe8e185b5:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "fresh-camera",
+        "condition": "(and (>= sv_view_current 1000) (< sv_view_current 2000) (< (objects_distance_to_flag (players) sv_s1_center) 1))",
+        "nonce": "59adde1d94004c85abc583c589cf3808",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "private_log": "fresh-camera.log",
+        "log_sha256": "9c32fce9a1cda8aaa688b42eddd83f09c978c9d16c6d333daacacc94c437e408",
+        "prefix_sha256": "a85a593d616483b5c0f663eb37a2dac1c8be6025c7e4a7fdcf72f5155471fc8c",
+        "start_offset": 1593,
+        "end_offset": 2018,
+        "cursor_at": "2026-10-13T03:03:27.863162+00:00",
+        "observed_at": "2026-10-13T03:03:31.181784+00:00",
+        "observations": [
+          {
+            "line": 18,
+            "text": "10.12.26 23:03:30.324 0000680 g007965 f0009615  WARNING hs: lsqa:59adde1d94004c85abc583c589cf3808:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "fresh-uncheated",
+        "condition": "(not cheat_deathless_player)",
+        "nonce": "c0d3f5f6f34e4722a01be76db8b94435",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "private_log": "fresh-uncheated.log",
+        "log_sha256": "44f3a900cf90482e2f730293c8d767a6feb84ae8b481ac37c26ea2259ee61d7f",
+        "prefix_sha256": "9c32fce9a1cda8aaa688b42eddd83f09c978c9d16c6d333daacacc94c437e408",
+        "start_offset": 2018,
+        "end_offset": 2359,
+        "cursor_at": "2026-10-13T03:03:31.182084+00:00",
+        "observed_at": "2026-10-13T03:03:33.612027+00:00",
+        "observations": [
+          {
+            "line": 20,
+            "text": "10.12.26 23:03:32.758 0000682 g007965 f0009761  WARNING hs: lsqa:c0d3f5f6f34e4722a01be76db8b94435:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "fresh-resume-autofire",
+        "condition": "(and sv_running (> sv_seconds 0) (> sv_shots 0) (> (unit_get_health (sv_player)) 0))",
+        "nonce": "ed07746471384524bc53bf71e5cf94c0",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "private_log": "fresh-resume-autofire.log",
+        "log_sha256": "41c0c11289afc8d4b0906621ec4411f58228cda067117435c853e6f82e48e8ca",
+        "prefix_sha256": "0664c74bad2da211eba10ec64e1b3b306185687e5d1d63bbcd7ee4d928ad7bbc",
+        "start_offset": 2581,
+        "end_offset": 2978,
+        "cursor_at": "2026-10-13T03:05:30.166315+00:00",
+        "observed_at": "2026-10-13T03:05:33.205463+00:00",
+        "observations": [
+          {
+            "line": 24,
+            "text": "10.12.26 23:05:32.352 0000702 g008484 f0016934  WARNING hs: lsqa:ed07746471384524bc53bf71e5cf94c0:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "fresh-actor-bound",
+        "condition": "(and (<= (ai_living_count sv_hostiles) 36) (not cheat_deathless_player))",
+        "nonce": "a07faec3874e46eba5c6b67e4cc57920",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "private_log": "fresh-actor-bound.log",
+        "log_sha256": "414284178792c81c335cf4d50cba56e02ac49de097193f24d69a6096480aa6c5",
+        "prefix_sha256": "41c0c11289afc8d4b0906621ec4411f58228cda067117435c853e6f82e48e8ca",
+        "start_offset": 2978,
+        "end_offset": 3363,
+        "cursor_at": "2026-10-13T03:05:33.205773+00:00",
+        "observed_at": "2026-10-13T03:05:36.102725+00:00",
+        "observations": [
+          {
+            "line": 26,
+            "text": "10.12.26 23:05:35.252 0000704 g008484 f0017108  WARNING hs: lsqa:a07faec3874e46eba5c6b67e4cc57920:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage1-movement",
+        "condition": "(and (> (objects_distance_to_flag (players) sv_s1_center) 1) (< (objects_distance_to_flag (players) sv_s1_center) 21))",
+        "nonce": "15733da5d3d7465581b6bbcd72338c56",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "ordinary",
+        "private_log": "stage1-movement.log",
+        "log_sha256": "e5d67a9448eb3b0fcddecfba413bc6e139c70f4be6607a17a1bf6d8393b79ab3",
+        "prefix_sha256": "d5e200a1a68a84b224226971ff6fe86ee7bf6de71ec786eefe32a4ad31d9af6f",
+        "start_offset": 3585,
+        "end_offset": 4016,
+        "cursor_at": "2026-10-13T03:06:16.256776+00:00",
+        "observed_at": "2026-10-13T03:06:19.674759+00:00",
+        "observations": [
+          {
+            "line": 30,
+            "text": "10.12.26 23:06:18.826 0000713 g008749 f0019652  WARNING hs: lsqa:15733da5d3d7465581b6bbcd72338c56:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage2-autofire",
+        "condition": "(and sv_running (= sv_stage 2) (> sv_stage_seconds 180) (> sv_shots 0))",
+        "nonce": "9af486201429404085ce2cf492f4cd2a",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage2-autofire.log",
+        "log_sha256": "8ccb370b67fee53c2becd8885612f8653bb7a95a484444bd69e7d78bafed1a1f",
+        "prefix_sha256": "fc3c6ac7b34c59483883b79ad9ca8acb570def2d9722df3bf15b6b0a922dc2c1",
+        "start_offset": 4903,
+        "end_offset": 5287,
+        "cursor_at": "2026-10-13T03:06:55.823621+00:00",
+        "observed_at": "2026-10-13T03:06:58.708083+00:00",
+        "observations": [
+          {
+            "line": 40,
+            "text": "10.12.26 23:06:57.862 0000731 g009222 f0021682  WARNING hs: lsqa:9af486201429404085ce2cf492f4cd2a:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage2-actors",
+        "condition": "(and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36))",
+        "nonce": "1512c82c66894b13a84189973772f2d4",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage2-actors.log",
+        "log_sha256": "4c867a45631edb54d61e2a50f7eb623f7026ba569abb28f6b3ca28d49b45f3e1",
+        "prefix_sha256": "8ccb370b67fee53c2becd8885612f8653bb7a95a484444bd69e7d78bafed1a1f",
+        "start_offset": 5287,
+        "end_offset": 5679,
+        "cursor_at": "2026-10-13T03:06:58.708397+00:00",
+        "observed_at": "2026-10-13T03:07:01.675958+00:00",
+        "observations": [
+          {
+            "line": 42,
+            "text": "10.12.26 23:07:00.825 0000733 g009222 f0021845  WARNING hs: lsqa:1512c82c66894b13a84189973772f2d4:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage2-camera",
+        "condition": "(and (>= sv_view_current 2000) (< sv_view_current 3000) (> (unit_get_health (sv_player)) 0))",
+        "nonce": "d7bcf2aafdb34b909296410f65d91d85",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage2-camera.log",
+        "log_sha256": "d612626599cd61b478e45e90f2aa5f2e0ae085f0feec2ad817d98eec364acefc",
+        "prefix_sha256": "4c867a45631edb54d61e2a50f7eb623f7026ba569abb28f6b3ca28d49b45f3e1",
+        "start_offset": 5679,
+        "end_offset": 6084,
+        "cursor_at": "2026-10-13T03:07:01.676337+00:00",
+        "observed_at": "2026-10-13T03:07:04.798350+00:00",
+        "observations": [
+          {
+            "line": 44,
+            "text": "10.12.26 23:07:03.940 0000735 g009222 f0021991  WARNING hs: lsqa:d7bcf2aafdb34b909296410f65d91d85:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage2-movement",
+        "condition": "(and (> (objects_distance_to_flag (players) sv_s2_center) 1) (< (objects_distance_to_flag (players) sv_s2_center) 21))",
+        "nonce": "554aa328f87c4a6ca533426f198aa8f4",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage2-movement.log",
+        "log_sha256": "68dd4be999756cc7643ccb8dc2550bff7e4a2ec1aac79f7e6f22ada16c80ffea",
+        "prefix_sha256": "00448af20ae9a9a4da8ed112d0aeeaf59a3513db6836748449bf26189e0bf17d",
+        "start_offset": 6306,
+        "end_offset": 6737,
+        "cursor_at": "2026-10-13T03:07:14.419304+00:00",
+        "observed_at": "2026-10-13T03:07:17.839196+00:00",
+        "observations": [
+          {
+            "line": 48,
+            "text": "10.12.26 23:07:16.988 0000742 g009479 f0022720  WARNING hs: lsqa:554aa328f87c4a6ca533426f198aa8f4:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage3-autofire",
+        "condition": "(and sv_running (= sv_stage 3) (> sv_stage_seconds 180) (> sv_shots 0))",
+        "nonce": "6b69fd219e634cf6942d42e0e57eb8b3",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage3-autofire.log",
+        "log_sha256": "8a0d463f6cfc6dba76beb55679207bdc9749bb3e45e3b49af80aa87587930c84",
+        "prefix_sha256": "97b83dbca581e68f362da3e50a694f6463062d3630bb18374336c109686c3853",
+        "start_offset": 7624,
+        "end_offset": 8008,
+        "cursor_at": "2026-10-13T03:08:34.437714+00:00",
+        "observed_at": "2026-10-13T03:08:37.317703+00:00",
+        "observations": [
+          {
+            "line": 58,
+            "text": "10.12.26 23:08:36.491 0000772 g009997 f0026503  WARNING hs: lsqa:6b69fd219e634cf6942d42e0e57eb8b3:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage3-actors",
+        "condition": "(and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36))",
+        "nonce": "e0d00c03a7d14355914340577032f8e6",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage3-actors.log",
+        "log_sha256": "89b6e169db775aeaa9d293c7231ff2c0ccf9a98a501b050e9a4421e1ce100394",
+        "prefix_sha256": "8a0d463f6cfc6dba76beb55679207bdc9749bb3e45e3b49af80aa87587930c84",
+        "start_offset": 8008,
+        "end_offset": 8400,
+        "cursor_at": "2026-10-13T03:08:37.318046+00:00",
+        "observed_at": "2026-10-13T03:08:40.301517+00:00",
+        "observations": [
+          {
+            "line": 60,
+            "text": "10.12.26 23:08:39.479 0000774 g009997 f0026603  WARNING hs: lsqa:e0d00c03a7d14355914340577032f8e6:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage3-camera",
+        "condition": "(and (>= sv_view_current 3000) (< sv_view_current 4000) (> (unit_get_health (sv_player)) 0))",
+        "nonce": "b3e5ba39a6704091a296d8187fad59f8",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage3-camera.log",
+        "log_sha256": "095ab89c2a5ea5afaa4b4debaed826076c988561fea547c683c3f6d99e90a395",
+        "prefix_sha256": "89b6e169db775aeaa9d293c7231ff2c0ccf9a98a501b050e9a4421e1ce100394",
+        "start_offset": 8400,
+        "end_offset": 8805,
+        "cursor_at": "2026-10-13T03:08:40.301869+00:00",
+        "observed_at": "2026-10-13T03:08:43.426392+00:00",
+        "observations": [
+          {
+            "line": 62,
+            "text": "10.12.26 23:08:42.594 0000776 g009997 f0026709  WARNING hs: lsqa:b3e5ba39a6704091a296d8187fad59f8:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage3-movement",
+        "condition": "(and (> (objects_distance_to_flag (players) sv_s3_center) 1) (< (objects_distance_to_flag (players) sv_s3_center) 21))",
+        "nonce": "3e86ba25eaa44b169b6e0f69c2abbd69",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage3-movement.log",
+        "log_sha256": "c66872221043f985b99fcbf368088f83994ba188a30bdd2566b4951cff7c6d5c",
+        "prefix_sha256": "13ac7fb04daa040defdf4f2c6c40884cf5d9025df5473af57d2146a23eeedb70",
+        "start_offset": 9027,
+        "end_offset": 9458,
+        "cursor_at": "2026-10-13T03:08:54.972040+00:00",
+        "observed_at": "2026-10-13T03:08:58.370191+00:00",
+        "observations": [
+          {
+            "line": 66,
+            "text": "10.12.26 23:08:57.511 0000784 g010255 f0027521  WARNING hs: lsqa:3e86ba25eaa44b169b6e0f69c2abbd69:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage4-autofire",
+        "condition": "(and sv_running (= sv_stage 4) (> sv_stage_seconds 180) (> sv_shots 0))",
+        "nonce": "22be8bbdb9aa4a6e81f8a5aa12b8c434",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage4-autofire.log",
+        "log_sha256": "340073443da0ba2dabf5c811f05b02b2e275ebef6babf82b1aecca845969ea80",
+        "prefix_sha256": "a47d3926661e7c8e5c5f01fc7f7367d2f7528c0b453bfdb23aae541c2f95f53e",
+        "start_offset": 10345,
+        "end_offset": 10729,
+        "cursor_at": "2026-10-13T03:09:43.163752+00:00",
+        "observed_at": "2026-10-13T03:09:46.041825+00:00",
+        "observations": [
+          {
+            "line": 76,
+            "text": "10.12.26 23:09:45.186 0000812 g010771 f0030378  WARNING hs: lsqa:22be8bbdb9aa4a6e81f8a5aa12b8c434:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage4-actors",
+        "condition": "(and (> (ai_living_count sv_hostiles) 0) (<= (ai_living_count sv_hostiles) 36))",
+        "nonce": "085a8dc1551b42f28fab88d37bd46c46",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage4-actors.log",
+        "log_sha256": "76eec81a09b8a7cbd1a9172f8acde902ca353accdc4c7956b870e77778fdad43",
+        "prefix_sha256": "340073443da0ba2dabf5c811f05b02b2e275ebef6babf82b1aecca845969ea80",
+        "start_offset": 10729,
+        "end_offset": 11121,
+        "cursor_at": "2026-10-13T03:09:46.042168+00:00",
+        "observed_at": "2026-10-13T03:09:49.029115+00:00",
+        "observations": [
+          {
+            "line": 78,
+            "text": "10.12.26 23:09:48.170 0000814 g010771 f0030557  WARNING hs: lsqa:085a8dc1551b42f28fab88d37bd46c46:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage4-camera",
+        "condition": "(and (>= sv_view_current 4000) (< sv_view_current 5000) (> (unit_get_health (sv_player)) 0))",
+        "nonce": "3f58e6abcb7f4310bd15109c6d1419f2",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage4-camera.log",
+        "log_sha256": "3a4b73d7082d5a400dd464b35b3eceab3c818cde9d2892d61618e06203d214ae",
+        "prefix_sha256": "76eec81a09b8a7cbd1a9172f8acde902ca353accdc4c7956b870e77778fdad43",
+        "start_offset": 11121,
+        "end_offset": 11526,
+        "cursor_at": "2026-10-13T03:09:49.029471+00:00",
+        "observed_at": "2026-10-13T03:09:52.172250+00:00",
+        "observations": [
+          {
+            "line": 80,
+            "text": "10.12.26 23:09:51.320 0000816 g010771 f0030746  WARNING hs: lsqa:3f58e6abcb7f4310bd15109c6d1419f2:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      },
+      {
+        "name": "stage4-movement",
+        "condition": "(and (> (objects_distance_to_flag (players) sv_s4_center) 1) (< (objects_distance_to_flag (players) sv_s4_center) 21))",
+        "nonce": "8ef1d05065564034850bf2b7f42db29b",
+        "outcome": "passed",
+        "reason": "observed_marker",
+        "run_kind": "seeded",
+        "private_log": "stage4-movement.log",
+        "log_sha256": "45cf30288f54f460d43acf6a076dcac6241e34c2070801f3b9b0e53b95157637",
+        "prefix_sha256": "4758a28d7370dd918ae16b9cdf4335f946cec0d2bd5e43fffc6db253f4e80f0a",
+        "start_offset": 11748,
+        "end_offset": 12179,
+        "cursor_at": "2026-10-13T03:10:02.948580+00:00",
+        "observed_at": "2026-10-13T03:10:06.356741+00:00",
+        "observations": [
+          {
+            "line": 84,
+            "text": "10.12.26 23:10:05.498 0000827 g011028 f0031595  WARNING hs: lsqa:8ef1d05065564034850bf2b7f42db29b:pass ",
+            "outcome": "PASS"
+          }
+        ]
+      }
+    ]
+  },
+  "initial_failures_and_corrections": [
+    "First Sapien launch failed on missing XAudio2_9Redist.dll before loading the scenario. Added/verified complete owned runtime/support files; corrected launch and compile succeeded.",
+    "Initial dependency-copy helper stopped at an already present FMOD file. The corrected helper verified existing hashes and copied only missing files.",
+    "An isolated kit outside the Steam tree exposed the launcher inherited Steam-root assumption. Added explicit --steam and runtime validation before save/lock mutation; source regressions and the corrected native launch passed.",
+    "Initial private final-readback check expected nonexistent sv_main/sv_resume_after_restore script names. Corrected it to the actual generated script identities; this was a checker error, not an engine compile failure.",
+    "The first console toggle after new-game startup did not open the console. The operator visually verified the H3 prompt after a second toggle before dispatching assertions; no unobserved input batch counted as passing."
+  ],
+  "restoration": {
+    "production_fingerprint": {
+      "engine": "59a78f2c96034d7ceb5d710505b2b36813aa141fc81a083e3f952973dbce4602",
+      "scenario": "223bb309cf5ca7bfff215b4c9bd433f8b1531984eb11df969c6dabee7df623fe",
+      "hsc": "45b58db454b072d96d09e4b02e10c6a64913198712fe86e6279789cdc122c500",
+      "private_assets": "2dd6294723a9e527753678545a780563319a523b49ac7a9865ad606ee61404f2"
+    },
+    "original_profile_files": 20,
+    "changed_original_profile_files": [],
+    "added_profile_files": [
+      "launcher-sessions/5f01c7b20ee7441caa2fb7cf9840c57f/init-before.txt",
+      "launcher-sessions/5f01c7b20ee7441caa2fb7cf9840c57f/play.log"
+    ],
+    "checkpoint_generation": "c4b9f383fa004dceab77a9639fc74a03",
+    "checkpoint_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430",
+    "checkpoint_valid": true,
+    "qa_checkpoint_valid": true,
+    "qa_pending_exists_after_managed_stop": false,
+    "original_continue_visually_verified": true,
+    "installed_launcher_sha256": "547be946c33ca3496b0019fb367708111c8b031c11b021399afc3fe0dc819058",
+    "installed_package_and_launcher_unchanged": true,
+    "production_launcher_pid_at_handoff": 926324,
+    "production_native_pids_at_handoff": [
+      926504
+    ],
+    "native_slot_release": "https://github.com/lEWFkRAD/halo3-survivors/issues/1#issuecomment-6137434388",
+    "handoff": "Production remains ACTIVE. Inspect current identity and coordinate its checkpoint/handoff before any later native mutation; a released integration slot is not idle-host permission."
+  },
+  "limits": [
+    "Owned tags, tools, native maps, saves, screenshots and raw desktop content remain private and are not included in source Git or the public source bundle.",
+    "No retail MCC launch, mod-menu install/update/rollback or retail persistence was tested.",
+    "No full 20-minute ordinary run, full navigation/occlusion sweep, balance/performance certification or vehicle work was performed.",
+    "New baseline/native hashes require their own isolated exact-build save; old production cores must not be loaded into this candidate.",
+    "The supported configuration route covers fetch/bootstrap/prepare/transfer and explicit SDK launcher paths. Legacy remote/promotion helpers remain historical, operator-specific and unsupported as portable installers.",
+    "File publication uses guarded replacements and receipts, not a whole-workspace crash-atomic transaction. Process snapshots do not replace native session ownership.",
+    "No installed-package promotion or general release receipt is implied by this build experiment."
+  ]
+}

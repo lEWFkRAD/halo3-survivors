@@ -1,7 +1,8 @@
 # Last Stand roadmap
 
-Status: v0.4.0 playable prototype, 2026-10-12. These are remaining tasks,
-not features included in the current build.
+Installed status: v0.4.0 playable prototype. The LS-01 stock bootstrap milestone
+has separate SDK evidence; the remaining release/gameplay tasks below stay open.
+Completed tooling does not change the installed package.
 
 For detailed implementation steps, dependencies and acceptance criteria, see
 [PLAN.md](PLAN.md). Agents can claim bounded work through [TASKS.md](TASKS.md)
@@ -21,9 +22,12 @@ and follow the coordination rules in [AGENTS.md](AGENTS.md).
   every stage.
 - [ ] Replace the rotating text Armory with a readable graphical tree showing
   branches, prerequisites, prices, available points and purchased ranks.
-- [ ] Make a fresh checkout reproducible on another owned installation:
+- [x] Make a fresh checkout reproducible on another owned installation:
   document and configure external tools, paths, tag inputs and build steps.
-  Current scripts preserve the existing Onyx development setup.
+  The supported [stock bootstrap route](BOOTSTRAP.md) was exercised against an
+  isolated, freshly extracted owned kit without historical private templates.
+  [LS-01 evidence](native-validation-ls01.json) records the compile/cache and
+  short SDK checks; complete runs, retail and release promotion remain open.
 - [ ] Provide a tested player installation/update path after retail loading
   is verified. This repository contains source, not a downloadable playable map.
 
@@ -52,5 +56,10 @@ and follow the coordination rules in [AGENTS.md](AGENTS.md).
 - [x] Batched level-up awards and protected victory cleanup.
 
 The prototype is solo. Multiplayer support is outside the current verified
-scope. See [native validation](native-validation-v04.json) for the exact test
-scope and [README](README.md) for controls and current limitations.
+scope. See [v0.4 native validation](native-validation-v04.json) for the installed
+release and [LS-01 evidence](native-validation-ls01.json) for the later stock
+rebuild. Its cache success marker accompanies 25 stock-asset error diagnostic
+lines; the native tool exit was not captured. Its 19 short SDK assertions
+(18 gameplay checks and one transport control) include seeded/deathless later
+stages and do not replace full-run or retail gates.
+See [README](README.md) for controls and current limitations.

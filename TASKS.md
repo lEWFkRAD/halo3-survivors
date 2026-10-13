@@ -10,7 +10,7 @@ or read-only investigation. No task below is claimed by publishing this plan.
 
 | Task | Priority | Main dependency or gate | Source ownership |
 | --- | --- | --- | --- |
-| [LS-01 Portable configuration and native bootstrap](https://github.com/lEWFkRAD/halo3-survivors/issues/2) | P0 | None for source work; owned tools for native proof | Setup/helpers/configuration |
+| [LS-01 Portable configuration and native bootstrap](https://github.com/lEWFkRAD/halo3-survivors/issues/2) | P0 | Supported stock bootstrap acceptance met; [evidence](native-validation-ls01.json), issue tracks publication/closure | Setup/helpers/configuration |
 | [LS-02 Retail MCC compatibility and save capability](https://github.com/lEWFkRAD/halo3-survivors/issues/3) | P0 | Owner sign-in; native slot | Retail package and capability evidence |
 | [LS-03 Native QA and run recovery baseline](https://github.com/lEWFkRAD/halo3-survivors/issues/4) | P0 | Native slot for engine observations | QA helpers, recovery tests and evidence |
 | [LS-04 Overhead camera and combat readability](https://github.com/lEWFkRAD/halo3-survivors/issues/5) | P1 | Native slot; LS-02 for retail confirmation | Camera/scenario presentation |
@@ -23,6 +23,13 @@ or read-only investigation. No task below is claimed by publishing this plan.
 | [LS-11 Packaging installation and release](https://github.com/lEWFkRAD/halo3-survivors/issues/12) | P1 | LS-01/02/03/10 | Installer/promotion/release documentation |
 | [LS-12 Vehicle feasibility prototype](https://github.com/lEWFkRAD/halo3-survivors/issues/13) | P3 | Stable camera/combat; target capability findings | One vehicle and isolated arena |
 | [LS-13 Integrated vehicle encounters](https://github.com/lEWFkRAD/halo3-survivors/issues/14) | P3 | LS-12; repeat LS-10/11 | Vehicle encounters/recovery/balance |
+
+The supported LS-01 route now rebuilds from fresh owned stock inputs through
+baseline native save/readback, progression preparation, exact staging and final
+SDK compilation/cache. This is a tooling milestone. LS-02/LS-03 and the remaining
+gameplay, full-run and release tasks stay open. The LS-01 cache/tool-exit and
+seeded-test limitations are recorded in [its evidence](native-validation-ls01.json);
+read those limits before using the candidate for a later gate.
 
 ## Claim and handoff record
 
