@@ -64,6 +64,7 @@ progression_hsc.py
 progression_remote.py
 progression_tags.py
 promote_v03.py
+qa_assertions.py
 qa_gallery.py
 qa_progression.py
 qa_v03_final.py
@@ -88,6 +89,7 @@ tests/test_promote_v03.py
 tests/test_launch_v04.py
 tests/test_native_qa.py
 tests/test_native_workspace.py
+tests/test_qa_assertions.py
 tests/test_spawn_geometry.py
 tests/test_spawn_runtime.py
 tests/test_survival.py
