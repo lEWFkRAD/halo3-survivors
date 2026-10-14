@@ -29,6 +29,7 @@ NATIVE_QA.md
 LS06_SPIKE.md
 LS07_DROPS.md
 LS08_PROFILE.md
+LS09_PACING.md
 ARMORY_NATIVE_PROBE.md
 ARMORY_LIVE.md
 ROADMAP.md
@@ -80,6 +81,7 @@ tests/test_arena_layout.py
 tests/test_combat_damage_paths.py
 tests/test_xp_accounting.py
 tests/test_permanent_profile.py
+tests/test_spawn_pacing.py
 tests/test_hsc_reference_budget.py
 tests/test_armory_presentation.py
 tests/test_armory_live.py
