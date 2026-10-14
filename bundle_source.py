@@ -90,6 +90,7 @@ tests/test_launch_v04.py
 tests/test_native_qa.py
 tests/test_native_workspace.py
 tests/test_qa_assertions.py
+tests/test_lose_restore_regressions.py
 tests/test_spawn_geometry.py
 tests/test_spawn_runtime.py
 tests/test_survival.py
