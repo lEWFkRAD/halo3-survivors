@@ -72,6 +72,21 @@ ordinary-run balance. Native experiments and remaining work are recorded in
 the [LS-03 issue](https://github.com/lEWFkRAD/halo3-survivors/issues/4) and its
 [bounded evidence record](native-validation-ls03.json).
 
+## Assertion-case runner
+
+`qa_assertions.py` is the tracked version of the named-case pattern the
+operator probes used ad hoc: `load_cases` reads a JSON list of cases (name,
+condition, optional run_kind and dispatch count), and `run_cases` creates each
+assertion, captures the cursor, calls the caller's verified `dispatch` hook,
+lets it settle, and evaluates the flushed window with `native_qa`. The runner
+sends no input itself and has no pass path of its own: a case reports
+`passed` only when the exact nonce marker is observed, and every report is
+the `evaluate` report for the caller's `EvidenceContext`, so reservation
+candidate binding (Slice A) carries through. `write_reports` writes one JSON
+report per case. Hermetic coverage is in `tests/test_qa_assertions.py`
+(synthetic bare and SDK-envelope logs; false conditions report failed, echoes
+never pass, missing markers stay unresolved).
+
 ## Session cleanup
 
 The launcher source archives the final shared pending core into the session's
