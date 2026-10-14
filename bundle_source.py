@@ -28,6 +28,7 @@ BOOTSTRAP.md
 NATIVE_QA.md
 LS06_SPIKE.md
 LS07_DROPS.md
+LS08_PROFILE.md
 ARMORY_NATIVE_PROBE.md
 ARMORY_LIVE.md
 ROADMAP.md
@@ -51,6 +52,7 @@ launch-installed.py
 launch_v04.py
 native_qa.py
 native_workspace.py
+permanent_profile.py
 install_launcher_v04.py
 launcher-install-v04.json
 record_v03_clip.py
@@ -77,6 +79,7 @@ tests/hsc_vm.py
 tests/test_arena_layout.py
 tests/test_combat_damage_paths.py
 tests/test_xp_accounting.py
+tests/test_permanent_profile.py
 tests/test_hsc_reference_budget.py
 tests/test_armory_presentation.py
 tests/test_armory_live.py
