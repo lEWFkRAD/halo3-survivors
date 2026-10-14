@@ -128,6 +128,7 @@ native-validation-ls04.json
 native-validation-ls05.json
 native-validation-ls05-ui-probe.json
 native-validation-ls05-live.json
+native-validation-ls05-integration.json
 native-validation-ls03.json
 native-validation-ls01.json
 build-result-v04.json

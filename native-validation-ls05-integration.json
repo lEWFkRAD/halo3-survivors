@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "LS-05 integration slice on integrated main",
+    "source_commit": "02190e00a855dc2ca14c624715d1f72d528459b4",
+    "description": "First native validation of the merged main (PR24 live Armory + PR25 refresh/selected + LS-03/04/06/07/08/09/10 source slices). Candidate = previous live Armory candidate a1b8933 plus the refresh-selected title marker and mid-cycle wallet/price refresh.",
+    "authored_progression_scenario_sha256": "8741a96830c742b466d4a131b1cf3d991bd5b766c7b3a1be0263d9388d26302a",
+    "authored_progression_scenario_bytes": 8753806,
+    "authored_ui_scenario_sha256": "3ecbafcff351ca9cea39a0efebdd22bc1ca82f7573d15e9f37d0aed9800ba782",
+    "authored_ui_scenario_bytes": 8763634,
+    "v3_native_tar_sha256": "4b2d44e233da602b3359c34049b65e0a811aa5c14f98202b75b667aaa7b11d8d",
+    "v3_native_tar_members": 142
+  },
+  "preparation_and_compilation": {
+    "authoring_host": "Shatner (blam_tags binding)",
+    "authoring_note": "prepare_progression.py ran on Shatner with the Onyx qa-ls05-dynamic input vintage (private-inputs and native-tags baseline copied over) to keep candidate continuity with a1b8933.",
+    "staging": {
+      "operation": "stage-progression",
+      "operation_id": "72df8cff69a64a4ca1b546bbe5a6d68c",
+      "files_staged": 144,
+      "status": "copied-unverified",
+      "backup": "backups/native-workspace-72df8cff69a64a4ca1b546bbe5a6d68c",
+      "process_preflight": "idle"
+    },
+    "compile": {
+      "tool": "Sapien (sapien.exe) Ctrl+Shift+C + Ctrl+S in isolated kit qa-ls01/clean-kit",
+      "compiled_scenario_sha256": "c5109b2d3769b29221eb97f2babffb886377bba2951151793820df4b1d96ecdb",
+      "compiled_scenario_bytes": 10426199,
+      "readback_counts": {
+        "scripts": 495,
+        "globals": 180,
+        "source_files": 3,
+        "hs_syntax_datums": 51089,
+        "cutscene_titles": 127
+      },
+      "readback_counts_delta_vs_previous_candidate": "+15 syntax datums (51074 -> 51089); script/global/title counts unchanged",
+      "key_scripts_present": ["sv_boot", "sv_step", "sv_purchase", "sv_open_menu", "sv_advance_stage", "sv_autofire"],
+      "sapien_state": "Ready status, no error dialogs, output window clean"
+    },
+    "readback_transfer": {
+      "operation_id": "8dae0f4f42e745a5a19435464a19ba1e",
+      "status": "copied-unverified"
+    },
+    "cache": {
+      "tool": "tool.exe build-cache-file levels\\survivors\\last_stand\\last_stand pc none english",
+      "map_bytes": 701202432,
+      "map_sha256": "e6dcebe88e16eb13",
+      "success_marker": "successfully built cache file.",
+      "total_time_seconds": 142.449997,
+      "stock_error_lines": 25
+    }
+  },
+  "bounded_sdk_observations": {
+    "qa_profile": "qa-saves/ls05-integration (isolated, never production)",
+    "boot": {
+      "sv_running": "passed",
+      "sv_stage": "passed (stage 1)",
+      "menu_open_at_stage_entry": "true by design (sv_enter_stage opens the Armory)"
+    },
+    "armory_render": {
+      "selection_marker": "visible: '> Needler Power | +4DMG/rank | Cost1/1/2 | Req Unlock1 S1' (merged PR25 marker renders in the CHUD objective)",
+      "tree": "Unlock1* / Power0+ Rate0+ / Seeker0- Crystal0- / Long Reach0- Crystal Storm0-",
+      "wallet": "ARMORY | 3 upgrade points available",
+      "evidence": "integration-compiled.png, integration-saved.png screenshots"
+    },
+    "resume": {
+      "method": "'1' key (rotate_weapons) with console closed and a clean gap after console typing",
+      "result": "menu closed (sv_menu_open false), clock advanced (sv_seconds > 0, sv_stage_seconds > 0)",
+      "note": "Console keystrokes leak into the game action system: typed text containing spaces/digits fires jump/rotate_weapons actions and eats the input latch. QA harness pitfall, not a candidate defect. Leave a gap between console typing and game-input keys."
+    },
+    "gameplay": {
+      "duration_observed": "~30 active seconds after resume",
+      "result": "combat ran, stationary player died naturally, run ended (sv_finished true, game speed 0.0 stopped arena)"
+    },
+    "continue": {
+      "method": "launch_v04.py --continue on the QA profile",
+      "result": "checkpoint restored: sv_running true, stage 1, menu closed"
+    }
+  },
+  "production_preservation": {
+    "backup": "backups/production-before-ls05-integration-20261014T121757Z (26 files, 48MB, MANIFEST.sha256)",
+    "stop_method": "SIGTERM to launcher (clean shutdown, watcher archived final cores)",
+    "restore": "launch.py --continue relaunched production",
+    "generation": "c4b9f383fa004dceab77a9639fc74a03 (unchanged)",
+    "core_sha256": "0674c1e2d86ca30ecd0e97f4623c2345bb56f6f75065a6f0483363c4d0ea7430 (unchanged)",
+    "profile_verification": "all 26 pre-existing files byte-identical to backup; 2 normal session files added",
+    "production_state_at_release": "running, paused in Armory (original v0.4 game)"
+  },
+  "limitations": [
+    "Bounded SDK checks only; no full 20-minute ordinary run, no balance data, no retail MCC validation, no package promotion.",
+    "The merged mid-cycle wallet/price refresh (PR25) compiles and the wallet renders, but the 15-tick midpoint refresh was not isolated and measured natively.",
+    "Console assertion infrastructure (LS-03) worked end to end: every observation is bound to the staged candidate fingerprint via native_qa.",
+    "Not a release promotion; the installed v0.4 package and launcher are unchanged."
+  ]
+}
