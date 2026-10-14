@@ -315,6 +315,24 @@ import native_workspace
         self.assertEqual(candidate['fingerprint'],
                          native_qa.candidate_fingerprint_from_files(self.qa_files(self.kit)))
 
+    def test_run_qa_caller_dispatched_assertion_can_pass_bound(self):
+        self.reservation()
+        log = Path(self.temp.name) / 'debug.log'
+        log.write_bytes(b'boot\n')
+        assertion = native_qa.new_assertion('(= sv_stage 2)')
+        cursor = native_qa.capture_cursor(log)
+        # The caller dispatches assertion.command between cursor and call;
+        # the flushed PASS marker for that exact nonce lands in the window.
+        with log.open('ab') as handle:
+            handle.write(f'LSQA:{assertion.nonce}:PASS\n'.encode())
+        report = native.run_qa(self.config, assertion=assertion, cursor=cursor)
+        self.assertEqual(report['outcome'], 'passed')
+        self.assertEqual(report['candidate']['source_commit'], 'a' * 40)
+        self.assertEqual(report['assertion']['nonce'], assertion.nonce)
+        with self.assertRaisesRegex(native.WorkspaceError, 'does not match'):
+            native.run_qa(self.config, assertion=assertion, cursor=cursor,
+                          condition='(= sv_stage 3)')
+
     def test_run_qa_rejects_context_from_a_different_deployment(self):
         self.reservation()
         log = Path(self.temp.name) / 'debug.log'

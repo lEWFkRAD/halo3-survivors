@@ -426,21 +426,32 @@ def read_qa_reservation(config: ProjectConfig, path=None) -> dict:
     return data
 
 
-def run_qa(config: ProjectConfig, *, log_path, condition: str,
-           context=None, reservation_path=None, decode_line=None) -> dict:
+def run_qa(config: ProjectConfig, *, log_path=None, condition: str = None,
+           context=None, reservation_path=None, decode_line=None,
+           assertion=None, cursor=None) -> dict:
     """Run the read-only native QA evidence path bound to the reservation.
 
-    The caller dispatches ``native_qa.new_assertion(condition).command`` in the
-    reserved native console, lets the verified transport flush, then calls this
-    with the same condition. The reservation's recorded source revision, QA
-    profile, environment and run kind are forwarded into the evidence context,
-    and the staged candidate files (the kit's current scenario and HSC plus the
-    recorded package) are hashed into the fingerprint, so every report —
-    including a passed() result — names the exact candidate the observation
-    refers to. An explicit ``context`` must agree with the reservation on every
-    shared identity field; a mismatch (a stale or wrong deployment) raises
-    before any evidence is evaluated. No game process is started and no file is
-    written here.
+    For an observation that can pass, the caller first creates the assertion
+    and captures the log cursor, dispatches ``assertion.command`` in the
+    reserved native console, lets the verified transport flush, and only then
+    calls this with that same ``assertion`` and ``cursor``::
+
+        assertion = native_qa.new_assertion(condition)
+        cursor = native_qa.capture_cursor(log_path)
+        # dispatch assertion.command in the verified console, then flush
+        report = run_qa(config, assertion=assertion, cursor=cursor)
+
+    Called without a caller assertion/cursor, this creates a fresh assertion
+    and cursor at call time; its nonce was never dispatched, so the outcome
+    can only be ``unresolved`` — useful as an identity-binding check, never as
+    a pass. The reservation's recorded source revision, QA profile,
+    environment and run kind are forwarded into the evidence context, and the
+    staged candidate files (the kit's current scenario and HSC plus the
+    recorded package) are hashed into the fingerprint, so every report names
+    the exact candidate the observation refers to. An explicit ``context``
+    must agree with the reservation on every shared identity field; a mismatch
+    (a stale or wrong deployment) raises before any evidence is evaluated. No
+    game process is started and no file is written here.
     """
     reservation = read_qa_reservation(config, reservation_path)
     root, kit = _kit(config)
@@ -475,13 +486,17 @@ def run_qa(config: ProjectConfig, *, log_path, condition: str,
         if dict(context.candidate_fingerprint) != fingerprint:
             raise WorkspaceError('QA context candidate fingerprint does not match '
                                  'the staged candidate files')
-    if not condition:
-        raise WorkspaceError('run_qa needs an explicit condition; the command string '
-                             'alone is not an assertion condition')
-    assertion = native_qa.new_assertion(condition)
-    cursor = native_qa.capture_cursor(log_path)
-    # The caller dispatches assertion.command in the reserved native console
-    # and lets the verified transport flush before this window is read.
+    if assertion is None:
+        if not condition:
+            raise WorkspaceError('run_qa needs an explicit condition; the command string '
+                                 'alone is not an assertion condition')
+        assertion = native_qa.new_assertion(condition)
+    elif condition is not None and condition != assertion.condition:
+        raise WorkspaceError('run_qa condition does not match the caller assertion')
+    if cursor is None:
+        if log_path is None:
+            raise WorkspaceError('run_qa needs a log path when no cursor is supplied')
+        cursor = native_qa.capture_cursor(log_path)
     kwargs = {'decode_line': decode_line} if decode_line is not None else {}
     return native_qa.evaluate(assertion, native_qa.read_window(cursor), context, **kwargs)
 
