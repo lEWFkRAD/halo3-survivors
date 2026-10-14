@@ -27,6 +27,7 @@ DEVELOPMENT.md
 BOOTSTRAP.md
 NATIVE_QA.md
 LS06_SPIKE.md
+LS07_DROPS.md
 ARMORY_NATIVE_PROBE.md
 ARMORY_LIVE.md
 ROADMAP.md
@@ -75,6 +76,7 @@ remote_build.py
 tests/hsc_vm.py
 tests/test_arena_layout.py
 tests/test_combat_damage_paths.py
+tests/test_xp_accounting.py
 tests/test_hsc_reference_budget.py
 tests/test_armory_presentation.py
 tests/test_armory_live.py
