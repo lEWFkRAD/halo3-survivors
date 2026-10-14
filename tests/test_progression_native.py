@@ -271,9 +271,12 @@ class NativeProgressionTests(unittest.TestCase):
         for _ in range(180):v.menu_sample()
         titles=[str(args[0]) for op,args in v.calls if op=='cinematic_set_title' and not str(args[0]).startswith(('sv_points_','sv_cost_'))]
         self.assertTrue(titles and set(titles)=={'sv_controls'})
-        self.assertEqual(len(v.wallet_events),18)
+        # Wallet/price refresh at the 15-tick midpoint as well as the full
+        # 30-tick cycle, so their 0.95s titles never lapse while open.
+        self.assertEqual(len(v.wallet_events),36)
         self.assertTrue(all(name=='sv_points_3' for _,name in v.wallet_events))
-        self.assertTrue(all(b[0]-a[0]==30 for a,b in zip(v.wallet_events,v.wallet_events[1:])))
+        self.assertTrue(all(b[0]-a[0]==15 for a,b in zip(v.wallet_events,v.wallet_events[1:])))
+        self.assertTrue(all(b[0]-a[0]==15 for a,b in zip(v.price_events,v.price_events[1:])))
         self.assertTrue(all(b[0]-a[0]>=90 for a,b in zip(v.notice_events,v.notice_events[1:])))
         self.assertEqual(v.globals['sv_seconds'],0)
     def test_rapid_statuses_show_only_latest_when_previous_notice_expires(self):
@@ -313,6 +316,7 @@ class NativeProgressionTests(unittest.TestCase):
         for i,n in enumerate(v.data['nodes']):
             text=titles[f'sv_node_{i}']
             self.assertLessEqual(len(text),100,n['id'])
+            self.assertTrue(text.startswith('> '),n['id'])
             self.assertIn(node_label(n),text)
             self.assertIn('Cost'+'/'.join(map(str,n['costs'])),text)
             self.assertTrue(text.endswith('S'+str(n['stage'])))

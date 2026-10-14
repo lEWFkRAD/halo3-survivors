@@ -33,10 +33,23 @@ Existing purchase guards remain authoritative.
 The graph uses the training-text channel, with CRLF line breaks and an authored
 110-character guard. This is a layout rule, not a proven engine text limit.
 Wallet and next-cost titles refresh alongside the graph at most once per 30
-simulation ticks. Input runs before refresh, so Resume suppresses a due update;
+simulation ticks, and again at the 15-tick midpoint of that cycle (source
+follow-up, native-pending): their authored lifetime is 0.95 seconds, just under
+the 30-tick cycle, so a cycle-only refresh let them briefly expire while the
+Armory stayed open. The midpoint refresh touches wallet/price only; the graph
+throttle, the sub-second title expiry after Resume and the saved-clock range
+are unchanged. Input runs before refresh, so Resume suppresses a due update;
 close/reopen preserves the refresh limit. Invalid state keys select the fallback
 instead of leaving an old graph visible. Held-input purchase latches and
 exact-build Continue behavior remain part of the integration contract.
+
+The selected skill's CHUD detail starts with an explicit `> ` marker, and the
+controls title explains it. That is the bounded selected-node indication: an
+in-graph highlight would need one training-text snapshot per (state,
+selection) pair, expanding 601 snapshots to 3,848, and each snapshot costs an
+authored script/global reference in the dispatch, which would push the
+9,471-reference estimate far past the 9,500 guard and the native 10,240-record
+table that crashed the first live candidate.
 
 ## Compiler budget and failure
 
@@ -99,9 +112,13 @@ covering the purchased rank, combat progress, reopened menu, actor cap and
 Continue state. The final Continue retains Needler Power rank one and three
 points after an ordinary level-up.
 
-Wallet and price text can briefly disappear between refreshes; continuous
-visibility is not established. Selected details can be long, and the compact
-graph does not visually highlight the selected node. Readability across every
+In that candidate, wallet and price text could briefly disappear between
+refreshes; continuous visibility was not established. A later source follow-up
+adds the 15-tick midpoint wallet/price refresh and the `> ` selected-detail
+marker described above; both are native-pending and do not change this
+candidate's evidence. Selected details can be long, and the compact
+graph does not visually highlight the selected node (see the snapshot/reference
+accounting above for why). Readability across every
 node, resolution and stage needs further work. Broader purchase, death/victory,
 full-run and retail acceptance remain open. Use the isolated QA profile and
 native ownership rules in [AGENTS.md](AGENTS.md). Changed tag fingerprints make
