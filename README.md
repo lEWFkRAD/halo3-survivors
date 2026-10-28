@@ -1,3 +1,10 @@
+<!-- project-home:start -->
+**[Last Stand: Halo 3 Survivors project homepage](https://lewfkrad.github.io/halo3-survivors/)** · [Documentation](https://github.com/lEWFkRAD/halo3-survivors/blob/main/BOOTSTRAP.md)
+
+A native Halo 3 fan-mod prototype with overhead survival combat, automatic attacks, and branching upgrades.
+
+<!-- project-home:end -->
+
 # Last Stand: Halo 3 Survivors
 
 ![Last Stand: Halo 3 Survivors — an overhead Spartan surrounded by Covenant and Flood on the Ark](docs/images/last-stand-hero.png)
