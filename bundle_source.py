@@ -137,6 +137,10 @@ victory-cleanup-v04.diff
 README.md
 docs/images/last-stand-hero.png
 docs/images/README.md
+site/index.html
+site/README.md
+site/artwork.json
+site/.nojekyll
 README-v0.3.md
 README-v0.4.md
 MODLOG.md
